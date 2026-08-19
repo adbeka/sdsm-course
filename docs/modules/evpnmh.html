@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>СДСМ · EVPN Multihoming</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-depth="../">
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a class="topnav-brand" href="../index.html">СДСМ · <b>учебный портал</b>
+      <span class="topnav-progress-pill"><span class="val">0/18</span></span>
+    </a>
+    <div class="nav-groups"><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Основы
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/planning.html" data-progress-id="planning">Планирование сети<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ciscoconn.html" data-progress-id="ciscoconn">Подключение к оборудованию<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Коммутация L2
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vlan.html" data-progress-id="vlan">VLAN и коммутация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/stp.html" data-progress-id="stp">STP: защита от петель<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Маршрутизация L3
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/staticroute.html" data-progress-id="staticroute">Статическая маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/nat.html" data-progress-id="nat">ACL и NAT<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ospf.html" data-progress-id="ospf">OSPF: динамическая маршрутизация<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Оверлеи и внешняя связность
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vpn.html" data-progress-id="vpn">VPN-туннели<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/bgp.html" data-progress-id="bgp">BGP: междоменная маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/multicast.html" data-progress-id="multicast">Multicast-рассылка<span class="tab-check"></span></a></div>
+    </div><div class="nav-group active">
+      <button type="button" class="nav-group-trigger">MPLS и провайдерские сервисы
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/mplsbase.html" data-progress-id="mplsbase">Базовый MPLS<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/l3vpn.html" data-progress-id="l3vpn">MPLS L3VPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/l2vpn.html" data-progress-id="l2vpn">MPLS L2VPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/evpn.html" data-progress-id="evpn">EVPN<span class="tab-check"></span></a><a class="nav-group-item active" href="../modules/evpnmh.html" data-progress-id="evpnmh">EVPN Multihoming<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/mplste.html" data-progress-id="mplste">MPLS Traffic Engineering<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Железо и качество
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/packetlife.html" data-progress-id="packetlife">Путь пакета<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/qos.html" data-progress-id="qos">QoS: приоритизация трафика<span class="tab-check"></span></a></div>
+    </div></div>
+    <a class="nav-glossary-link" href="../glossary.html">Глоссарий</a>
+    <button type="button" class="search-trigger" aria-label="Поиск по сайту">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    </button>
+    <div class="topnav-links"><a href="#theory">Теория</a><a href="#process">Схема</a><a href="#glossary">Глоссарий</a><a href="#quiz">Квиз</a></div>
+  </div>
+</nav>
+<div class="search-overlay">
+  <div class="search-panel">
+    <div class="search-input-row">
+      <svg width="16" height="16" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <input type="text" class="search-input" placeholder="Искать тему или термин…" autocomplete="off">
+      <button type="button" class="search-close" aria-label="Закрыть">Esc</button>
+    </div>
+    <div class="search-results"></div>
+  </div>
+</div>
+<div class="wrap">
+  <div class="breadcrumb"><a href="../index.html">Главная</a><span class="sep">/</span><span>MPLS и провайдерские сервисы</span><span class="sep">/</span><span class="current">EVPN Multihoming</span></div>
+  <section class="hero">
+    <div class="eyebrow">Модуль 15 из 18 · теория + схема + квиз</div>
+    <h1>EVPN Multihoming: <span>два аплинка</span> без ручного MC-LAG</h1>
+    <p class="hero-sub">Когда CE подключён к двум PE одновременно, кто-то должен решить, кто активно форвардит трафик и как не задублировать BUM. EVPN решает это через BGP, а не через проприетарный MC-LAG.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">ИСТОЧНИК<b>linkmeup / СДСМ, гл. 12.2</b></div>
+      <div class="hero-meta-item">ФОРМАТ<b>теория + схема + квиз</b></div>
+      <div class="hero-meta-item">ВРЕМЯ<b>~9 минут</b></div>
+    </div>
+    <div class="diagram-panel">
+      <div class="diagram-label">Один CE, два PE, один Ethernet Segment</div>
+      <svg class="path-svg" viewbox="0 0 860 140" xmlns="http://www.w3.org/2000/svg">
+<path class="link-line" d="M 40,80 L 300,80 L 560,80 L 820,80"></path>
+<circle class="pulse-bgp" fill="#D97706" r="5"></circle>
+<circle cx="40" cy="80" fill="#475569" r="7"></circle>
+<text class="node-id" text-anchor="middle" x="40" y="55">CE</text>
+<text class="node-label" text-anchor="middle" x="40" y="108">2 аплинка</text>
+<circle cx="300" cy="80" fill="#0D9488" r="7"></circle>
+<text class="node-id self" text-anchor="middle" x="300" y="55">PE1 + PE2</text>
+<text class="node-label" text-anchor="middle" x="300" y="108">один ESI</text>
+<circle cx="560" cy="80" fill="#0D9488" r="7"></circle>
+<text class="node-id self" text-anchor="middle" x="560" y="55">DF election</text>
+<circle cx="820" cy="80" fill="#475569" r="7"></circle>
+<text class="node-id" text-anchor="middle" x="820" y="55">MPLS core</text>
+</svg>
+      <div class="diagram-legend"><span class="legend-item"><span class="legend-dot self"></span>ключевой узел на схеме</span><span class="legend-item"><span class="legend-dot"></span>соседний / промежуточный узел</span></div>
+      <ol class="readout-steps"><li class="readout-step plain"><span class="readout-step-num">1</span><span class="readout-step-text">CE подключён физически к PE1 и PE2 одновременно</span></li><li class="readout-step plain"><span class="readout-step-num">2</span><span class="readout-step-text">Оба PE анонсируют один и тот же ESI через Route Type 4</span></li><li class="readout-step plain"><span class="readout-step-num">3</span><span class="readout-step-text">PE выбирают Designated Forwarder для BUM-трафика</span></li><li class="readout-step plain"><span class="readout-step-num">4</span><span class="readout-step-text">Unicast балансируется через Aliasing, BUM идёт только через DF</span></li></ol>
+      <p class="diagram-caption">Со стороны CE это выглядит как обычный LACP-канал — он не знает и не должен знать, что на другом конце два разных PE.</p>
+    </div>
+  </section>
+  
+  <section id="theory">
+    <div class="section-head">
+      <div class="section-num">01 — ТЕОРИЯ</div>
+      <div class="section-title">Из чего состоит решение Multihoming</div>
+      <p class="section-desc">Шесть понятий — от проблемы дублирования до сравнения с MC-LAG.</p>
+      <p class="theory-tldr">Проще говоря: если клиентский коммутатор подключён сразу к двум PE, EVPN-MH решает, кто из них сейчас главный, чтобы трафик не задваивался.</p>
+    </div>
+    <div class="theory-grid"><div class="theory-card" id="theory-evpnmh-0"><div class="theory-card-title">Проблема multihoming</div><div class="theory-card-body">Если CE физически подключён к двум PE, оба могут получить один и тот же BUM-кадр и разослать его дважды — нужен механизм, кто из PE «главный».</div></div><div class="theory-card" id="theory-evpnmh-1"><div class="theory-card-title">Route Type 1 per-ESI</div><div class="theory-card-body">Анонс, которым PE сообщает остальным о своём участии в конкретном <a class="term-link" href="#gloss-evpnmh-0" title="Логическая группа физических подключений одного CE к нескольким PE, идентифицируемая общим ESI.">Ethernet Segment</a> — на основе этих анонсов строится список PE на сегменте.</div></div><div class="theory-card" id="theory-evpnmh-2"><div class="theory-card-title">DF election</div><div class="theory-card-body">Алгоритм выбора Designated Forwarder среди всех PE, подключённых к одному ESI, чтобы BUM-трафик пересылался только с одного из них.</div></div><div class="theory-card" id="theory-evpnmh-3"><div class="theory-card-title">Route Type 1 per-EVI</div><div class="theory-card-body">Более гранулярный анонс на уровне конкретного EVPN-сервиса, используется для быстрого MAC Mass Withdrawal именно в рамках этого сервиса.</div></div><div class="theory-card" id="theory-evpnmh-4"><div class="theory-card-title">Aliasing</div><div class="theory-card-body">Механизм, позволяющий распределять unicast-трафик к multihomed MAC между несколькими PE, даже если MAC был выучен только на одном из них.</div></div><div class="theory-card" id="theory-evpnmh-5"><div class="theory-card-title">EVPN vs MC-LAG</div><div class="theory-card-body"><a class="term-link" href="#gloss-evpnmh-4" title="Multi-Chassis Link Aggregation — проприетарная альтернатива EVPN Multihoming для active/active пары устройств.">MC-LAG</a> — проприетарное решение конкретного вендора для active/active или active/standby пары; EVPN Multihoming делает то же самое стандартизированно через BGP.</div></div></div>
+  </section>
+  <section id="misconceptions">
+    <div class="section-head">
+      <div class="section-num">— ЧАСТЫЕ ЗАБЛУЖДЕНИЯ</div>
+      <div class="section-title">Что обычно путают</div>
+      <p class="section-desc">Типичные неверные представления про эту тему — и как на самом деле.</p>
+    </div>
+    <div class="misc-grid"><div class="misc-card" id="misc-evpnmh-0"><div class="misc-wrong"><span class="misc-tag bad">Кажется</span>Если устройство подключено к двум PE, трафик просто балансируется между ними без правил.</div><div class="misc-right"><span class="misc-tag good">На деле</span>Нужен явный механизм DF (Designated Forwarder) election, который решает, какой PE сейчас пересылает BUM-трафик — иначе возникнут дубли и петли.</div></div><div class="misc-card" id="misc-evpnmh-1"><div class="misc-wrong"><span class="misc-tag bad">Кажется</span>Multihoming в EVPN работает только в режиме active/standby.</div><div class="misc-right"><span class="misc-tag good">На деле</span>EVPN поддерживает active/active multihoming — оба PE могут одновременно пересылать unicast-трафик к общему устройству.</div></div></div>
+  </section>
+  <section id="process">
+    <div class="section-head">
+      <div class="section-num">02 — ПРОЦЕСС</div>
+      <div class="section-title">Как CE получает резервирование через два PE</div>
+      <p class="section-desc">Четыре шага — от физического подключения до балансировки unicast.</p>
+    </div>
+    <ul class="steps"><li class="step"><span class="step-num">1</span><span class="step-text"><b>Подключение</b> — CE физически подключается к двум (или более) PE через один <a class="term-link" href="#gloss-evpnmh-0" title="Логическая группа физических подключений одного CE к нескольким PE, идентифицируемая общим ESI.">Ethernet Segment</a>.</span></li><li class="step"><span class="step-num">2</span><span class="step-text"><b>Анонс ESI</b> — PE анонсируют участие в этом ESI через Route Type 4 друг другу.</span></li><li class="step"><span class="step-num">3</span><span class="step-text"><b>DF election</b> — между PE на этом ESI избирается Designated Forwarder для BUM.</span></li><li class="step"><span class="step-num">4</span><span class="step-text"><b>Aliasing</b> — unicast-трафик балансируется между PE, минуя ограничение «только через DF».</span></li></ul>
+  </section>
+  <section id="glossary">
+    <div class="section-head">
+      <div class="section-num">03 — ГЛОССАРИЙ</div>
+      <div class="section-title">Термины модуля</div>
+      <p class="section-desc">Короткий справочник — можно оставить открытым рядом с CLI.</p>
+    </div>
+    <div class="glossary-grid"><div class="gloss-item" id="gloss-evpnmh-0"><div class="gloss-term">Ethernet Segment</div><div class="gloss-def">Логическая группа физических подключений одного CE к нескольким PE, идентифицируемая общим ESI.</div></div><div class="gloss-item" id="gloss-evpnmh-1"><div class="gloss-term">All-Active / Single-Active</div><div class="gloss-def">Режимы multihoming: в All-Active все PE сегмента пересылают unicast одновременно, в Single-Active — только один.</div></div><div class="gloss-item" id="gloss-evpnmh-2"><div class="gloss-term">DF election algorithm</div><div class="gloss-def">Детерминированный алгоритм, гарантирующий, что все PE сегмента выберут одного и того же DF независимо друг от друга.</div></div><div class="gloss-item" id="gloss-evpnmh-3"><div class="gloss-term">Split-horizon в EVPN</div><div class="gloss-def">Защита от того, чтобы PE не отправил BUM-трафик обратно на тот же multihomed-сегмент, откуда он пришёл.</div></div><div class="gloss-item" id="gloss-evpnmh-4"><div class="gloss-term">MC-LAG</div><div class="gloss-def">Multi-Chassis Link Aggregation — проприетарная альтернатива EVPN Multihoming для active/active пары устройств.</div></div><div class="gloss-item" id="gloss-evpnmh-5"><div class="gloss-term">Fast Convergence</div><div class="gloss-def">Цель EVPN Multihoming: при падении одного PE трафик быстро переключается на оставшийся без ожидания долгих таймеров.</div></div><div class="gloss-item" id="gloss-evpnmh-6"><div class="gloss-term">LAG со стороны CE</div><div class="gloss-def">На CE обычно настраивается обычный LACP-канал, «не знающий», что на другом конце два разных PE, а не один коммутатор.</div></div><div class="gloss-item" id="gloss-evpnmh-7"><div class="gloss-term">Per-ESI / Per-EVI</div><div class="gloss-def">Два уровня анонсов Route Type 1: общий по всему сегменту и отдельный по каждому сервису на этом сегменте.</div></div></div>
+  </section>
+  <section id="quiz">
+    <div class="section-head">
+      <div class="section-num">04 — ПРОВЕРКА</div>
+      <div class="section-title">Квиз (5 вопросов)</div>
+      <p class="section-desc">Без подвохов — если теория выше прочитана, займёт минуту.</p>
+    </div>
+    <div class="quiz" data-quiz="evpnmh" data-module="evpnmh" data-correct="1,0,1,0,1">
+      <div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">1</span>Зачем нужен DF (Designated Forwarder) в EVPN Multihoming?</div><div class="quiz-options" data-q="0"><label class="quiz-opt"><input type="radio" name="evpnmh-q0" value="0"> Чтобы шифровать трафик между PE</label><label class="quiz-opt"><input type="radio" name="evpnmh-q0" value="1"> Чтобы BUM-трафик пересылался только с одного PE, а не дублировался</label><label class="quiz-opt"><input type="radio" name="evpnmh-q0" value="2"> Чтобы выбрать RP для multicast</label><label class="quiz-opt"><input type="radio" name="evpnmh-q0" value="3"> Чтобы агрегировать несколько ESI в один</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">2</span>Чем All-Active отличается от Single-Active?</div><div class="quiz-options" data-q="1"><label class="quiz-opt"><input type="radio" name="evpnmh-q1" value="0"> В All-Active все PE сегмента пересылают unicast одновременно, в Single-Active — только один</label><label class="quiz-opt"><input type="radio" name="evpnmh-q1" value="1"> All-Active работает только с одним PE</label><label class="quiz-opt"><input type="radio" name="evpnmh-q1" value="2"> Single-Active не поддерживает LACP на стороне CE</label><label class="quiz-opt"><input type="radio" name="evpnmh-q1" value="3"> Это два названия одного и того же режима</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">3</span>Что даёт Aliasing?</div><div class="quiz-options" data-q="2"><label class="quiz-opt"><input type="radio" name="evpnmh-q2" value="0"> Шифрование unicast-трафика</label><label class="quiz-opt"><input type="radio" name="evpnmh-q2" value="1"> Распределение unicast-трафика к multihomed MAC между несколькими PE</label><label class="quiz-opt"><input type="radio" name="evpnmh-q2" value="2"> Быстрый отзыв MAC при падении сегмента</label><label class="quiz-opt"><input type="radio" name="evpnmh-q2" value="3"> Выбор DF</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">4</span>Чем EVPN Multihoming принципиально отличается от MC-LAG?</div><div class="quiz-options" data-q="3"><label class="quiz-opt"><input type="radio" name="evpnmh-q3" value="0"> Стандартизирован через BGP, а не привязан к проприетарной паре конкретного вендора</label><label class="quiz-opt"><input type="radio" name="evpnmh-q3" value="1"> MC-LAG работает быстрее всегда</label><label class="quiz-opt"><input type="radio" name="evpnmh-q3" value="2"> EVPN Multihoming не поддерживает active/active</label><label class="quiz-opt"><input type="radio" name="evpnmh-q3" value="3"> Разницы нет, это синонимы</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">5</span>Что использует MAC Mass Withdrawal per-EVI?</div><div class="quiz-options" data-q="4"><label class="quiz-opt"><input type="radio" name="evpnmh-q4" value="0"> Route Type 4</label><label class="quiz-opt"><input type="radio" name="evpnmh-q4" value="1"> Более гранулярный анонс на уровне конкретного EVPN-сервиса</label><label class="quiz-opt"><input type="radio" name="evpnmh-q4" value="2"> IGMP Snooping</label><label class="quiz-opt"><input type="radio" name="evpnmh-q4" value="3"> Только ручную команду сброса на CE</label></div></div>
+      <div class="quiz-footer">
+        <button type="button" class="btn quiz-check">Проверить результат</button>
+        <button type="button" class="btn secondary quiz-reset">Сбросить</button>
+        <span class="quiz-score"></span>
+      </div>
+    </div>
+  </section>
+  <section id="related">
+    <div class="section-head">
+      <div class="section-num">— СВЯЗАННЫЕ ТЕМЫ</div>
+      <div class="section-title">Куда это ведёт дальше</div>
+      <p class="section-desc">Эти модули опираются на то, что вы только что прочитали, или используются вместе с этим.</p>
+    </div>
+    <div class="related-grid"><a class="related-card" href="evpn.html"><div class="related-card-chapter">Гл. 12.1</div><div class="related-card-title">EVPN</div><div class="related-card-sub">VPLS учит MAC-адреса флудом неизвестного трафика в data plane. EVPN переносит эту задачу в…</div></a><a class="related-card" href="stp.html"><div class="related-card-chapter">Гл. 4</div><div class="related-card-title">STP: защита от петель</div><div class="related-card-sub">Резервный линк в L2-сети — это одновременно и страховка на случай обрыва, и готовое кольцо…</div></a></div>
+  </section>
+  <div class="module-nav"><a class="module-nav-link prev" href="evpn.html"><div class="module-nav-dir">← Предыдущий</div><div class="module-nav-title">EVPN</div></a><a class="module-nav-link next" href="mplste.html"><div class="module-nav-dir">Следующий →</div><div class="module-nav-title">MPLS Traffic Engineering</div></a></div>
+  <div class="footer">
+    <div class="feedback-panel">
+      <h3>Модуль 15 из 18</h3>
+      <p>Результат квиза сохраняется локально в браузере — прогресс виден в верхнем меню и на главной странице.</p>
+    </div>
+  </div>
+</div>
+<script src="../assets/app.js"></script>
+</body>
+</html>

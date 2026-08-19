@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>СДСМ · Подключение к оборудованию</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-depth="../">
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a class="topnav-brand" href="../index.html">СДСМ · <b>учебный портал</b>
+      <span class="topnav-progress-pill"><span class="val">0/18</span></span>
+    </a>
+    <div class="nav-groups"><div class="nav-group active">
+      <button type="button" class="nav-group-trigger">Основы
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/planning.html" data-progress-id="planning">Планирование сети<span class="tab-check"></span></a><a class="nav-group-item active" href="../modules/ciscoconn.html" data-progress-id="ciscoconn">Подключение к оборудованию<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Коммутация L2
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vlan.html" data-progress-id="vlan">VLAN и коммутация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/stp.html" data-progress-id="stp">STP: защита от петель<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Маршрутизация L3
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/staticroute.html" data-progress-id="staticroute">Статическая маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/nat.html" data-progress-id="nat">ACL и NAT<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ospf.html" data-progress-id="ospf">OSPF: динамическая маршрутизация<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Оверлеи и внешняя связность
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vpn.html" data-progress-id="vpn">VPN-туннели<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/bgp.html" data-progress-id="bgp">BGP: междоменная маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/multicast.html" data-progress-id="multicast">Multicast-рассылка<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">MPLS и провайдерские сервисы
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/mplsbase.html" data-progress-id="mplsbase">Базовый MPLS<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/l3vpn.html" data-progress-id="l3vpn">MPLS L3VPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/l2vpn.html" data-progress-id="l2vpn">MPLS L2VPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/evpn.html" data-progress-id="evpn">EVPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/evpnmh.html" data-progress-id="evpnmh">EVPN Multihoming<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/mplste.html" data-progress-id="mplste">MPLS Traffic Engineering<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Железо и качество
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/packetlife.html" data-progress-id="packetlife">Путь пакета<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/qos.html" data-progress-id="qos">QoS: приоритизация трафика<span class="tab-check"></span></a></div>
+    </div></div>
+    <a class="nav-glossary-link" href="../glossary.html">Глоссарий</a>
+    <button type="button" class="search-trigger" aria-label="Поиск по сайту">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    </button>
+    <div class="topnav-links"><a href="#theory">Теория</a><a href="#process">Схема</a><a href="#media">Видео</a><a href="#glossary">Глоссарий</a><a href="#quiz">Квиз</a></div>
+  </div>
+</nav>
+<div class="search-overlay">
+  <div class="search-panel">
+    <div class="search-input-row">
+      <svg width="16" height="16" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <input type="text" class="search-input" placeholder="Искать тему или термин…" autocomplete="off">
+      <button type="button" class="search-close" aria-label="Закрыть">Esc</button>
+    </div>
+    <div class="search-results"></div>
+  </div>
+</div>
+<div class="wrap">
+  <div class="breadcrumb"><a href="../index.html">Главная</a><span class="sep">/</span><span>Основы</span><span class="sep">/</span><span class="current">Подключение к оборудованию</span></div>
+  <section class="hero">
+    <div class="eyebrow">Модуль 2 из 18 · теория + схема + квиз</div>
+    <h1>Подключение к оборудованию: <span>первый контакт</span> с железом</h1>
+    <p class="hero-sub">Прежде чем настраивать что-либо, нужно попасть в устройство — консоль, Telnet, SSH — и понимать разницу между режимами CLI, чтобы не потерять доступ на проде.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">ИСТОЧНИК<b>linkmeup / СДСМ, гл. 1</b></div>
+      <div class="hero-meta-item">ФОРМАТ<b>теория + схема + квиз</b></div>
+      <div class="hero-meta-item">ВРЕМЯ<b>~7 минут</b></div>
+    </div>
+    <div class="diagram-panel">
+      <div class="diagram-label">Уровни доступа CLI</div>
+      <svg class="path-svg" viewbox="0 0 860 140" xmlns="http://www.w3.org/2000/svg">
+<path class="link-line" d="M 40,80 L 300,80 L 560,80 L 820,80"></path>
+<circle class="pulse-bgp" fill="#D97706" r="5"></circle>
+<circle cx="40" cy="80" fill="#475569" r="7"></circle>
+<text class="node-id" text-anchor="middle" x="40" y="55">User EXEC</text>
+<circle cx="300" cy="80" fill="#0D9488" r="7"></circle>
+<text class="node-id self" text-anchor="middle" x="300" y="55">Privileged</text>
+<circle cx="560" cy="80" fill="#0D9488" r="7"></circle>
+<text class="node-id self" text-anchor="middle" x="560" y="55">Global Config</text>
+<circle cx="820" cy="80" fill="#475569" r="7"></circle>
+<text class="node-id" text-anchor="middle" x="820" y="55">Interface Config</text>
+</svg>
+      <div class="diagram-legend"><span class="legend-item"><span class="legend-dot self"></span>ключевой узел на схеме</span><span class="legend-item"><span class="legend-dot"></span>соседний / промежуточный узел</span></div>
+      <ol class="readout-steps"><li class="readout-step dim"><span class="readout-step-num">1</span><span class="readout-step-text">User EXEC (>) — просмотр базовой информации, ничего не сломать</span></li><li class="readout-step amber"><span class="readout-step-num">2</span><span class="readout-step-text">Privileged EXEC (#) — полный просмотр состояния, show run, reload</span></li><li class="readout-step amber"><span class="readout-step-num">3</span><span class="readout-step-text">Global Config (config)# — правки, влияющие на всё устройство</span></li><li class="readout-step good"><span class="readout-step-num">4</span><span class="readout-step-text">Interface Config (config-if)# — правки конкретного порта</span></li></ol>
+      <p class="diagram-caption">Каждый следующий уровень — вложенный: из Interface Config можно выйти обратно в Global, но не наоборот минуя его.</p>
+    </div>
+  </section>
+  <section id="media">
+    <div class="section-head">
+      <div class="section-num">— МАТЕРИАЛЫ</div>
+      <div class="section-title">Видео и иллюстрации</div>
+      <p class="section-desc">Дополнительные материалы к модулю.</p>
+    </div>
+    <div class="media-video-frame"><iframe src="https://www.youtube.com/embed/6YWX2i-izNk" title="Видео" frameborder="0" allowfullscreen loading="lazy"></iframe></div><p class="media-video-fallback">Если видео не загрузилось (например, страница открыта напрямую как файл, без локального сервера) — <a href="https://www.youtube.com/watch?v=6YWX2i-izNk" target="_blank" rel="noopener">открыть на YouTube ↗</a></p>
+    
+  </section>
+  <section id="theory">
+    <div class="section-head">
+      <div class="section-num">01 — ТЕОРИЯ</div>
+      <div class="section-title">Из чего состоит доступ к устройству</div>
+      <p class="section-desc">Пять понятий — от способов подключения до восстановления пароля.</p>
+      <p class="theory-tldr">Проще говоря: прежде чем что-то настраивать, нужно попасть в командную строку устройства — вживую через консоль или удалённо по SSH/Telnet.</p>
+    </div>
+    <div class="theory-grid"><div class="theory-card" id="theory-ciscoconn-0"><div class="theory-card-title">Способы подключения</div><div class="theory-card-body">Консольный порт (всегда работает, даже без сети), <a class="term-link" href="#gloss-ciscoconn-1" title="Нешифрованный протокол удалённого управления, считается устаревшим для продакшена.">Telnet</a> (нешифрованный, устарел), SSH (шифрованный, стандарт де-факто) — у каждого свой сценарий использования.</div></div><div class="theory-card" id="theory-ciscoconn-1"><div class="theory-card-title">User EXEC vs Privileged EXEC</div><div class="theory-card-body">User EXEC (&gt;) даёт только просмотр; Privileged EXEC (#) открывает полный доступ, включая reload и запись конфигурации.</div></div><div class="theory-card" id="theory-ciscoconn-2"><div class="theory-card-title">Global Configuration Mode</div><div class="theory-card-body">Режим, в котором правки применяются ко всему устройству целиком (hostname, VLAN, глобальные ACL и т.д.).</div></div><div class="theory-card" id="theory-ciscoconn-3"><div class="theory-card-title">Interface Configuration Mode</div><div class="theory-card-body">Вложенный режим для настройки конкретного порта — не влияет на остальные интерфейсы.</div></div><div class="theory-card" id="theory-ciscoconn-4"><div class="theory-card-title">Сброс пароля</div><div class="theory-card-body">Процедура восстановления доступа при потере пароля обычно требует физического доступа к консоли и перезагрузки в специальном режиме — сетевой доступ для этого не подходит.</div></div></div>
+  </section>
+  <section id="misconceptions">
+    <div class="section-head">
+      <div class="section-num">— ЧАСТЫЕ ЗАБЛУЖДЕНИЯ</div>
+      <div class="section-title">Что обычно путают</div>
+      <p class="section-desc">Типичные неверные представления про эту тему — и как на самом деле.</p>
+    </div>
+    <div class="misc-grid"><div class="misc-card" id="misc-ciscoconn-0"><div class="misc-wrong"><span class="misc-tag bad">Кажется</span>Telnet и SSH — это одно и то же, просто разные порты.</div><div class="misc-right"><span class="misc-tag good">На деле</span>Telnet передаёт весь трафик, включая пароли, открытым текстом; SSH шифрует сессию — в проде Telnet использовать не стоит.</div></div><div class="misc-card" id="misc-ciscoconn-1"><div class="misc-wrong"><span class="misc-tag bad">Кажется</span>Консольный порт нужен только при первой настройке.</div><div class="misc-right"><span class="misc-tag good">На деле</span>Консоль — единственный доступ к устройству, если сетевой интерфейс сконфигурирован неправильно или сеть недоступна (out-of-band управление).</div></div></div>
+  </section>
+  <section id="process">
+    <div class="section-head">
+      <div class="section-num">02 — ПРОЦЕСС</div>
+      <div class="section-title">От подключения до правки интерфейса</div>
+      <p class="section-desc">Четыре шага — каждый следующий требует пройти предыдущий.</p>
+    </div>
+    <ul class="steps"><li class="step"><span class="step-num">1</span><span class="step-text"><b>Console/<a class="term-link" href="#gloss-ciscoconn-1" title="Нешифрованный протокол удалённого управления, считается устаревшим для продакшена.">Telnet</a>/SSH</b> — подключение к устройству одним из трёх способов.</span></li><li class="step"><span class="step-num">2</span><span class="step-text"><b>User EXEC (&gt;)</b> — базовый уровень доступа сразу после входа.</span></li><li class="step"><span class="step-num">3</span><span class="step-text"><b>Privileged EXEC (#)</b> — вход по enable-паролю открывает полный доступ.</span></li><li class="step"><span class="step-num">4</span><span class="step-text"><b>Config mode</b> — правки конфигурации, от глобальных до уровня конкретного интерфейса.</span></li></ul>
+  </section>
+  <section id="glossary">
+    <div class="section-head">
+      <div class="section-num">03 — ГЛОССАРИЙ</div>
+      <div class="section-title">Термины модуля</div>
+      <p class="section-desc">Короткий справочник — можно оставить открытым рядом с CLI.</p>
+    </div>
+    <div class="glossary-grid"><div class="gloss-item" id="gloss-ciscoconn-0"><div class="gloss-term">Console port</div><div class="gloss-def">Физический последовательный порт для локального управления устройством, работает даже без сети.</div></div><div class="gloss-item" id="gloss-ciscoconn-1"><div class="gloss-term">Telnet</div><div class="gloss-def">Нешифрованный протокол удалённого управления, считается устаревшим для продакшена.</div></div><div class="gloss-item" id="gloss-ciscoconn-2"><div class="gloss-term">SSH</div><div class="gloss-def">Шифрованный протокол удалённого управления, стандарт де-факто.</div></div><div class="gloss-item" id="gloss-ciscoconn-3"><div class="gloss-term">Enable password / secret</div><div class="gloss-def">Пароль для перехода из User EXEC в Privileged EXEC.</div></div><div class="gloss-item" id="gloss-ciscoconn-4"><div class="gloss-term">running-config / startup-config</div><div class="gloss-def">Активная конфигурация в памяти устройства и сохранённая конфигурация, которая загрузится при перезагрузке.</div></div><div class="gloss-item" id="gloss-ciscoconn-5"><div class="gloss-term">ROMMON</div><div class="gloss-def">Режим восстановления на низком уровне, используется при сбросе пароля или восстановлении образа ОС.</div></div></div>
+  </section>
+  <section id="quiz">
+    <div class="section-head">
+      <div class="section-num">04 — ПРОВЕРКА</div>
+      <div class="section-title">Квиз (5 вопросов)</div>
+      <p class="section-desc">Без подвохов — если теория выше прочитана, займёт минуту.</p>
+    </div>
+    <div class="quiz" data-quiz="ciscoconn" data-module="ciscoconn" data-correct="1,1,1,1,1">
+      <div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">1</span>Чем Privileged EXEC отличается от User EXEC?</div><div class="quiz-options" data-q="0"><label class="quiz-opt"><input type="radio" name="ciscoconn-q0" value="0"> Ничем, это одно и то же</label><label class="quiz-opt"><input type="radio" name="ciscoconn-q0" value="1"> Privileged EXEC даёт полный доступ, включая reload и запись конфигурации</label><label class="quiz-opt"><input type="radio" name="ciscoconn-q0" value="2"> User EXEC доступен только по SSH</label><label class="quiz-opt"><input type="radio" name="ciscoconn-q0" value="3"> Privileged EXEC работает только через консоль</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">2</span>Почему Telnet считается устаревшим для управления продакшн-устройствами?</div><div class="quiz-options" data-q="1"><label class="quiz-opt"><input type="radio" name="ciscoconn-q1" value="0"> Он медленнее SSH</label><label class="quiz-opt"><input type="radio" name="ciscoconn-q1" value="1"> Он передаёт данные, включая пароли, в незашифрованном виде</label><label class="quiz-opt"><input type="radio" name="ciscoconn-q1" value="2"> Он не поддерживается современными коммутаторами</label><label class="quiz-opt"><input type="radio" name="ciscoconn-q1" value="3"> Telnet требует лицензии</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">3</span>Что отличает Global Configuration Mode от Interface Configuration Mode?</div><div class="quiz-options" data-q="2"><label class="quiz-opt"><input type="radio" name="ciscoconn-q2" value="0"> Ничего, это синонимы</label><label class="quiz-opt"><input type="radio" name="ciscoconn-q2" value="1"> Global — правки для всего устройства, Interface — для конкретного порта</label><label class="quiz-opt"><input type="radio" name="ciscoconn-q2" value="2"> Interface Mode доступен только по консоли</label><label class="quiz-opt"><input type="radio" name="ciscoconn-q2" value="3"> Global Mode требует физического доступа</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">4</span>Почему консольный порт остаётся важным даже в сети с SSH?</div><div class="quiz-options" data-q="3"><label class="quiz-opt"><input type="radio" name="ciscoconn-q3" value="0"> Он быстрее по скорости передачи данных</label><label class="quiz-opt"><input type="radio" name="ciscoconn-q3" value="1"> Он работает даже без сетевого доступа к устройству, например при потере IP-конфигурации</label><label class="quiz-opt"><input type="radio" name="ciscoconn-q3" value="2"> Через консоль нельзя настраивать VLAN</label><label class="quiz-opt"><input type="radio" name="ciscoconn-q3" value="3"> Консоль устарела и не используется</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">5</span>Что такое running-config?</div><div class="quiz-options" data-q="4"><label class="quiz-opt"><input type="radio" name="ciscoconn-q4" value="0"> Конфигурация, которая загрузится при следующей перезагрузке</label><label class="quiz-opt"><input type="radio" name="ciscoconn-q4" value="1"> Активная конфигурация в памяти устройства прямо сейчас</label><label class="quiz-opt"><input type="radio" name="ciscoconn-q4" value="2"> Резервная копия на внешнем сервере</label><label class="quiz-opt"><input type="radio" name="ciscoconn-q4" value="3"> Список включённых интерфейсов</label></div></div>
+      <div class="quiz-footer">
+        <button type="button" class="btn quiz-check">Проверить результат</button>
+        <button type="button" class="btn secondary quiz-reset">Сбросить</button>
+        <span class="quiz-score"></span>
+      </div>
+    </div>
+  </section>
+  <section id="related">
+    <div class="section-head">
+      <div class="section-num">— СВЯЗАННЫЕ ТЕМЫ</div>
+      <div class="section-title">Куда это ведёт дальше</div>
+      <p class="section-desc">Эти модули опираются на то, что вы только что прочитали, или используются вместе с этим.</p>
+    </div>
+    <div class="related-grid"><a class="related-card" href="planning.html"><div class="related-card-chapter">Гл. 0</div><div class="related-card-title">Планирование сети</div><div class="related-card-sub">Прежде чем тянуть кабель, сеть проектируют на бумаге — документация, схемы, IP-план и VLAN…</div></a><a class="related-card" href="vlan.html"><div class="related-card-chapter">Гл. 2</div><div class="related-card-title">VLAN и коммутация</div><div class="related-card-sub">VLAN режет один физический L2-сегмент на несколько логически изолированных широковещательн…</div></a></div>
+  </section>
+  <div class="module-nav"><a class="module-nav-link prev" href="planning.html"><div class="module-nav-dir">← Предыдущий</div><div class="module-nav-title">Планирование сети</div></a><a class="module-nav-link next" href="vlan.html"><div class="module-nav-dir">Следующий →</div><div class="module-nav-title">VLAN и коммутация</div></a></div>
+  <div class="footer">
+    <div class="feedback-panel">
+      <h3>Модуль 2 из 18</h3>
+      <p>Результат квиза сохраняется локально в браузере — прогресс виден в верхнем меню и на главной странице.</p>
+    </div>
+  </div>
+</div>
+<script src="../assets/app.js"></script>
+</body>
+</html>

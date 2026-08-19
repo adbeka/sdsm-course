@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>СДСМ · Планирование сети</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-depth="../">
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a class="topnav-brand" href="../index.html">СДСМ · <b>учебный портал</b>
+      <span class="topnav-progress-pill"><span class="val">0/18</span></span>
+    </a>
+    <div class="nav-groups"><div class="nav-group active">
+      <button type="button" class="nav-group-trigger">Основы
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item active" href="../modules/planning.html" data-progress-id="planning">Планирование сети<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ciscoconn.html" data-progress-id="ciscoconn">Подключение к оборудованию<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Коммутация L2
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vlan.html" data-progress-id="vlan">VLAN и коммутация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/stp.html" data-progress-id="stp">STP: защита от петель<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Маршрутизация L3
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/staticroute.html" data-progress-id="staticroute">Статическая маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/nat.html" data-progress-id="nat">ACL и NAT<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ospf.html" data-progress-id="ospf">OSPF: динамическая маршрутизация<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Оверлеи и внешняя связность
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vpn.html" data-progress-id="vpn">VPN-туннели<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/bgp.html" data-progress-id="bgp">BGP: междоменная маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/multicast.html" data-progress-id="multicast">Multicast-рассылка<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">MPLS и провайдерские сервисы
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/mplsbase.html" data-progress-id="mplsbase">Базовый MPLS<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/l3vpn.html" data-progress-id="l3vpn">MPLS L3VPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/l2vpn.html" data-progress-id="l2vpn">MPLS L2VPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/evpn.html" data-progress-id="evpn">EVPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/evpnmh.html" data-progress-id="evpnmh">EVPN Multihoming<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/mplste.html" data-progress-id="mplste">MPLS Traffic Engineering<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Железо и качество
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/packetlife.html" data-progress-id="packetlife">Путь пакета<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/qos.html" data-progress-id="qos">QoS: приоритизация трафика<span class="tab-check"></span></a></div>
+    </div></div>
+    <a class="nav-glossary-link" href="../glossary.html">Глоссарий</a>
+    <button type="button" class="search-trigger" aria-label="Поиск по сайту">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    </button>
+    <div class="topnav-links"><a href="#theory">Теория</a><a href="#process">Схема</a><a href="#glossary">Глоссарий</a><a href="#quiz">Квиз</a></div>
+  </div>
+</nav>
+<div class="search-overlay">
+  <div class="search-panel">
+    <div class="search-input-row">
+      <svg width="16" height="16" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <input type="text" class="search-input" placeholder="Искать тему или термин…" autocomplete="off">
+      <button type="button" class="search-close" aria-label="Закрыть">Esc</button>
+    </div>
+    <div class="search-results"></div>
+  </div>
+</div>
+<div class="wrap">
+  <div class="breadcrumb"><a href="../index.html">Главная</a><span class="sep">/</span><span>Основы</span><span class="sep">/</span><span class="current">Планирование сети</span></div>
+  <section class="hero">
+    <div class="eyebrow">Модуль 1 из 18 · теория + схема + квиз</div>
+    <h1>Планирование: <span>сеть на бумаге</span> до сети в стойке</h1>
+    <p class="hero-sub">Прежде чем тянуть кабель, сеть проектируют на бумаге — документация, схемы, IP-план и VLAN-план экономят часы на инциденте, который случится через полгода.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">ИСТОЧНИК<b>linkmeup / СДСМ, гл. 0</b></div>
+      <div class="hero-meta-item">ФОРМАТ<b>теория + схема + квиз</b></div>
+      <div class="hero-meta-item">ВРЕМЯ<b>~6 минут</b></div>
+    </div>
+    <div class="diagram-panel">
+      <div class="diagram-label">Четыре слоя документации сети</div>
+      <svg class="path-svg" viewbox="0 0 860 140" xmlns="http://www.w3.org/2000/svg">
+<path class="link-line" d="M 40,80 L 300,80 L 560,80 L 820,80"></path>
+<circle class="pulse-bgp" fill="#D97706" r="5"></circle>
+<circle cx="40" cy="80" fill="#0D9488" r="7"></circle>
+<text class="node-id self" text-anchor="middle" x="40" y="55">Документация</text>
+<circle cx="300" cy="80" fill="#0D9488" r="7"></circle>
+<text class="node-id self" text-anchor="middle" x="300" y="55">Схема сети</text>
+<circle cx="560" cy="80" fill="#475569" r="7"></circle>
+<text class="node-id" text-anchor="middle" x="560" y="55">IP-план</text>
+<circle cx="820" cy="80" fill="#475569" r="7"></circle>
+<text class="node-id" text-anchor="middle" x="820" y="55">План портов</text>
+</svg>
+      <div class="diagram-legend"><span class="legend-item"><span class="legend-dot self"></span>ключевой узел на схеме</span><span class="legend-item"><span class="legend-dot"></span>соседний / промежуточный узел</span></div>
+      <ol class="readout-steps"><li class="readout-step plain"><span class="readout-step-num">1</span><span class="readout-step-text">Документация: что, зачем, кто отвечает</span></li><li class="readout-step plain"><span class="readout-step-num">2</span><span class="readout-step-text">Схема сети: L1/L2/L3 топология</span></li><li class="readout-step plain"><span class="readout-step-num">3</span><span class="readout-step-text">IP-план: адресация с запасом на рост</span></li><li class="readout-step plain"><span class="readout-step-num">4</span><span class="readout-step-text">План портов: что куда воткнуто — до того, как воткнули</span></li></ol>
+      <p class="diagram-caption">Каждый слой отвечает на свой вопрос — путать их в одном документе неудобно и на практике.</p>
+    </div>
+  </section>
+  
+  <section id="theory">
+    <div class="section-head">
+      <div class="section-num">01 — ТЕОРИЯ</div>
+      <div class="section-title">Из чего состоит план сети</div>
+      <p class="section-desc">Пять понятий — база, на которую опирается весь остальной курс.</p>
+      <p class="theory-tldr">Проще говоря: сначала считают, сколько нужно адресов, VLAN и уровней сети — и только потом идут покупать оборудование и тянуть кабель.</p>
+    </div>
+    <div class="theory-grid"><div class="theory-card" id="theory-planning-0"><div class="theory-card-title">Документация сети</div><div class="theory-card-body">Единый источник правды о сети: что где стоит, зачем, кто отвечает — экономит часы на инциденте, который случится через полгода.</div></div><div class="theory-card" id="theory-planning-1"><div class="theory-card-title">Схемы сети</div><div class="theory-card-body">Обычно нужно минимум три уровня: физическая (L1, кабели/порты), канальная (L2, VLAN/trunk) и логическая (L3, IP/маршруты) — каждая отвечает на свой вопрос.</div></div><div class="theory-card" id="theory-planning-2"><div class="theory-card-title">IP-план</div><div class="theory-card-body">Адресация закладывается с запасом на рост: явно выделенные диапазоны под серверы, пользователей, VPN, management — чтобы не переразбивать сеть через год.</div></div><div class="theory-card" id="theory-planning-3"><div class="theory-card-title">Список VLAN</div><div class="theory-card-body">Заранее согласованная нумерация VLAN по назначению (данные/голос/management/DMZ) — избавляет от коллизий номеров между площадками.</div></div><div class="theory-card" id="theory-planning-4"><div class="theory-card-title">План подключения по портам</div><div class="theory-card-body">Таблица «порт коммутатора — что подключено — VLAN — заметка», которая экономит время диагностики больше, чем любая другая часть документации.</div></div></div>
+  </section>
+  <section id="misconceptions">
+    <div class="section-head">
+      <div class="section-num">— ЧАСТЫЕ ЗАБЛУЖДЕНИЯ</div>
+      <div class="section-title">Что обычно путают</div>
+      <p class="section-desc">Типичные неверные представления про эту тему — и как на самом деле.</p>
+    </div>
+    <div class="misc-grid"><div class="misc-card" id="misc-planning-0"><div class="misc-wrong"><span class="misc-tag bad">Кажется</span>План сети — формальность для галочки, можно донастроить по ходу дела.</div><div class="misc-right"><span class="misc-tag good">На деле</span>Незадокументированная адресация и VLAN-план быстро превращаются в хаос — ошибки IP-конфликтов и путаницы обходятся дороже часа планирования.</div></div><div class="misc-card" id="misc-planning-1"><div class="misc-wrong"><span class="misc-tag bad">Кажется</span>Достаточно одной схемы «как есть сейчас».</div><div class="misc-right"><span class="misc-tag good">На деле</span>Нужны минимум две: логическая (IP/VLAN/протоколы) и физическая (кабели, порты, стойки) — они решают разные задачи при диагностике.</div></div></div>
+  </section>
+  <section id="process">
+    <div class="section-head">
+      <div class="section-num">02 — ПРОЦЕСС</div>
+      <div class="section-title">В каком порядке обычно планируют</div>
+      <p class="section-desc">Четыре шага — от общего описания до конкретного порта.</p>
+    </div>
+    <ul class="steps"><li class="step"><span class="step-num">1</span><span class="step-text"><b>Документация</b> — фиксируется, что за сеть, для чего, кто отвечает.</span></li><li class="step"><span class="step-num">2</span><span class="step-text"><b>Схема сети</b> — рисуется L1/L2/L3 топология.</span></li><li class="step"><span class="step-num">3</span><span class="step-text"><b><a class="term-link" href="#gloss-planning-1" title="Таблица распределения адресных диапазонов по сегментам сети с запасом на рост.">IP-план</a></b> — адресация распределяется по сегментам с запасом.</span></li><li class="step"><span class="step-num">4</span><span class="step-text"><b>План портов</b> — каждое физическое подключение фиксируется заранее.</span></li></ul>
+  </section>
+  <section id="glossary">
+    <div class="section-head">
+      <div class="section-num">03 — ГЛОССАРИЙ</div>
+      <div class="section-title">Термины модуля</div>
+      <p class="section-desc">Короткий справочник — можно оставить открытым рядом с CLI.</p>
+    </div>
+    <div class="glossary-grid"><div class="gloss-item" id="gloss-planning-0"><div class="gloss-term">L1/L2/L3 схема</div><div class="gloss-def">Три отдельных уровня документации сети: физический (кабели), канальный (VLAN/trunk), логический (IP/маршруты).</div></div><div class="gloss-item" id="gloss-planning-1"><div class="gloss-term">IP-план</div><div class="gloss-def">Таблица распределения адресных диапазонов по сегментам сети с запасом на рост.</div></div><div class="gloss-item" id="gloss-planning-2"><div class="gloss-term">VLAN-план</div><div class="gloss-def">Согласованная нумерация VLAN по всей сети, единая для всех площадок.</div></div><div class="gloss-item" id="gloss-planning-3"><div class="gloss-term">Single Source of Truth</div><div class="gloss-def">Принцип, при котором документация сети хранится в одном согласованном месте, а не расползается по головам инженеров.</div></div><div class="gloss-item" id="gloss-planning-4"><div class="gloss-term">Change Management</div><div class="gloss-def">Процесс фиксации изменений в сети, чтобы документация не расходилась с реальностью.</div></div><div class="gloss-item" id="gloss-planning-5"><div class="gloss-term">Capacity Planning</div><div class="gloss-def">Закладка запаса (адресов, портов, полосы) при планировании, чтобы не переделывать сеть при первом же росте.</div></div></div>
+  </section>
+  <section id="quiz">
+    <div class="section-head">
+      <div class="section-num">04 — ПРОВЕРКА</div>
+      <div class="section-title">Квиз (5 вопросов)</div>
+      <p class="section-desc">Без подвохов — если теория выше прочитана, займёт минуту.</p>
+    </div>
+    <div class="quiz" data-quiz="planning" data-module="planning" data-correct="1,1,1,1,1">
+      <div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">1</span>Зачем нужна документация сети?</div><div class="quiz-options" data-q="0"><label class="quiz-opt"><input type="radio" name="planning-q0" value="0"> Только для отчётности перед руководством</label><label class="quiz-opt"><input type="radio" name="planning-q0" value="1"> Единый источник правды о сети, экономящий время на будущих инцидентах</label><label class="quiz-opt"><input type="radio" name="planning-q0" value="2"> Чтобы соответствовать ISO-стандартам</label><label class="quiz-opt"><input type="radio" name="planning-q0" value="3"> Не нужна, если сеть маленькая</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">2</span>Что показывает L1-схема?</div><div class="quiz-options" data-q="1"><label class="quiz-opt"><input type="radio" name="planning-q1" value="0"> VLAN и trunk-линки</label><label class="quiz-opt"><input type="radio" name="planning-q1" value="1"> Физические кабели и порты</label><label class="quiz-opt"><input type="radio" name="planning-q1" value="2"> IP-адресацию</label><label class="quiz-opt"><input type="radio" name="planning-q1" value="3"> Маршруты BGP</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">3</span>Зачем в IP-плане закладывают запас?</div><div class="quiz-options" data-q="2"><label class="quiz-opt"><input type="radio" name="planning-q2" value="0"> Для красоты нумерации</label><label class="quiz-opt"><input type="radio" name="planning-q2" value="1"> Чтобы не переразбивать сеть при первом же росте</label><label class="quiz-opt"><input type="radio" name="planning-q2" value="2"> Так требует RFC1918</label><label class="quiz-opt"><input type="radio" name="planning-q2" value="3"> Запас не нужен, IPv6 бесконечен</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">4</span>Что решает единый VLAN-план по всей сети?</div><div class="quiz-options" data-q="3"><label class="quiz-opt"><input type="radio" name="planning-q3" value="0"> Ускоряет STP</label><label class="quiz-opt"><input type="radio" name="planning-q3" value="1"> Избавляет от коллизий номеров VLAN между площадками</label><label class="quiz-opt"><input type="radio" name="planning-q3" value="2"> Заменяет собой IP-план</label><label class="quiz-opt"><input type="radio" name="planning-q3" value="3"> Не имеет практического смысла</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">5</span>Что фиксирует план подключения по портам?</div><div class="quiz-options" data-q="4"><label class="quiz-opt"><input type="radio" name="planning-q4" value="0"> Только физическую разводку без деталей</label><label class="quiz-opt"><input type="radio" name="planning-q4" value="1"> Порт — что подключено — VLAN — заметка, экономя время диагностики</label><label class="quiz-opt"><input type="radio" name="planning-q4" value="2"> Список паролей на устройствах</label><label class="quiz-opt"><input type="radio" name="planning-q4" value="3"> Список IP-адресов клиентов</label></div></div>
+      <div class="quiz-footer">
+        <button type="button" class="btn quiz-check">Проверить результат</button>
+        <button type="button" class="btn secondary quiz-reset">Сбросить</button>
+        <span class="quiz-score"></span>
+      </div>
+    </div>
+  </section>
+  <section id="related">
+    <div class="section-head">
+      <div class="section-num">— СВЯЗАННЫЕ ТЕМЫ</div>
+      <div class="section-title">Куда это ведёт дальше</div>
+      <p class="section-desc">Эти модули опираются на то, что вы только что прочитали, или используются вместе с этим.</p>
+    </div>
+    <div class="related-grid"><a class="related-card" href="ciscoconn.html"><div class="related-card-chapter">Гл. 1</div><div class="related-card-title">Подключение к оборудованию</div><div class="related-card-sub">Прежде чем настраивать что-либо, нужно попасть в устройство — консоль, Telnet, SSH — и пон…</div></a><a class="related-card" href="staticroute.html"><div class="related-card-chapter">Гл. 3</div><div class="related-card-title">Статическая маршрутизация</div><div class="related-card-sub">Статический маршрут — это явно прописанная администратором запись «куда идти дальше». Ника…</div></a></div>
+  </section>
+  <div class="module-nav"><a class="module-nav-link next" href="ciscoconn.html"><div class="module-nav-dir">Следующий →</div><div class="module-nav-title">Подключение к оборудованию</div></a></div>
+  <div class="footer">
+    <div class="feedback-panel">
+      <h3>Модуль 1 из 18</h3>
+      <p>Результат квиза сохраняется локально в браузере — прогресс виден в верхнем меню и на главной странице.</p>
+    </div>
+  </div>
+</div>
+<script src="../assets/app.js"></script>
+</body>
+</html>

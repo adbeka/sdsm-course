@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>СДСМ · MPLS Traffic Engineering</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-depth="../">
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a class="topnav-brand" href="../index.html">СДСМ · <b>учебный портал</b>
+      <span class="topnav-progress-pill"><span class="val">0/18</span></span>
+    </a>
+    <div class="nav-groups"><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Основы
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/planning.html" data-progress-id="planning">Планирование сети<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ciscoconn.html" data-progress-id="ciscoconn">Подключение к оборудованию<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Коммутация L2
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vlan.html" data-progress-id="vlan">VLAN и коммутация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/stp.html" data-progress-id="stp">STP: защита от петель<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Маршрутизация L3
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/staticroute.html" data-progress-id="staticroute">Статическая маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/nat.html" data-progress-id="nat">ACL и NAT<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ospf.html" data-progress-id="ospf">OSPF: динамическая маршрутизация<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Оверлеи и внешняя связность
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vpn.html" data-progress-id="vpn">VPN-туннели<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/bgp.html" data-progress-id="bgp">BGP: междоменная маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/multicast.html" data-progress-id="multicast">Multicast-рассылка<span class="tab-check"></span></a></div>
+    </div><div class="nav-group active">
+      <button type="button" class="nav-group-trigger">MPLS и провайдерские сервисы
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/mplsbase.html" data-progress-id="mplsbase">Базовый MPLS<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/l3vpn.html" data-progress-id="l3vpn">MPLS L3VPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/l2vpn.html" data-progress-id="l2vpn">MPLS L2VPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/evpn.html" data-progress-id="evpn">EVPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/evpnmh.html" data-progress-id="evpnmh">EVPN Multihoming<span class="tab-check"></span></a><a class="nav-group-item active" href="../modules/mplste.html" data-progress-id="mplste">MPLS Traffic Engineering<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Железо и качество
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/packetlife.html" data-progress-id="packetlife">Путь пакета<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/qos.html" data-progress-id="qos">QoS: приоритизация трафика<span class="tab-check"></span></a></div>
+    </div></div>
+    <a class="nav-glossary-link" href="../glossary.html">Глоссарий</a>
+    <button type="button" class="search-trigger" aria-label="Поиск по сайту">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    </button>
+    <div class="topnav-links"><a href="#theory">Теория</a><a href="#process">Схема</a><a href="#glossary">Глоссарий</a><a href="#quiz">Квиз</a></div>
+  </div>
+</nav>
+<div class="search-overlay">
+  <div class="search-panel">
+    <div class="search-input-row">
+      <svg width="16" height="16" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <input type="text" class="search-input" placeholder="Искать тему или термин…" autocomplete="off">
+      <button type="button" class="search-close" aria-label="Закрыть">Esc</button>
+    </div>
+    <div class="search-results"></div>
+  </div>
+</div>
+<div class="wrap">
+  <div class="breadcrumb"><a href="../index.html">Главная</a><span class="sep">/</span><span>MPLS и провайдерские сервисы</span><span class="sep">/</span><span class="current">MPLS Traffic Engineering</span></div>
+  <section class="hero">
+    <div class="eyebrow">Модуль 16 из 18 · теория + схема + квиз</div>
+    <h1>MPLS TE: <span>явно указанный путь</span>, а не тот, что выбрал IGP</h1>
+    <p class="hero-sub">Обычная маршрутизация выбирает путь по метрике IGP, не глядя на загрузку линков. MPLS TE резервирует полосу и может явно проложить путь в обход перегруженного участка.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">ИСТОЧНИК<b>linkmeup / СДСМ, гл. 13</b></div>
+      <div class="hero-meta-item">ФОРМАТ<b>теория + схема + квиз</b></div>
+      <div class="hero-meta-item">ВРЕМЯ<b>~9 минут</b></div>
+    </div>
+    <div class="diagram-panel">
+      <div class="diagram-label">Обход перегруженного IGP-пути через TE-туннель</div>
+      <svg class="path-svg" viewbox="0 0 860 140" xmlns="http://www.w3.org/2000/svg">
+<path class="link-line" d="M 40,80 L 300,80 L 560,80 L 820,80"></path>
+<circle class="pulse-bgp" fill="#D97706" r="5"></circle>
+<circle cx="40" cy="80" fill="#0D9488" r="7"></circle>
+<text class="node-id self" text-anchor="middle" x="40" y="55">Ingress</text>
+<circle cx="300" cy="80" fill="#475569" r="7"></circle>
+<text class="node-id" text-anchor="middle" x="300" y="55">IGP-путь</text>
+<text class="node-label" text-anchor="middle" x="300" y="108">перегружен</text>
+<circle cx="560" cy="80" fill="#0D9488" r="7"></circle>
+<text class="node-id self" text-anchor="middle" x="560" y="55">TE-туннель</text>
+<text class="node-label" text-anchor="middle" x="560" y="108">explicit path</text>
+<circle cx="820" cy="80" fill="#475569" r="7"></circle>
+<text class="node-id" text-anchor="middle" x="820" y="55">Egress</text>
+</svg>
+      <div class="diagram-legend"><span class="legend-item"><span class="legend-dot self"></span>ключевой узел на схеме</span><span class="legend-item"><span class="legend-dot"></span>соседний / промежуточный узел</span></div>
+      <ol class="readout-steps"><li class="readout-step plain"><span class="readout-step-num">1</span><span class="readout-step-text">IGP выбрал бы кратчайший путь по метрике</span></li><li class="readout-step plain"><span class="readout-step-num">2</span><span class="readout-step-text">Но этот путь перегружен — недостаточно свободной полосы</span></li><li class="readout-step plain"><span class="readout-step-num">3</span><span class="readout-step-text">RSVP-TE резервирует полосу по альтернативному явному пути</span></li><li class="readout-step plain"><span class="readout-step-num">4</span><span class="readout-step-text">Трафик идёт через TE-туннель, обходя узкое место</span></li></ol>
+      <p class="diagram-caption">IGP сам по себе никогда бы не выбрал этот более длинный путь — решение принимается поверх него, явно.</p>
+    </div>
+  </section>
+  
+  <section id="theory">
+    <div class="section-head">
+      <div class="section-num">01 — ТЕОРИЯ</div>
+      <div class="section-title">Из чего состоит решение MPLS TE</div>
+      <p class="section-desc">Шесть понятий — от проблемы обычного IGP до Fast Reroute.</p>
+      <p class="theory-tldr">Проще говоря: обычный MPLS едет по кратчайшему пути от IGP; TE позволяет явно проложить другой маршрут и держать наготове резервный на случай обрыва.</p>
+    </div>
+    <div class="theory-grid"><div class="theory-card" id="theory-mplste-0"><div class="theory-card-title">Проблема обычной маршрутизации</div><div class="theory-card-body">IGP (OSPF/ISIS) выбирает путь только по метрике, не учитывая реальную загрузку линков — кратчайший путь может быть перегружен, а более длинный — простаивать.</div></div><div class="theory-card" id="theory-mplste-1"><div class="theory-card-title">Traffic Engineering</div><div class="theory-card-body">Явное управление тем, по какому физическому пути пойдёт трафик, вместо того чтобы полагаться только на решение IGP.</div></div><div class="theory-card" id="theory-mplste-2"><div class="theory-card-title">RSVP-TE</div><div class="theory-card-body">Протокол резервирования, который не только распределяет метки, но и резервирует полосу вдоль выбранного пути, отслеживая доступный ресурс на каждом линке.</div></div><div class="theory-card" id="theory-mplste-3"><div class="theory-card-title">Explicit path</div><div class="theory-card-body">Администратор (или система) может явно задать список узлов, через которые должен пройти TE-туннель, а не полагаться на автоматический расчёт.</div></div><div class="theory-card" id="theory-mplste-4"><div class="theory-card-title">CSPF</div><div class="theory-card-body">Constraint-Based Routing — расчёт пути с учётом ограничений (доступная полоса, административные группы), а не только метрики.</div></div><div class="theory-card" id="theory-mplste-5"><div class="theory-card-title">Направление трафика в туннель</div><div class="theory-card-body">Трафик можно направить в TE-туннель разными способами: статический маршрут на туннель, PBR, автомаршрутизация (autoroute) или через метрику самого туннеля.</div></div></div>
+  </section>
+  <section id="misconceptions">
+    <div class="section-head">
+      <div class="section-num">— ЧАСТЫЕ ЗАБЛУЖДЕНИЯ</div>
+      <div class="section-title">Что обычно путают</div>
+      <p class="section-desc">Типичные неверные представления про эту тему — и как на самом деле.</p>
+    </div>
+    <div class="misc-grid"><div class="misc-card" id="misc-mplste-0"><div class="misc-wrong"><span class="misc-tag bad">Кажется</span>MPLS TE нужен только для резервирования на случай обрыва.</div><div class="misc-right"><span class="misc-tag good">На деле</span>TE прежде всего — инструмент инженерии трафика: явный контроль пути для балансировки нагрузки и SLA, резервирование (FRR) — лишь одна из возможностей.</div></div><div class="misc-card" id="misc-mplste-1"><div class="misc-wrong"><span class="misc-tag bad">Кажется</span>TE-туннель всегда идёт по кратчайшему IGP-пути.</div><div class="misc-right"><span class="misc-tag good">На деле</span>TE-путь считается с учётом ограничений (bandwidth, affinity/цвета линков) и может сознательно обходить кратчайший путь IGP, если тот перегружен.</div></div></div>
+  </section>
+  <section id="process">
+    <div class="section-head">
+      <div class="section-num">02 — ПРОЦЕСС</div>
+      <div class="section-title">Как трафик оказывается в TE-туннеле</div>
+      <p class="section-desc">Четыре шага — от того, что выбрал бы IGP, до реального пути через TE.</p>
+    </div>
+    <ul class="steps"><li class="step"><span class="step-num">1</span><span class="step-text"><b>IGP-выбор</b> — IGP посчитал бы кратчайший путь по метрике, не глядя на загрузку.</span></li><li class="step"><span class="step-num">2</span><span class="step-text"><b>Обнаружение проблемы</b> — этот путь перегружен или не подходит по ограничениям.</span></li><li class="step"><span class="step-num">3</span><span class="step-text"><b>Резервирование</b> — RSVP-TE резервирует полосу вдоль альтернативного пути.</span></li><li class="step"><span class="step-num">4</span><span class="step-text"><b>Направление</b> — трафик направляется в TE-туннель одним из способов.</span></li></ul>
+  </section>
+  <section id="glossary">
+    <div class="section-head">
+      <div class="section-num">03 — ГЛОССАРИЙ</div>
+      <div class="section-title">Термины модуля</div>
+      <p class="section-desc">Короткий справочник — можно оставить открытым рядом с CLI.</p>
+    </div>
+    <div class="glossary-grid"><div class="gloss-item" id="gloss-mplste-0"><div class="gloss-term">LSP TE</div><div class="gloss-def">Label Switched Path, построенный не обычным LDP, а через RSVP-TE с резервированием ресурсов.</div></div><div class="gloss-item" id="gloss-mplste-1"><div class="gloss-term">Bandwidth reservation</div><div class="gloss-def">Заявленный и зарезервированный объём полосы на каждом линке пути TE-туннеля.</div></div><div class="gloss-item" id="gloss-mplste-2"><div class="gloss-term">Administrative group</div><div class="gloss-def">Метки («цвета») на линках, позволяющие исключать или включать определённые линки в расчёт TE-пути.</div></div><div class="gloss-item" id="gloss-mplste-3"><div class="gloss-term">CSPF</div><div class="gloss-def">Constrained Shortest Path First — расчёт кратчайшего пути с учётом ограничений, а не только метрики.</div></div><div class="gloss-item" id="gloss-mplste-4"><div class="gloss-term">Autoroute</div><div class="gloss-def">Механизм, при котором TE-туннель автоматически учитывается в таблице маршрутизации как более предпочтительный путь.</div></div><div class="gloss-item" id="gloss-mplste-5"><div class="gloss-term">Make-before-break</div><div class="gloss-def">Техника пересчёта TE-туннеля: новый путь устанавливается до разрыва старого, чтобы избежать потери трафика.</div></div><div class="gloss-item" id="gloss-mplste-6"><div class="gloss-term">FRR</div><div class="gloss-def">Fast Reroute — заранее подготовленный обходной путь на случай обрыва линка, переключение за миллисекунды.</div></div><div class="gloss-item" id="gloss-mplste-7"><div class="gloss-term">Head-end / Tail-end</div><div class="gloss-def">Начальный и конечный узел TE-туннеля.</div></div></div>
+  </section>
+  <section id="quiz">
+    <div class="section-head">
+      <div class="section-num">04 — ПРОВЕРКА</div>
+      <div class="section-title">Квиз (5 вопросов)</div>
+      <p class="section-desc">Без подвохов — если теория выше прочитана, займёт минуту.</p>
+    </div>
+    <div class="quiz" data-quiz="mplste" data-module="mplste" data-correct="1,1,1,1,1">
+      <div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">1</span>Почему обычного IGP иногда недостаточно для эффективного использования сети?</div><div class="quiz-options" data-q="0"><label class="quiz-opt"><input type="radio" name="mplste-q0" value="0"> IGP не умеет считать метрику</label><label class="quiz-opt"><input type="radio" name="mplste-q0" value="1"> IGP выбирает путь только по метрике, не учитывая реальную загрузку линков</label><label class="quiz-opt"><input type="radio" name="mplste-q0" value="2"> IGP работает только с MPLS</label><label class="quiz-opt"><input type="radio" name="mplste-q0" value="3"> IGP всегда выбирает самый длинный путь</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">2</span>Что дополнительно делает RSVP-TE по сравнению с обычным LDP?</div><div class="quiz-options" data-q="1"><label class="quiz-opt"><input type="radio" name="mplste-q1" value="0"> Просто быстрее распределяет метки</label><label class="quiz-opt"><input type="radio" name="mplste-q1" value="1"> Резервирует полосу вдоль выбранного пути</label><label class="quiz-opt"><input type="radio" name="mplste-q1" value="2"> Заменяет собой IGP полностью</label><label class="quiz-opt"><input type="radio" name="mplste-q1" value="3"> Работает только с multicast</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">3</span>Что такое CSPF?</div><div class="quiz-options" data-q="2"><label class="quiz-opt"><input type="radio" name="mplste-q2" value="0"> Обычный алгоритм Дейкстры без изменений</label><label class="quiz-opt"><input type="radio" name="mplste-q2" value="1"> Расчёт пути с учётом ограничений, а не только метрики</label><label class="quiz-opt"><input type="radio" name="mplste-q2" value="2"> Протокол резервирования полосы</label><label class="quiz-opt"><input type="radio" name="mplste-q2" value="3"> Механизм переключения при обрыве линка</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">4</span>Зачем нужен Fast Reroute (FRR)?</div><div class="quiz-options" data-q="3"><label class="quiz-opt"><input type="radio" name="mplste-q3" value="0"> Чтобы ускорить первоначальную установку туннеля</label><label class="quiz-opt"><input type="radio" name="mplste-q3" value="1"> Чтобы заранее подготовить обходной путь и переключиться за миллисекунды при обрыве</label><label class="quiz-opt"><input type="radio" name="mplste-q3" value="2"> Чтобы шифровать TE-туннель</label><label class="quiz-opt"><input type="radio" name="mplste-q3" value="3"> Чтобы агрегировать несколько туннелей в один</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">5</span>Что делает make-before-break при пересчёте TE-туннеля?</div><div class="quiz-options" data-q="4"><label class="quiz-opt"><input type="radio" name="mplste-q4" value="0"> Сначала рвёт старый путь, потом строит новый</label><label class="quiz-opt"><input type="radio" name="mplste-q4" value="1"> Строит новый путь до разрыва старого, избегая потери трафика</label><label class="quiz-opt"><input type="radio" name="mplste-q4" value="2"> Не даёт туннелю вообще пересчитываться</label><label class="quiz-opt"><input type="radio" name="mplste-q4" value="3"> Автоматически удаляет туннель при любом изменении топологии</label></div></div>
+      <div class="quiz-footer">
+        <button type="button" class="btn quiz-check">Проверить результат</button>
+        <button type="button" class="btn secondary quiz-reset">Сбросить</button>
+        <span class="quiz-score"></span>
+      </div>
+    </div>
+  </section>
+  <section id="related">
+    <div class="section-head">
+      <div class="section-num">— СВЯЗАННЫЕ ТЕМЫ</div>
+      <div class="section-title">Куда это ведёт дальше</div>
+      <p class="section-desc">Эти модули опираются на то, что вы только что прочитали, или используются вместе с этим.</p>
+    </div>
+    <div class="related-grid"><a class="related-card" href="mplsbase.html"><div class="related-card-chapter">Гл. 10</div><div class="related-card-title">Базовый MPLS</div><div class="related-card-sub">На входе в MPLS-домен пакету присваивается метка. Дальше внутри домена коммутация идёт по …</div></a><a class="related-card" href="qos.html"><div class="related-card-chapter">Гл. 15</div><div class="related-card-title">QoS: приоритизация трафика</div><div class="related-card-sub">Пропускная способность канала конечна. QoS решает, какой трафик классифицировать как приор…</div></a></div>
+  </section>
+  <div class="module-nav"><a class="module-nav-link prev" href="evpnmh.html"><div class="module-nav-dir">← Предыдущий</div><div class="module-nav-title">EVPN Multihoming</div></a><a class="module-nav-link next" href="packetlife.html"><div class="module-nav-dir">Следующий →</div><div class="module-nav-title">Путь пакета</div></a></div>
+  <div class="footer">
+    <div class="feedback-panel">
+      <h3>Модуль 16 из 18</h3>
+      <p>Результат квиза сохраняется локально в браузере — прогресс виден в верхнем меню и на главной странице.</p>
+    </div>
+  </div>
+</div>
+<script src="../assets/app.js"></script>
+</body>
+</html>

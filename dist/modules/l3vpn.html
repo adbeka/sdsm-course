@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>СДСМ · MPLS L3VPN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-depth="../">
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a class="topnav-brand" href="../index.html">СДСМ · <b>учебный портал</b>
+      <span class="topnav-progress-pill"><span class="val">0/18</span></span>
+    </a>
+    <div class="nav-groups"><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Основы
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/planning.html" data-progress-id="planning">Планирование сети<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ciscoconn.html" data-progress-id="ciscoconn">Подключение к оборудованию<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Коммутация L2
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vlan.html" data-progress-id="vlan">VLAN и коммутация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/stp.html" data-progress-id="stp">STP: защита от петель<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Маршрутизация L3
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/staticroute.html" data-progress-id="staticroute">Статическая маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/nat.html" data-progress-id="nat">ACL и NAT<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ospf.html" data-progress-id="ospf">OSPF: динамическая маршрутизация<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Оверлеи и внешняя связность
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vpn.html" data-progress-id="vpn">VPN-туннели<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/bgp.html" data-progress-id="bgp">BGP: междоменная маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/multicast.html" data-progress-id="multicast">Multicast-рассылка<span class="tab-check"></span></a></div>
+    </div><div class="nav-group active">
+      <button type="button" class="nav-group-trigger">MPLS и провайдерские сервисы
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/mplsbase.html" data-progress-id="mplsbase">Базовый MPLS<span class="tab-check"></span></a><a class="nav-group-item active" href="../modules/l3vpn.html" data-progress-id="l3vpn">MPLS L3VPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/l2vpn.html" data-progress-id="l2vpn">MPLS L2VPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/evpn.html" data-progress-id="evpn">EVPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/evpnmh.html" data-progress-id="evpnmh">EVPN Multihoming<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/mplste.html" data-progress-id="mplste">MPLS Traffic Engineering<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Железо и качество
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/packetlife.html" data-progress-id="packetlife">Путь пакета<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/qos.html" data-progress-id="qos">QoS: приоритизация трафика<span class="tab-check"></span></a></div>
+    </div></div>
+    <a class="nav-glossary-link" href="../glossary.html">Глоссарий</a>
+    <button type="button" class="search-trigger" aria-label="Поиск по сайту">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    </button>
+    <div class="topnav-links"><a href="#theory">Теория</a><a href="#process">Схема</a><a href="#media">Видео</a><a href="#glossary">Глоссарий</a><a href="#quiz">Квиз</a></div>
+  </div>
+</nav>
+<div class="search-overlay">
+  <div class="search-panel">
+    <div class="search-input-row">
+      <svg width="16" height="16" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <input type="text" class="search-input" placeholder="Искать тему или термин…" autocomplete="off">
+      <button type="button" class="search-close" aria-label="Закрыть">Esc</button>
+    </div>
+    <div class="search-results"></div>
+  </div>
+</div>
+<div class="wrap">
+  <div class="breadcrumb"><a href="../index.html">Главная</a><span class="sep">/</span><span>MPLS и провайдерские сервисы</span><span class="sep">/</span><span class="current">MPLS L3VPN</span></div>
+  <section class="hero">
+    <div class="eyebrow">Модуль 12 из 18 · теория + схема + квиз</div>
+    <h1>MPLS L3VPN: <span>своя таблица маршрутов</span> для каждого клиента</h1>
+    <p class="hero-sub">VRF изолирует таблицу маршрутов клиента от остальных на одном и том же физическом PE. MP-BGP разносит эти маршруты между PE, не давая клиентам видеть друг друга.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">ИСТОЧНИК<b>linkmeup / СДСМ, гл. 11</b></div>
+      <div class="hero-meta-item">ФОРМАТ<b>теория + схема + квиз</b></div>
+      <div class="hero-meta-item">ВРЕМЯ<b>~12 минут</b></div>
+    </div>
+    <div class="diagram-panel">
+      <div class="diagram-label">Маршрут клиента от CE1 до CE2 через VRF</div>
+      <svg class="path-svg" viewbox="0 0 860 140" xmlns="http://www.w3.org/2000/svg">
+<path class="link-line" d="M 40,80 L 300,80 L 560,80 L 820,80"></path>
+<circle class="pulse-bgp" fill="#D97706" r="5"></circle>
+<circle cx="40" cy="80" fill="#475569" r="7"></circle>
+<text class="node-id" text-anchor="middle" x="40" y="55">CE1</text>
+<circle cx="300" cy="80" fill="#0D9488" r="7"></circle>
+<text class="node-id self" text-anchor="middle" x="300" y="55">PE1</text>
+<text class="node-label" text-anchor="middle" x="300" y="108">VRF-A</text>
+<circle cx="560" cy="80" fill="#475569" r="7"></circle>
+<text class="node-id" text-anchor="middle" x="560" y="55">MPLS core</text>
+<circle cx="820" cy="80" fill="#0D9488" r="7"></circle>
+<text class="node-id self" text-anchor="middle" x="820" y="55">PE2</text>
+<text class="node-label" text-anchor="middle" x="820" y="108">VRF-A</text>
+</svg>
+      <div class="diagram-legend"><span class="legend-item"><span class="legend-dot self"></span>ключевой узел на схеме</span><span class="legend-item"><span class="legend-dot"></span>соседний / промежуточный узел</span></div>
+      <ol class="readout-steps"><li class="readout-step plain"><span class="readout-step-num">1</span><span class="readout-step-text">CE1 анонсирует префикс в VRF-A на PE1</span></li><li class="readout-step plain"><span class="readout-step-num">2</span><span class="readout-step-text">PE1 добавляет RD, превращает в VPNv4-маршрут</span></li><li class="readout-step plain"><span class="readout-step-num">3</span><span class="readout-step-text">MP-BGP переносит маршрут до PE2 (RT решает, в какую VRF)</span></li><li class="readout-step plain"><span class="readout-step-num">4</span><span class="readout-step-text">PE2 кладёт маршрут в VRF-A, CE2 его получает</span></li></ol>
+      <p class="diagram-caption">Пакет в дороге несёт две метки: транспортную (до нужного PE) и VPN-метку (в какую VRF отдать на выходе).</p>
+    </div>
+  </section>
+  <section id="media">
+    <div class="section-head">
+      <div class="section-num">— МАТЕРИАЛЫ</div>
+      <div class="section-title">Видео и иллюстрации</div>
+      <p class="section-desc">Дополнительные материалы к модулю.</p>
+    </div>
+    <div class="media-video-frame"><iframe src="https://www.youtube.com/embed/mkL6MWopUos" title="Видео" frameborder="0" allowfullscreen loading="lazy"></iframe></div><p class="media-video-fallback">Если видео не загрузилось (например, страница открыта напрямую как файл, без локального сервера) — <a href="https://www.youtube.com/watch?v=mkL6MWopUos" target="_blank" rel="noopener">открыть на YouTube ↗</a></p>
+    
+  </section>
+  <section id="theory">
+    <div class="section-head">
+      <div class="section-num">01 — ТЕОРИЯ</div>
+      <div class="section-title">Из чего состоит решение L3VPN</div>
+      <p class="section-desc">Шесть понятий — от VRF до BGP Free Core.</p>
+      <p class="theory-tldr">Проще говоря: провайдер держит на одном физическом роутере отдельную таблицу маршрутов для каждого клиента, чтобы их сети не пересекались.</p>
+    </div>
+    <div class="theory-grid"><div class="theory-card" id="theory-l3vpn-0"><div class="theory-card-title">VRF</div><div class="theory-card-body">Virtual Routing and Forwarding — отдельная таблица маршрутизации на одном физическом устройстве; трафик разных VRF изолирован, даже если клиенты используют одни и те же приватные адреса.</div></div><div class="theory-card" id="theory-l3vpn-1"><div class="theory-card-title">RD</div><div class="theory-card-body">Route Distinguisher — уникальная приставка, делающая одинаковые IPv4-префиксы разных клиентов различимыми внутри MP-BGP (превращает IPv4 в <a class="term-link" href="#gloss-l3vpn-1" title="Адрес-семейство MP-BGP, представляющее собой RD + IPv4-префикс.">VPNv4</a>).</div></div><div class="theory-card" id="theory-l3vpn-2"><div class="theory-card-title">RT</div><div class="theory-card-body">Route Target — атрибут, определяющий, в какие VRF на других PE должен попасть маршрут. Именно RT реализует топологию (hub-and-spoke, full-mesh, extranet).</div></div><div class="theory-card" id="theory-l3vpn-3"><div class="theory-card-title">MP-BGP</div><div class="theory-card-body">Multiprotocol BGP — расширение BGP, умеющее переносить не только IPv4-маршруты, но и <a class="term-link" href="#gloss-l3vpn-1" title="Адрес-семейство MP-BGP, представляющее собой RD + IPv4-префикс.">VPNv4</a>/VPNv6/L2VPN NLRI между PE.</div></div><div class="theory-card" id="theory-l3vpn-4"><div class="theory-card-title">Двойная метка</div><div class="theory-card-body">Пакет несёт транспортную метку (до нужного PE через MPLS core) и VPN-метку (чтобы PE понял, в какую VRF отдать пакет).</div></div><div class="theory-card" id="theory-l3vpn-5"><div class="theory-card-title">PE / P / CE</div><div class="theory-card-body">PE знает про VRF и клиентов, P знает только транспортные метки, CE вообще не знает, что находится в MPLS VPN.</div></div></div>
+  </section>
+  <section id="misconceptions">
+    <div class="section-head">
+      <div class="section-num">— ЧАСТЫЕ ЗАБЛУЖДЕНИЯ</div>
+      <div class="section-title">Что обычно путают</div>
+      <p class="section-desc">Типичные неверные представления про эту тему — и как на самом деле.</p>
+    </div>
+    <div class="misc-grid"><div class="misc-card" id="misc-l3vpn-0"><div class="misc-wrong"><span class="misc-tag bad">Кажется</span>VRF — это то же самое, что VLAN, просто на роутере.</div><div class="misc-right"><span class="misc-tag good">На деле</span>VRF — отдельная таблица маршрутизации (L3), VLAN — отдельный broadcast-домен (L2); они решают задачи на разных уровнях и часто используются вместе, но не синонимы.</div></div><div class="misc-card" id="misc-l3vpn-1"><div class="misc-wrong"><span class="misc-tag bad">Кажется</span>Route Target и Route Distinguisher — это одно и то же.</div><div class="misc-right"><span class="misc-tag good">На деле</span>RD делает одинаковые IPv4-префиксы разных клиентов различимыми в MP-BGP; RT определяет, в какие VRF маршрут должен попасть — это разные задачи.</div></div></div>
+  </section>
+  <section id="process">
+    <div class="section-head">
+      <div class="section-num">02 — ПРОЦЕСС</div>
+      <div class="section-title">Как маршрут доходит от CE1 до CE2</div>
+      <p class="section-desc">Четыре шага — от анонса на PE1 до появления в VRF на PE2.</p>
+    </div>
+    <ul class="steps"><li class="step"><span class="step-num">1</span><span class="step-text"><b>CE-PE анонс</b> — CE1 анонсирует префикс обычным протоколом (BGP/OSPF/статика) в VRF на PE1.</span></li><li class="step"><span class="step-num">2</span><span class="step-text"><b>RD + RT</b> — PE1 добавляет RD и присваивает RT, превращая маршрут в <a class="term-link" href="#gloss-l3vpn-1" title="Адрес-семейство MP-BGP, представляющее собой RD + IPv4-префикс.">VPNv4</a> для MP-BGP.</span></li><li class="step"><span class="step-num">3</span><span class="step-text"><b>MP-BGP транзит</b> — маршрут переносится между PE через MPLS core под транспортной меткой.</span></li><li class="step"><span class="step-num">4</span><span class="step-text"><b>Импорт на PE2</b> — PE2 смотрит RT, кладёт маршрут в нужную VRF и отдаёт его CE2.</span></li></ul>
+  </section>
+  <section id="glossary">
+    <div class="section-head">
+      <div class="section-num">03 — ГЛОССАРИЙ</div>
+      <div class="section-title">Термины модуля</div>
+      <p class="section-desc">Короткий справочник — можно оставить открытым рядом с CLI.</p>
+    </div>
+    <div class="glossary-grid"><div class="gloss-item" id="gloss-l3vpn-0"><div class="gloss-term">VRF-Lite</div><div class="gloss-def">Упрощённый вариант VRF без MP-BGP/MPLS — изоляция таблиц на одном устройстве без передачи между PE.</div></div><div class="gloss-item" id="gloss-l3vpn-1"><div class="gloss-term">VPNv4</div><div class="gloss-def">Адрес-семейство MP-BGP, представляющее собой RD + IPv4-префикс.</div></div><div class="gloss-item" id="gloss-l3vpn-2"><div class="gloss-term">Route Leaking</div><div class="gloss-def">Намеренный "перелив" маршрутов между VRF на одном устройстве, когда нужен контролируемый доступ между изолированными клиентами.</div></div><div class="gloss-item" id="gloss-l3vpn-3"><div class="gloss-term">Extranet</div><div class="gloss-def">Сценарий, когда через RT одному клиенту разрешают видеть часть маршрутов другого (например, общий сервис).</div></div><div class="gloss-item" id="gloss-l3vpn-4"><div class="gloss-term">Import / Export RT</div><div class="gloss-def">RT, которые VRF анонсирует наружу (export) и принимает извне (import) — их совпадение определяет видимость маршрутов.</div></div><div class="gloss-item" id="gloss-l3vpn-5"><div class="gloss-term">PE-CE протокол</div><div class="gloss-def">Протокол между PE и CE (BGP, OSPF, статика, RIP) — независим от того, что происходит внутри MPLS core.</div></div><div class="gloss-item" id="gloss-l3vpn-6"><div class="gloss-term">Site of Origin</div><div class="gloss-def">Атрибут BGP для защиты от повторного попадания маршрута на тот же CE-сайт в multi-homed сценариях.</div></div><div class="gloss-item" id="gloss-l3vpn-7"><div class="gloss-term">BGP Free Core</div><div class="gloss-def">Принцип, при котором P-роутеры вообще не участвуют в BGP и не знают клиентских или VPN-маршрутов — только транспортные метки.</div></div></div>
+  </section>
+  <section id="quiz">
+    <div class="section-head">
+      <div class="section-num">04 — ПРОВЕРКА</div>
+      <div class="section-title">Квиз (5 вопросов)</div>
+      <p class="section-desc">Без подвохов — если теория выше прочитана, займёт минуту.</p>
+    </div>
+    <div class="quiz" data-quiz="l3vpn" data-module="l3vpn" data-correct="1,1,1,1,1">
+      <div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">1</span>Зачем нужен VRF на PE?</div><div class="quiz-options" data-q="0"><label class="quiz-opt"><input type="radio" name="l3vpn-q0" value="0"> Для шифрования трафика клиента</label><label class="quiz-opt"><input type="radio" name="l3vpn-q0" value="1"> Чтобы изолировать таблицу маршрутов одного клиента от других на том же устройстве</label><label class="quiz-opt"><input type="radio" name="l3vpn-q0" value="2"> Для ускорения BGP best-path</label><label class="quiz-opt"><input type="radio" name="l3vpn-q0" value="3"> Для агрегации VLAN</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">2</span>Что делает RD?</div><div class="quiz-options" data-q="1"><label class="quiz-opt"><input type="radio" name="l3vpn-q1" value="0"> Определяет, в какую VRF попадёт маршрут на удалённом PE</label><label class="quiz-opt"><input type="radio" name="l3vpn-q1" value="1"> Делает одинаковые IPv4-префиксы разных клиентов различимыми в MP-BGP</label><label class="quiz-opt"><input type="radio" name="l3vpn-q1" value="2"> Шифрует VPN-метку</label><label class="quiz-opt"><input type="radio" name="l3vpn-q1" value="3"> Заменяет собой RT</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">3</span>Что решает Route Target?</div><div class="quiz-options" data-q="2"><label class="quiz-opt"><input type="radio" name="l3vpn-q2" value="0"> Кратчайший путь через MPLS core</label><label class="quiz-opt"><input type="radio" name="l3vpn-q2" value="1"> В какие VRF на других PE должен попасть маршрут</label><label class="quiz-opt"><input type="radio" name="l3vpn-q2" value="2"> Значение транспортной метки</label><label class="quiz-opt"><input type="radio" name="l3vpn-q2" value="3"> IP-адрес CE</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">4</span>Сколько меток обычно несёт пакет в MPLS L3VPN?</div><div class="quiz-options" data-q="3"><label class="quiz-opt"><input type="radio" name="l3vpn-q3" value="0"> Ни одной, VRF работает без меток</label><label class="quiz-opt"><input type="radio" name="l3vpn-q3" value="1"> Две: транспортную и VPN-метку</label><label class="quiz-opt"><input type="radio" name="l3vpn-q3" value="2"> Всегда четыре</label><label class="quiz-opt"><input type="radio" name="l3vpn-q3" value="3"> Одну, только транспортную</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">5</span>Что знают P-роутеры (ядро) при BGP Free Core?</div><div class="quiz-options" data-q="4"><label class="quiz-opt"><input type="radio" name="l3vpn-q4" value="0"> Все клиентские VPNv4-маршруты</label><label class="quiz-opt"><input type="radio" name="l3vpn-q4" value="1"> Только транспортные метки, без клиентских или VPN-маршрутов</label><label class="quiz-opt"><input type="radio" name="l3vpn-q4" value="2"> Список VRF на каждом PE</label><label class="quiz-opt"><input type="radio" name="l3vpn-q4" value="3"> RD и RT всех клиентов</label></div></div>
+      <div class="quiz-footer">
+        <button type="button" class="btn quiz-check">Проверить результат</button>
+        <button type="button" class="btn secondary quiz-reset">Сбросить</button>
+        <span class="quiz-score"></span>
+      </div>
+    </div>
+  </section>
+  <section id="related">
+    <div class="section-head">
+      <div class="section-num">— СВЯЗАННЫЕ ТЕМЫ</div>
+      <div class="section-title">Куда это ведёт дальше</div>
+      <p class="section-desc">Эти модули опираются на то, что вы только что прочитали, или используются вместе с этим.</p>
+    </div>
+    <div class="related-grid"><a class="related-card" href="bgp.html"><div class="related-card-chapter">Гл. 8 и 8.1</div><div class="related-card-title">BGP: междоменная маршрутизация</div><div class="related-card-sub">BGP не знает топологию сети целиком. Каждый роутер знает только своих соседей и списки AS,…</div></a><a class="related-card" href="mplsbase.html"><div class="related-card-chapter">Гл. 10</div><div class="related-card-title">Базовый MPLS</div><div class="related-card-sub">На входе в MPLS-домен пакету присваивается метка. Дальше внутри домена коммутация идёт по …</div></a><a class="related-card" href="l2vpn.html"><div class="related-card-chapter">Гл. 12</div><div class="related-card-title">MPLS L2VPN</div><div class="related-card-sub">VPWS и VPLS переносят Ethernet-кадры клиента через MPLS core прозрачно — для CE это выгляд…</div></a></div>
+  </section>
+  <div class="module-nav"><a class="module-nav-link prev" href="mplsbase.html"><div class="module-nav-dir">← Предыдущий</div><div class="module-nav-title">Базовый MPLS</div></a><a class="module-nav-link next" href="l2vpn.html"><div class="module-nav-dir">Следующий →</div><div class="module-nav-title">MPLS L2VPN</div></a></div>
+  <div class="footer">
+    <div class="feedback-panel">
+      <h3>Модуль 12 из 18</h3>
+      <p>Результат квиза сохраняется локально в браузере — прогресс виден в верхнем меню и на главной странице.</p>
+    </div>
+  </div>
+</div>
+<script src="../assets/app.js"></script>
+</body>
+</html>

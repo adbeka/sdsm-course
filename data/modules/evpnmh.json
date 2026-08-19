@@ -1,0 +1,185 @@
+{
+  "id": "evpnmh",
+  "order": 14,
+  "group": "mpls",
+  "tab_label": "EVPN Multihoming",
+  "title_html": "EVPN Multihoming: <span>два аплинка</span> без ручного MC-LAG",
+  "subtitle": "Когда CE подключён к двум PE одновременно, кто-то должен решить, кто активно форвардит трафик и как не задублировать BUM. EVPN решает это через BGP, а не через проприетарный MC-LAG.",
+  "meta": {
+    "ИСТОЧНИК": "linkmeup / СДСМ, гл. 12.2",
+    "ФОРМАТ": "теория + схема + квиз",
+    "ВРЕМЯ": "~9 минут"
+  },
+  "diagram": {
+    "label": "Один CE, два PE, один Ethernet Segment",
+    "svg_html": "<svg class=\"path-svg\" viewbox=\"0 0 860 140\" xmlns=\"http://www.w3.org/2000/svg\">\n<path class=\"link-line\" d=\"M 40,80 L 300,80 L 560,80 L 820,80\"></path>\n<circle class=\"pulse-bgp\" fill=\"#D97706\" r=\"5\"></circle>\n<circle cx=\"40\" cy=\"80\" fill=\"#475569\" r=\"7\"></circle>\n<text class=\"node-id\" text-anchor=\"middle\" x=\"40\" y=\"55\">CE</text>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"40\" y=\"108\">2 аплинка</text>\n<circle cx=\"300\" cy=\"80\" fill=\"#0D9488\" r=\"7\"></circle>\n<text class=\"node-id self\" text-anchor=\"middle\" x=\"300\" y=\"55\">PE1 + PE2</text>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"300\" y=\"108\">один ESI</text>\n<circle cx=\"560\" cy=\"80\" fill=\"#0D9488\" r=\"7\"></circle>\n<text class=\"node-id self\" text-anchor=\"middle\" x=\"560\" y=\"55\">DF election</text>\n<circle cx=\"820\" cy=\"80\" fill=\"#475569\" r=\"7\"></circle>\n<text class=\"node-id\" text-anchor=\"middle\" x=\"820\" y=\"55\">MPLS core</text>\n</svg>",
+    "caption": "Со стороны CE это выглядит как обычный LACP-канал — он не знает и не должен знать, что на другом конце два разных PE.",
+    "readout": {
+      "kind": "plain",
+      "lines": [
+        "CE подключён физически к PE1 и PE2 одновременно",
+        "Оба PE анонсируют один и тот же ESI через Route Type 4",
+        "PE выбирают Designated Forwarder для BUM-трафика",
+        "Unicast балансируется через Aliasing, BUM идёт только через DF"
+      ]
+    }
+  },
+  "theory": {
+    "title": "Из чего состоит решение Multihoming",
+    "desc": "Шесть понятий — от проблемы дублирования до сравнения с MC-LAG.",
+    "cards": [
+      {
+        "title": "Проблема multihoming",
+        "body_html": "Если CE физически подключён к двум PE, оба могут получить один и тот же BUM-кадр и разослать его дважды — нужен механизм, кто из PE «главный»."
+      },
+      {
+        "title": "Route Type 1 per-ESI",
+        "body_html": "Анонс, которым PE сообщает остальным о своём участии в конкретном Ethernet Segment — на основе этих анонсов строится список PE на сегменте."
+      },
+      {
+        "title": "DF election",
+        "body_html": "Алгоритм выбора Designated Forwarder среди всех PE, подключённых к одному ESI, чтобы BUM-трафик пересылался только с одного из них."
+      },
+      {
+        "title": "Route Type 1 per-EVI",
+        "body_html": "Более гранулярный анонс на уровне конкретного EVPN-сервиса, используется для быстрого MAC Mass Withdrawal именно в рамках этого сервиса."
+      },
+      {
+        "title": "Aliasing",
+        "body_html": "Механизм, позволяющий распределять unicast-трафик к multihomed MAC между несколькими PE, даже если MAC был выучен только на одном из них."
+      },
+      {
+        "title": "EVPN vs MC-LAG",
+        "body_html": "MC-LAG — проприетарное решение конкретного вендора для active/active или active/standby пары; EVPN Multihoming делает то же самое стандартизированно через BGP."
+      }
+    ],
+    "tldr": "Проще говоря: если клиентский коммутатор подключён сразу к двум PE, EVPN-MH решает, кто из них сейчас главный, чтобы трафик не задваивался."
+  },
+  "process": {
+    "title": "Как CE получает резервирование через два PE",
+    "desc": "Четыре шага — от физического подключения до балансировки unicast.",
+    "steps": [
+      {
+        "num": "1",
+        "body_html": "<b>Подключение</b> — CE физически подключается к двум (или более) PE через один Ethernet Segment."
+      },
+      {
+        "num": "2",
+        "body_html": "<b>Анонс ESI</b> — PE анонсируют участие в этом ESI через Route Type 4 друг другу."
+      },
+      {
+        "num": "3",
+        "body_html": "<b>DF election</b> — между PE на этом ESI избирается Designated Forwarder для BUM."
+      },
+      {
+        "num": "4",
+        "body_html": "<b>Aliasing</b> — unicast-трафик балансируется между PE, минуя ограничение «только через DF»."
+      }
+    ]
+  },
+  "glossary": [
+    {
+      "term": "Ethernet Segment",
+      "def_html": "Логическая группа физических подключений одного CE к нескольким PE, идентифицируемая общим ESI."
+    },
+    {
+      "term": "All-Active / Single-Active",
+      "def_html": "Режимы multihoming: в All-Active все PE сегмента пересылают unicast одновременно, в Single-Active — только один."
+    },
+    {
+      "term": "DF election algorithm",
+      "def_html": "Детерминированный алгоритм, гарантирующий, что все PE сегмента выберут одного и того же DF независимо друг от друга."
+    },
+    {
+      "term": "Split-horizon в EVPN",
+      "def_html": "Защита от того, чтобы PE не отправил BUM-трафик обратно на тот же multihomed-сегмент, откуда он пришёл."
+    },
+    {
+      "term": "MC-LAG",
+      "def_html": "Multi-Chassis Link Aggregation — проприетарная альтернатива EVPN Multihoming для active/active пары устройств."
+    },
+    {
+      "term": "Fast Convergence",
+      "def_html": "Цель EVPN Multihoming: при падении одного PE трафик быстро переключается на оставшийся без ожидания долгих таймеров."
+    },
+    {
+      "term": "LAG со стороны CE",
+      "def_html": "На CE обычно настраивается обычный LACP-канал, «не знающий», что на другом конце два разных PE, а не один коммутатор."
+    },
+    {
+      "term": "Per-ESI / Per-EVI",
+      "def_html": "Два уровня анонсов Route Type 1: общий по всему сегменту и отдельный по каждому сервису на этом сегменте."
+    }
+  ],
+  "quiz": {
+    "slug": "evpnmh",
+    "correct": [
+      1,
+      0,
+      1,
+      0,
+      1
+    ],
+    "questions": [
+      {
+        "q": "Зачем нужен DF (Designated Forwarder) в EVPN Multihoming?",
+        "options": [
+          "Чтобы шифровать трафик между PE",
+          "Чтобы BUM-трафик пересылался только с одного PE, а не дублировался",
+          "Чтобы выбрать RP для multicast",
+          "Чтобы агрегировать несколько ESI в один"
+        ]
+      },
+      {
+        "q": "Чем All-Active отличается от Single-Active?",
+        "options": [
+          "В All-Active все PE сегмента пересылают unicast одновременно, в Single-Active — только один",
+          "All-Active работает только с одним PE",
+          "Single-Active не поддерживает LACP на стороне CE",
+          "Это два названия одного и того же режима"
+        ]
+      },
+      {
+        "q": "Что даёт Aliasing?",
+        "options": [
+          "Шифрование unicast-трафика",
+          "Распределение unicast-трафика к multihomed MAC между несколькими PE",
+          "Быстрый отзыв MAC при падении сегмента",
+          "Выбор DF"
+        ]
+      },
+      {
+        "q": "Чем EVPN Multihoming принципиально отличается от MC-LAG?",
+        "options": [
+          "Стандартизирован через BGP, а не привязан к проприетарной паре конкретного вендора",
+          "MC-LAG работает быстрее всегда",
+          "EVPN Multihoming не поддерживает active/active",
+          "Разницы нет, это синонимы"
+        ]
+      },
+      {
+        "q": "Что использует MAC Mass Withdrawal per-EVI?",
+        "options": [
+          "Route Type 4",
+          "Более гранулярный анонс на уровне конкретного EVPN-сервиса",
+          "IGMP Snooping",
+          "Только ручную команду сброса на CE"
+        ]
+      }
+    ]
+  },
+  "misconceptions": [
+    {
+      "wrong": "Если устройство подключено к двум PE, трафик просто балансируется между ними без правил.",
+      "right": "Нужен явный механизм DF (Designated Forwarder) election, который решает, какой PE сейчас пересылает BUM-трафик — иначе возникнут дубли и петли."
+    },
+    {
+      "wrong": "Multihoming в EVPN работает только в режиме active/standby.",
+      "right": "EVPN поддерживает active/active multihoming — оба PE могут одновременно пересылать unicast-трафик к общему устройству."
+    }
+  ],
+  "related": [
+    "evpn",
+    "stp"
+  ]
+}

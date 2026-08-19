@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>СДСМ · Базовый MPLS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-depth="../">
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a class="topnav-brand" href="../index.html">СДСМ · <b>учебный портал</b>
+      <span class="topnav-progress-pill"><span class="val">0/18</span></span>
+    </a>
+    <div class="nav-groups"><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Основы
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/planning.html" data-progress-id="planning">Планирование сети<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ciscoconn.html" data-progress-id="ciscoconn">Подключение к оборудованию<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Коммутация L2
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vlan.html" data-progress-id="vlan">VLAN и коммутация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/stp.html" data-progress-id="stp">STP: защита от петель<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Маршрутизация L3
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/staticroute.html" data-progress-id="staticroute">Статическая маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/nat.html" data-progress-id="nat">ACL и NAT<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ospf.html" data-progress-id="ospf">OSPF: динамическая маршрутизация<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Оверлеи и внешняя связность
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vpn.html" data-progress-id="vpn">VPN-туннели<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/bgp.html" data-progress-id="bgp">BGP: междоменная маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/multicast.html" data-progress-id="multicast">Multicast-рассылка<span class="tab-check"></span></a></div>
+    </div><div class="nav-group active">
+      <button type="button" class="nav-group-trigger">MPLS и провайдерские сервисы
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item active" href="../modules/mplsbase.html" data-progress-id="mplsbase">Базовый MPLS<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/l3vpn.html" data-progress-id="l3vpn">MPLS L3VPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/l2vpn.html" data-progress-id="l2vpn">MPLS L2VPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/evpn.html" data-progress-id="evpn">EVPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/evpnmh.html" data-progress-id="evpnmh">EVPN Multihoming<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/mplste.html" data-progress-id="mplste">MPLS Traffic Engineering<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Железо и качество
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/packetlife.html" data-progress-id="packetlife">Путь пакета<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/qos.html" data-progress-id="qos">QoS: приоритизация трафика<span class="tab-check"></span></a></div>
+    </div></div>
+    <a class="nav-glossary-link" href="../glossary.html">Глоссарий</a>
+    <button type="button" class="search-trigger" aria-label="Поиск по сайту">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    </button>
+    <div class="topnav-links"><a href="#theory">Теория</a><a href="#process">Схема</a><a href="#media">Видео</a><a href="#glossary">Глоссарий</a><a href="#quiz">Квиз</a></div>
+  </div>
+</nav>
+<div class="search-overlay">
+  <div class="search-panel">
+    <div class="search-input-row">
+      <svg width="16" height="16" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <input type="text" class="search-input" placeholder="Искать тему или термин…" autocomplete="off">
+      <button type="button" class="search-close" aria-label="Закрыть">Esc</button>
+    </div>
+    <div class="search-results"></div>
+  </div>
+</div>
+<div class="wrap">
+  <div class="breadcrumb"><a href="../index.html">Главная</a><span class="sep">/</span><span>MPLS и провайдерские сервисы</span><span class="sep">/</span><span class="current">Базовый MPLS</span></div>
+  <section class="hero">
+    <div class="eyebrow">Модуль 11 из 18 · теория + схема + квиз</div>
+    <h1>MPLS: <span>метка</span> вместо разбора IP на каждом хопе</h1>
+    <p class="hero-sub">На входе в MPLS-домен пакету присваивается метка. Дальше внутри домена коммутация идёт по метке (swap), а не по IP-адресу — быстрее и это основа для сервисов вроде VPN поверх общей инфраструктуры.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">ИСТОЧНИК<b>linkmeup / СДСМ, гл. 10</b></div>
+      <div class="hero-meta-item">ФОРМАТ<b>теория + схема + квиз</b></div>
+      <div class="hero-meta-item">ВРЕМЯ<b>~10 минут</b></div>
+    </div>
+    <div class="diagram-panel">
+      <div class="diagram-label">Push → Swap → Pop на пути пакета</div>
+      <svg class="path-svg" viewbox="0 0 860 140" xmlns="http://www.w3.org/2000/svg">
+<path class="link-line" d="M 40,80 L 300,80 L 560,80 L 820,80"></path>
+<circle class="pulse-bgp" fill="#D97706" r="5"></circle>
+<circle cx="40" cy="80" fill="#475569" r="7"></circle>
+<text class="node-id" text-anchor="middle" x="40" y="55">CE</text>
+<text class="node-label" text-anchor="middle" x="40" y="108">без метки</text>
+<circle cx="300" cy="80" fill="#0D9488" r="7"></circle>
+<text class="node-id self" text-anchor="middle" x="300" y="55">PE-in</text>
+<text class="node-label" text-anchor="middle" x="300" y="108">push</text>
+<circle cx="560" cy="80" fill="#475569" r="7"></circle>
+<text class="node-id" text-anchor="middle" x="560" y="55">P</text>
+<text class="node-label" text-anchor="middle" x="560" y="108">swap</text>
+<circle cx="820" cy="80" fill="#0D9488" r="7"></circle>
+<text class="node-id self" text-anchor="middle" x="820" y="55">PE-out</text>
+<text class="node-label" text-anchor="middle" x="820" y="108">pop</text>
+</svg>
+      <div class="diagram-legend"><span class="legend-item"><span class="legend-dot self"></span>ключевой узел на схеме</span><span class="legend-item"><span class="legend-dot"></span>соседний / промежуточный узел</span></div>
+      <ol class="readout-steps"><li class="readout-step plain"><span class="readout-step-num">1</span><span class="readout-step-text">Пакет без метки приходит на PE</span></li><li class="readout-step plain"><span class="readout-step-num">2</span><span class="readout-step-text">PE делает push: метка 100 добавлена</span></li><li class="readout-step plain"><span class="readout-step-num">3</span><span class="readout-step-text">P-роутер делает swap: метка 100 → 200</span></li><li class="readout-step plain"><span class="readout-step-num">4</span><span class="readout-step-text">PE-out делает pop, дальше — обычная IP-пересылка</span></li></ol>
+      <p class="diagram-caption">P-роутеры (ядро) работают только с метками — им не нужно ни разу заглядывать внутрь IP-заголовка клиента.</p>
+    </div>
+  </section>
+  <section id="media">
+    <div class="section-head">
+      <div class="section-num">— МАТЕРИАЛЫ</div>
+      <div class="section-title">Видео и иллюстрации</div>
+      <p class="section-desc">Дополнительные материалы к модулю.</p>
+    </div>
+    <div class="media-video-frame"><iframe src="https://www.youtube.com/embed/hZyfM4UZDac" title="Видео" frameborder="0" allowfullscreen loading="lazy"></iframe></div><p class="media-video-fallback">Если видео не загрузилось (например, страница открыта напрямую как файл, без локального сервера) — <a href="https://www.youtube.com/watch?v=hZyfM4UZDac" target="_blank" rel="noopener">открыть на YouTube ↗</a></p>
+    
+  </section>
+  <section id="theory">
+    <div class="section-head">
+      <div class="section-num">01 — ТЕОРИЯ</div>
+      <div class="section-title">Из чего состоит решение MPLS</div>
+      <p class="section-desc">Шесть понятий — фундамент перед L3VPN и L2VPN.</p>
+      <p class="theory-tldr">Проще говоря: пакету один раз на входе в сеть присваивают короткую метку, и дальше роутеры пересылают его по метке, не разбирая IP-заголовок на каждом хопе.</p>
+    </div>
+    <div class="theory-grid"><div class="theory-card" id="theory-mplsbase-0"><div class="theory-card-title">Зачем нужен MPLS</div><div class="theory-card-body">Метка позволяет коммутировать пакет по короткому фиксированному значению вместо разбора полного IP-заголовка на каждом узле, и служит основой для VPN-сервисов поверх общей инфраструктуры.</div></div><div class="theory-card" id="theory-mplsbase-1"><div class="theory-card-title">Label Stack</div><div class="theory-card-body">Пакет может нести несколько меток одновременно (стек): внешняя метка — транспортная (до PE), внутренняя — сервисная (VPN/VC).</div></div><div class="theory-card" id="theory-mplsbase-2"><div class="theory-card-title">Push / Swap / Pop</div><div class="theory-card-body">Три базовые операции с меткой: push — добавить метку на входе, swap — заменить метку транзитом, pop — снять метку перед выходом.</div></div><div class="theory-card" id="theory-mplsbase-3"><div class="theory-card-title">LDP</div><div class="theory-card-body">Label Distribution Protocol — протокол, которым соседние MPLS-роутеры автоматически договариваются, какая метка соответствует какому FEC.</div></div><div class="theory-card" id="theory-mplsbase-4"><div class="theory-card-title">PHP</div><div class="theory-card-body"><a class="term-link" href="#gloss-mplsbase-7" title="Предпоследний роутер на LSP — тот, что делает PHP перед egress PE.">Penultimate Hop</a> Popping — предпоследний узел снимает метку заранее, чтобы последний узел (PE) не делал двойную работу.</div></div><div class="theory-card" id="theory-mplsbase-5"><div class="theory-card-title">FEC</div><div class="theory-card-body">Forwarding Equivalence Class — группа пакетов, обрабатываемых одинаково (например, идущих по одному <a class="term-link" href="#gloss-mplsbase-0" title="Label Switched Path — путь через MPLS-домен, по которому коммутируется определённая метка/FEC.">LSP</a>) — именно FEC привязывается к метке.</div></div></div>
+  </section>
+  <section id="misconceptions">
+    <div class="section-head">
+      <div class="section-num">— ЧАСТЫЕ ЗАБЛУЖДЕНИЯ</div>
+      <div class="section-title">Что обычно путают</div>
+      <p class="section-desc">Типичные неверные представления про эту тему — и как на самом деле.</p>
+    </div>
+    <div class="misc-grid"><div class="misc-card" id="misc-mplsbase-0"><div class="misc-wrong"><span class="misc-tag bad">Кажется</span>MPLS — это способ шифрования или туннелирования, как VPN.</div><div class="misc-right"><span class="misc-tag good">На деле</span>MPLS — это метод пересылки по меткам вместо разбора IP на каждом хопе; изоляция клиентов — лишь одно из применений поверх MPLS, а не суть самой технологии.</div></div><div class="misc-card" id="misc-mplsbase-1"><div class="misc-wrong"><span class="misc-tag bad">Кажется</span>Метка MPLS остаётся неизменной от начала до конца пути.</div><div class="misc-right"><span class="misc-tag good">На деле</span>На каждом хопе метка заменяется (label swap) на новую, известную только соседнему роутеру — end-to-end метка не сохраняется.</div></div></div>
+  </section>
+  <section id="process">
+    <div class="section-head">
+      <div class="section-num">02 — ПРОЦЕСС</div>
+      <div class="section-title">Что происходит с меткой на каждом узле</div>
+      <p class="section-desc">Четыре шага — от входа в домен до выхода из него.</p>
+    </div>
+    <ul class="steps"><li class="step"><span class="step-num">1</span><span class="step-text"><b>Вход</b> — пакет без метки приходит на входной PE-роутер (ingress).</span></li><li class="step"><span class="step-num">2</span><span class="step-text"><b>Push</b> — PE добавляет метку, соответствующую нужному FEC/<a class="term-link" href="#gloss-mplsbase-0" title="Label Switched Path — путь через MPLS-домен, по которому коммутируется определённая метка/FEC.">LSP</a>.</span></li><li class="step"><span class="step-num">3</span><span class="step-text"><b>Swap</b> — каждый транзитный P-роутер меняет метку на локально значимую, не заглядывая в IP.</span></li><li class="step"><span class="step-num">4</span><span class="step-text"><b>Pop</b> — выходной узел снимает метку, дальше пакет идёт как обычный IP.</span></li></ul>
+  </section>
+  <section id="glossary">
+    <div class="section-head">
+      <div class="section-num">03 — ГЛОССАРИЙ</div>
+      <div class="section-title">Термины модуля</div>
+      <p class="section-desc">Короткий справочник — можно оставить открытым рядом с CLI.</p>
+    </div>
+    <div class="glossary-grid"><div class="gloss-item" id="gloss-mplsbase-0"><div class="gloss-term">LSP</div><div class="gloss-def">Label Switched Path — путь через MPLS-домен, по которому коммутируется определённая метка/FEC.</div></div><div class="gloss-item" id="gloss-mplsbase-1"><div class="gloss-term">LFIB</div><div class="gloss-def">Label Forwarding Information Base — таблица пересылки по меткам, аналог таблицы маршрутизации.</div></div><div class="gloss-item" id="gloss-mplsbase-2"><div class="gloss-term">Ingress / Egress PE</div><div class="gloss-def">Входной и выходной провайдерский роутер MPLS-домена, где пакет получает и теряет метку.</div></div><div class="gloss-item" id="gloss-mplsbase-3"><div class="gloss-term">P-роутер (core)</div><div class="gloss-def">Транзитный роутер внутри MPLS-домена, который видит только метки, не сервисные детали клиента.</div></div><div class="gloss-item" id="gloss-mplsbase-4"><div class="gloss-term">TTL в MPLS</div><div class="gloss-def">У метки тоже есть поле TTL, убывающее на каждом хопе — нужно для traceroute и защиты от петель.</div></div><div class="gloss-item" id="gloss-mplsbase-5"><div class="gloss-term">EXP / Traffic Class</div><div class="gloss-def">Биты в MPLS-заголовке, несущие QoS-маркировку метки (аналог DSCP на уровне метки).</div></div><div class="gloss-item" id="gloss-mplsbase-6"><div class="gloss-term">RSVP-TE</div><div class="gloss-def">Альтернативный LDP протокол распределения меток, умеющий резервировать полосу и явно задавать путь.</div></div><div class="gloss-item" id="gloss-mplsbase-7"><div class="gloss-term">Penultimate Hop</div><div class="gloss-def">Предпоследний роутер на LSP — тот, что делает PHP перед egress PE.</div></div></div>
+  </section>
+  <section id="quiz">
+    <div class="section-head">
+      <div class="section-num">04 — ПРОВЕРКА</div>
+      <div class="section-title">Квиз (5 вопросов)</div>
+      <p class="section-desc">Без подвохов — если теория выше прочитана, займёт минуту.</p>
+    </div>
+    <div class="quiz" data-quiz="mplsbase" data-module="mplsbase" data-correct="1,1,1,1,1">
+      <div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">1</span>Что происходит на транзитном P-роутере с меткой пакета?</div><div class="quiz-options" data-q="0"><label class="quiz-opt"><input type="radio" name="mplsbase-q0" value="0"> Метка снимается полностью</label><label class="quiz-opt"><input type="radio" name="mplsbase-q0" value="1"> Метка заменяется (swap) на новую, локально значимую</label><label class="quiz-opt"><input type="radio" name="mplsbase-q0" value="2"> К метке добавляется вторая метка</label><label class="quiz-opt"><input type="radio" name="mplsbase-q0" value="3"> P-роутер разбирает IP-заголовок вместо работы с меткой</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">2</span>Зачем нужен PHP (Penultimate Hop Popping)?</div><div class="quiz-options" data-q="1"><label class="quiz-opt"><input type="radio" name="mplsbase-q1" value="0"> Чтобы ускорить работу core-роутеров</label><label class="quiz-opt"><input type="radio" name="mplsbase-q1" value="1"> Чтобы предпоследний узел снял метку заранее и egress PE не делал двойной разбор</label><label class="quiz-opt"><input type="radio" name="mplsbase-q1" value="2"> Чтобы добавить вторую метку в стек</label><label class="quiz-opt"><input type="radio" name="mplsbase-q1" value="3"> Чтобы защитить трафик от петель</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">3</span>Что такое FEC?</div><div class="quiz-options" data-q="2"><label class="quiz-opt"><input type="radio" name="mplsbase-q2" value="0"> Таблица MAC-адресов</label><label class="quiz-opt"><input type="radio" name="mplsbase-q2" value="1"> Группа пакетов, обрабатываемых одинаково и привязанных к одной метке/пути</label><label class="quiz-opt"><input type="radio" name="mplsbase-q2" value="2"> Протокол распределения меток</label><label class="quiz-opt"><input type="radio" name="mplsbase-q2" value="3"> Формат MPLS-заголовка</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">4</span>Для чего нужен LDP?</div><div class="quiz-options" data-q="3"><label class="quiz-opt"><input type="radio" name="mplsbase-q3" value="0"> Для шифрования MPLS-трафика</label><label class="quiz-opt"><input type="radio" name="mplsbase-q3" value="1"> Для автоматического согласования меток между соседними MPLS-роутерами</label><label class="quiz-opt"><input type="radio" name="mplsbase-q3" value="2"> Для расчёта BGP best-path</label><label class="quiz-opt"><input type="radio" name="mplsbase-q3" value="3"> Для трансляции адресов</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">5</span>Чем RSVP-TE отличается от LDP?</div><div class="quiz-options" data-q="4"><label class="quiz-opt"><input type="radio" name="mplsbase-q4" value="0"> RSVP-TE не поддерживает метки</label><label class="quiz-opt"><input type="radio" name="mplsbase-q4" value="1"> RSVP-TE умеет резервировать полосу и явно задавать путь, LDP — нет</label><label class="quiz-opt"><input type="radio" name="mplsbase-q4" value="2"> LDP всегда работает быстрее RSVP-TE</label><label class="quiz-opt"><input type="radio" name="mplsbase-q4" value="3"> RSVP-TE используется только для VPN L2</label></div></div>
+      <div class="quiz-footer">
+        <button type="button" class="btn quiz-check">Проверить результат</button>
+        <button type="button" class="btn secondary quiz-reset">Сбросить</button>
+        <span class="quiz-score"></span>
+      </div>
+    </div>
+  </section>
+  <section id="related">
+    <div class="section-head">
+      <div class="section-num">— СВЯЗАННЫЕ ТЕМЫ</div>
+      <div class="section-title">Куда это ведёт дальше</div>
+      <p class="section-desc">Эти модули опираются на то, что вы только что прочитали, или используются вместе с этим.</p>
+    </div>
+    <div class="related-grid"><a class="related-card" href="l3vpn.html"><div class="related-card-chapter">Гл. 11</div><div class="related-card-title">MPLS L3VPN</div><div class="related-card-sub">VRF изолирует таблицу маршрутов клиента от остальных на одном и том же физическом PE. MP-B…</div></a><a class="related-card" href="l2vpn.html"><div class="related-card-chapter">Гл. 12</div><div class="related-card-title">MPLS L2VPN</div><div class="related-card-sub">VPWS и VPLS переносят Ethernet-кадры клиента через MPLS core прозрачно — для CE это выгляд…</div></a><a class="related-card" href="mplste.html"><div class="related-card-chapter">Гл. 13</div><div class="related-card-title">MPLS Traffic Engineering</div><div class="related-card-sub">Обычная маршрутизация выбирает путь по метрике IGP, не глядя на загрузку линков. MPLS TE р…</div></a></div>
+  </section>
+  <div class="module-nav"><a class="module-nav-link prev" href="multicast.html"><div class="module-nav-dir">← Предыдущий</div><div class="module-nav-title">Multicast-рассылка</div></a><a class="module-nav-link next" href="l3vpn.html"><div class="module-nav-dir">Следующий →</div><div class="module-nav-title">MPLS L3VPN</div></a></div>
+  <div class="footer">
+    <div class="feedback-panel">
+      <h3>Модуль 11 из 18</h3>
+      <p>Результат квиза сохраняется локально в браузере — прогресс виден в верхнем меню и на главной странице.</p>
+    </div>
+  </div>
+</div>
+<script src="../assets/app.js"></script>
+</body>
+</html>

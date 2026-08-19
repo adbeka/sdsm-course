@@ -1,0 +1,188 @@
+{
+  "id": "l2vpn",
+  "order": 12,
+  "group": "mpls",
+  "tab_label": "MPLS L2VPN",
+  "title_html": "MPLS L2VPN: <span>кабель</span>, которого физически нет",
+  "subtitle": "VPWS и VPLS переносят Ethernet-кадры клиента через MPLS core прозрачно — для CE это выглядит как обычный провод или коммутатор, а не как сеть провайдера.",
+  "meta": {
+    "ИСТОЧНИК": "linkmeup / СДСМ, гл. 12",
+    "ФОРМАТ": "теория + схема + квиз",
+    "ВРЕМЯ": "~11 минут"
+  },
+  "diagram": {
+    "label": "Ethernet-кадр через pseudowire",
+    "svg_html": "<svg class=\"path-svg\" viewbox=\"0 0 860 140\" xmlns=\"http://www.w3.org/2000/svg\">\n<path class=\"link-line\" d=\"M 40,80 L 300,80 L 560,80 L 820,80\"></path>\n<circle class=\"pulse-bgp\" fill=\"#D97706\" r=\"5\"></circle>\n<circle cx=\"40\" cy=\"80\" fill=\"#475569\" r=\"7\"></circle>\n<text class=\"node-id\" text-anchor=\"middle\" x=\"40\" y=\"55\">CE1</text>\n<circle cx=\"300\" cy=\"80\" fill=\"#0D9488\" r=\"7\"></circle>\n<text class=\"node-id self\" text-anchor=\"middle\" x=\"300\" y=\"55\">PE1</text>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"300\" y=\"108\">pseudowire</text>\n<circle cx=\"560\" cy=\"80\" fill=\"#475569\" r=\"7\"></circle>\n<text class=\"node-id\" text-anchor=\"middle\" x=\"560\" y=\"55\">MPLS core</text>\n<circle cx=\"820\" cy=\"80\" fill=\"#0D9488\" r=\"7\"></circle>\n<text class=\"node-id self\" text-anchor=\"middle\" x=\"820\" y=\"55\">PE2 → CE2</text>\n</svg>",
+    "caption": "Для CE1 и CE2 это выглядит как один прямой канал — они не видят и не должны видеть, что внутри MPLS core.",
+    "readout": {
+      "kind": "plain",
+      "lines": [
+        "Ethernet-кадр от CE1, как есть",
+        "PE1 заворачивает кадр в pseudowire (VC-метка + транспортная)",
+        "MPLS core коммутирует по меткам, не разбирая Ethernet внутри",
+        "PE2 снимает метки, кадр приходит на CE2 таким же, каким был"
+      ]
+    }
+  },
+  "theory": {
+    "title": "Из чего состоит решение L2VPN",
+    "desc": "Шесть понятий — от VPWS до EVPN, который постепенно вытесняет VPLS.",
+    "cards": [
+      {
+        "title": "VPWS",
+        "body_html": "Virtual Private Wire Service — точка-точка: имитирует один выделенный кабель между двумя CE, без коммутации между несколькими клиентами."
+      },
+      {
+        "title": "VPLS",
+        "body_html": "Virtual Private LAN Service — точка-многоточка: PE ведут себя как виртуальный коммутатор, объединяя несколько CE в один общий L2-домен поверх MPLS."
+      },
+      {
+        "title": "Pseudowire",
+        "body_html": "Логический канал через MPLS core, эмулирующий определённый L2-сервис (обычно Ethernet) между двумя PE."
+      },
+      {
+        "title": "VC Label",
+        "body_html": "Virtual Circuit метка — внутренняя метка pseudowire, которая говорит PE, к какому именно сервису/клиенту относится кадр."
+      },
+      {
+        "title": "H-VPLS",
+        "body_html": "Hierarchical VPLS — иерархическая версия с разделением на access- и core-уровень, чтобы не городить full-mesh pseudowire между всеми PE напрямую."
+      },
+      {
+        "title": "MAC learning в VPLS",
+        "body_html": "Так как VPLS эмулирует коммутатор, PE учат MAC-адреса клиентов так же, как обычный L2-коммутатор — только через pseudowire вместо физических портов."
+      }
+    ],
+    "tldr": "Проще говоря: вместо IP VPN провайдер просто перекидывает клиенту Ethernet-кадры через свою MPLS-сеть — как будто это один длинный провод."
+  },
+  "process": {
+    "title": "Что происходит с Ethernet-кадром по дороге",
+    "desc": "Четыре шага — от CE1 до появления в исходном виде на CE2.",
+    "steps": [
+      {
+        "num": "1",
+        "body_html": "<b>Приём</b> — Ethernet-кадр от CE1 приходит на PE1 без изменений."
+      },
+      {
+        "num": "2",
+        "body_html": "<b>Инкапсуляция</b> — PE1 добавляет VC-метку (сервис) и транспортную метку (путь до PE2)."
+      },
+      {
+        "num": "3",
+        "body_html": "<b>Транзит</b> — MPLS core коммутирует пакет по меткам, не заглядывая внутрь Ethernet."
+      },
+      {
+        "num": "4",
+        "body_html": "<b>Деинкапсуляция</b> — PE2 снимает обе метки и отдаёт кадр на CE2 в исходном виде."
+      }
+    ]
+  },
+  "glossary": [
+    {
+      "term": "CE",
+      "def_html": "Customer Edge — граничное устройство клиента, не знающее, что внутри MPLS VPN, а не выделенный кабель."
+    },
+    {
+      "term": "Attachment Circuit",
+      "def_html": "Физический или логический интерфейс на PE, через который CE подключается к pseudowire."
+    },
+    {
+      "term": "Multi-homing (VPLS)",
+      "def_html": "Подключение CE к двум и более PE для резервирования — требует механизма выбора активного пути."
+    },
+    {
+      "term": "Split Horizon (VPLS)",
+      "def_html": "Правило \"не отправлять кадр обратно туда, откуда он пришёл по pseudowire\" — защита от петель без STP между PE."
+    },
+    {
+      "term": "Targeted LDP",
+      "def_html": "Сессия LDP, устанавливаемая не с прямым соседом, а с удалённым PE специально для сигнализации pseudowire."
+    },
+    {
+      "term": "QinQ",
+      "def_html": "Двойное тегирование VLAN (802.1ad), часто используется на стыке с VPLS, чтобы пронести VLAN клиента внутри VLAN провайдера."
+    },
+    {
+      "term": "EVPN",
+      "def_html": "Более новая технология, постепенно вытесняющая VPLS: использует BGP для MAC learning вместо data-plane флуда."
+    },
+    {
+      "term": "Full-mesh pseudowire",
+      "def_html": "Топология, при которой каждый PE напрямую соединён pseudowire с каждым другим — быстро растёт по числу сессий с ростом числа PE."
+    }
+  ],
+  "quiz": {
+    "slug": "l2vpn",
+    "correct": [
+      0,
+      1,
+      1,
+      0,
+      1
+    ],
+    "questions": [
+      {
+        "q": "Чем VPWS отличается от VPLS?",
+        "options": [
+          "VPWS — точка-точка, VPLS — точка-многоточка (эмулирует коммутатор)",
+          "VPWS работает только с IP, VPLS — с Ethernet",
+          "VPLS не использует MPLS core",
+          "VPWS требует BGP, VPLS — нет"
+        ]
+      },
+      {
+        "q": "Что делает VC Label?",
+        "options": [
+          "Определяет путь через MPLS core",
+          "Говорит PE, к какому сервису/клиенту относится кадр внутри pseudowire",
+          "Шифрует Ethernet-кадр",
+          "Заменяет собой MAC-адрес"
+        ]
+      },
+      {
+        "q": "Зачем нужен Split Horizon в VPLS?",
+        "options": [
+          "Чтобы ускорить MAC learning",
+          "Чтобы не отправлять кадр обратно туда, откуда он пришёл по pseudowire",
+          "Чтобы шифровать pseudowire",
+          "Чтобы объединить несколько VLAN"
+        ]
+      },
+      {
+        "q": "Зачем нужен H-VPLS?",
+        "options": [
+          "Чтобы избежать full-mesh pseudowire между всеми PE напрямую",
+          "Чтобы добавить шифрование в VPLS",
+          "Чтобы заменить MPLS core на обычный IP",
+          "Чтобы работать без CE"
+        ]
+      },
+      {
+        "q": "Что для CE выглядит результатом работы L2VPN?",
+        "options": [
+          "Видимая топология MPLS core провайдера",
+          "Обычный выделенный кабель или коммутатор, без знания об MPLS внутри",
+          "Список VRF провайдера",
+          "BGP-сессия с провайдером"
+        ]
+      }
+    ]
+  },
+  "media": {
+    "video_url": "https://www.youtube.com/watch?v=k7H8fBvSKZ0"
+  },
+  "misconceptions": [
+    {
+      "wrong": "L2VPN и L3VPN — просто разные названия одной и той же услуги.",
+      "right": "L2VPN передаёт кадры Ethernet как есть (клиент сам маршрутизирует у себя), L3VPN — провайдер участвует в маршрутизации клиента через VRF."
+    },
+    {
+      "wrong": "VPLS создаёт туннели между каждой парой PE вручную.",
+      "right": "VPLS автоматически строит full-mesh псевдопроводов между PE, эмулируя один большой коммутатор — вручную конфигурировать каждую пару не нужно."
+    }
+  ],
+  "related": [
+    "mplsbase",
+    "evpn"
+  ]
+}

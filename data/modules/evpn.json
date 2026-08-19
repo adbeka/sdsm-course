@@ -1,0 +1,185 @@
+{
+  "id": "evpn",
+  "order": 13,
+  "group": "mpls",
+  "tab_label": "EVPN",
+  "title_html": "EVPN: <span>BGP вместо флуда</span> для изучения MAC",
+  "subtitle": "VPLS учит MAC-адреса флудом неизвестного трафика в data plane. EVPN переносит эту задачу в control plane через BGP — MAC-адреса анонсируются как обычные маршруты, а не выясняются флудом.",
+  "meta": {
+    "ИСТОЧНИК": "linkmeup / СДСМ, гл. 12.1",
+    "ФОРМАТ": "теория + схема + квиз",
+    "ВРЕМЯ": "~11 минут"
+  },
+  "diagram": {
+    "label": "MAC-адрес анонсируется до прихода трафика",
+    "svg_html": "<svg class=\"path-svg\" viewbox=\"0 0 860 140\" xmlns=\"http://www.w3.org/2000/svg\">\n<path class=\"link-line\" d=\"M 40,80 L 300,80 L 560,80 L 820,80\"></path>\n<circle class=\"pulse-bgp\" fill=\"#D97706\" r=\"5\"></circle>\n<circle cx=\"40\" cy=\"80\" fill=\"#475569\" r=\"7\"></circle>\n<text class=\"node-id\" text-anchor=\"middle\" x=\"40\" y=\"55\">CE1</text>\n<circle cx=\"300\" cy=\"80\" fill=\"#0D9488\" r=\"7\"></circle>\n<text class=\"node-id self\" text-anchor=\"middle\" x=\"300\" y=\"55\">PE1</text>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"300\" y=\"108\">MAC via BGP</text>\n<circle cx=\"560\" cy=\"80\" fill=\"#475569\" r=\"7\"></circle>\n<text class=\"node-id\" text-anchor=\"middle\" x=\"560\" y=\"55\">MPLS/IP core</text>\n<circle cx=\"820\" cy=\"80\" fill=\"#0D9488\" r=\"7\"></circle>\n<text class=\"node-id self\" text-anchor=\"middle\" x=\"820\" y=\"55\">PE2</text>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"820\" y=\"108\">MAC via BGP</text>\n</svg>",
+    "caption": "В VPLS этот же результат достигался бы флудом неизвестного unicast — здесь PE узнаёт о MAC заранее, через маршрутную рекламу.",
+    "readout": {
+      "kind": "plain",
+      "lines": [
+        "CE1 отправляет кадр, PE1 узнаёт его MAC локально",
+        "PE1 анонсирует MAC через BGP (Route Type 2), не ждёт флуда",
+        "PE2 получает MAC-анонс заранее, до прихода первого кадра",
+        "Трафик к этому MAC идёт сразу по известному пути, без learning-флуда"
+      ]
+    }
+  },
+  "theory": {
+    "title": "Из чего состоит решение EVPN",
+    "desc": "Шесть понятий — от проблемы VPLS до EVPN как замены L3VPN.",
+    "cards": [
+      {
+        "title": "Проблема VPLS",
+        "body_html": "VPLS учит MAC-адреса классическим data-plane флудом неизвестного трафика — при росте сети это создаёт лишнюю нагрузку и медленную сходимость."
+      },
+      {
+        "title": "EVPN control plane",
+        "body_html": "MAC-адреса (и опционально IP) анонсируются через MP-BGP как обычные маршруты — соседние PE узнают о них заранее, а не выясняют флудом."
+      },
+      {
+        "title": "Route Type 2",
+        "body_html": "MAC/IP Advertisement Route — основной тип маршрута EVPN, которым PE анонсирует конкретный MAC (и его IP) остальным PE."
+      },
+      {
+        "title": "Route Type 3",
+        "body_html": "Inclusive Multicast Route — используется для доставки BUM-трафика (broadcast/unknown-unicast/multicast) через дерево или ingress replication."
+      },
+      {
+        "title": "ESI и Route Type 1",
+        "body_html": "Ethernet Segment Identifier идентифицирует сегмент, к которому CE подключён через несколько PE; Route Type 1 сигнализирует об этом остальным."
+      },
+      {
+        "title": "EVPN как L3VPN",
+        "body_html": "EVPN умеет переносить не только MAC, но и IP-маршруты (IRB) — фактически объединяя L2VPN и L3VPN в одной технологии."
+      }
+    ],
+    "tldr": "Проще говоря: EVPN анонсирует MAC- и IP-адреса через BGP как обычные маршруты — это быстрее и надёжнее, чем старое обучение адресов флудом."
+  },
+  "process": {
+    "title": "Как PE узнаёт чужой MAC заранее",
+    "desc": "Четыре шага — от локального обучения до готового пути на удалённом PE.",
+    "steps": [
+      {
+        "num": "1",
+        "body_html": "<b>Локальное обучение</b> — PE1 узнаёт MAC-адрес хоста за CE1 обычным способом."
+      },
+      {
+        "num": "2",
+        "body_html": "<b>BGP-анонс</b> — PE1 анонсирует этот MAC через Route Type 2 остальным PE."
+      },
+      {
+        "num": "3",
+        "body_html": "<b>Заблаговременное получение</b> — PE2 заносит MAC в таблицу до прихода трафика."
+      },
+      {
+        "num": "4",
+        "body_html": "<b>Без флуда</b> — трафик к этому MAC сразу идёт по известному пути."
+      }
+    ]
+  },
+  "glossary": [
+    {
+      "term": "EVI",
+      "def_html": "EVPN Instance — аналог VPN-instance в VPLS, идентифицирует конкретный L2VPN-сервис в EVPN."
+    },
+    {
+      "term": "ESI",
+      "def_html": "Ethernet Segment Identifier — идентификатор сегмента при multihomed-подключении CE к нескольким PE."
+    },
+    {
+      "term": "BUM-трафик",
+      "def_html": "Broadcast, Unknown-unicast, Multicast — трафик, требующий доставки на все PE сервиса, а не по конкретному MAC."
+    },
+    {
+      "term": "DF",
+      "def_html": "Designated Forwarder — PE, выбранный ответственным за пересылку BUM-трафика на multihomed-сегмент, чтобы не было дублей."
+    },
+    {
+      "term": "Aliasing",
+      "def_html": "Механизм, позволяющий распределять трафик к multihomed MAC между несколькими PE, а не слать его только через один."
+    },
+    {
+      "term": "MAC Mass Withdrawal",
+      "def_html": "Быстрый отзыв сразу всех MAC-адресов, анонсированных через упавший ESI, вместо ожидания таймаута по каждому отдельно."
+    },
+    {
+      "term": "IRB",
+      "def_html": "Integrated Routing and Bridging — механизм, позволяющий маршрутизировать между bridge-доменами прямо на PE в рамках EVPN."
+    },
+    {
+      "term": "Route Type 4",
+      "def_html": "Ethernet Segment Route — используется для автоматического обнаружения других PE на том же multihomed-сегменте и выбора DF."
+    }
+  ],
+  "quiz": {
+    "slug": "evpn",
+    "correct": [
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "questions": [
+      {
+        "q": "В чём главное отличие EVPN от VPLS в изучении MAC?",
+        "options": [
+          "EVPN вообще не учит MAC-адреса",
+          "EVPN анонсирует MAC через BGP вместо флуда в data plane",
+          "EVPN использует только IGMP для этого",
+          "Отличий нет, это просто новое название VPLS"
+        ]
+      },
+      {
+        "q": "Что переносит Route Type 2?",
+        "options": [
+          "Информацию о multihomed-сегменте",
+          "Конкретный MAC-адрес (и опционально IP)",
+          "BUM-трафик целиком",
+          "Список всех PE в домене"
+        ]
+      },
+      {
+        "q": "Зачем нужен DF (Designated Forwarder)?",
+        "options": [
+          "Чтобы шифровать EVPN-трафик",
+          "Чтобы избежать дублирования BUM-трафика на multihomed-сегменте",
+          "Чтобы выбрать RP для multicast",
+          "Чтобы агрегировать MAC-адреса"
+        ]
+      },
+      {
+        "q": "Что даёт MAC Mass Withdrawal?",
+        "options": [
+          "Постепенное устаревание MAC по таймауту",
+          "Быстрый отзыв всех MAC-адресов упавшего ESI сразу",
+          "Автоматическое шифрование MAC-таблицы",
+          "Слияние двух EVI в один"
+        ]
+      },
+      {
+        "q": "Что делает IRB в контексте EVPN?",
+        "options": [
+          "Изолирует L2-домены друг от друга полностью",
+          "Позволяет маршрутизировать между bridge-доменами прямо на PE",
+          "Заменяет собой BGP",
+          "Отвечает только за multicast"
+        ]
+      }
+    ]
+  },
+  "misconceptions": [
+    {
+      "wrong": "EVPN — это просто новая версия VPLS с другим названием.",
+      "right": "EVPN использует BGP control-plane для анонса MAC/IP адресов вместо data-plane обучения флудом — это устраняет unknown-unicast флудинг и ускоряет конвергенцию."
+    },
+    {
+      "wrong": "В EVPN, как и в VPLS, MAC-адреса узнаются только через флуд.",
+      "right": "В EVPN MAC (и IP) анонсируются через MP-BGP как обычные маршруты — узнавание активное, а не пассивное."
+    }
+  ],
+  "related": [
+    "l2vpn",
+    "evpnmh"
+  ]
+}
