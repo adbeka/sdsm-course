@@ -6,6 +6,7 @@ template plus a home dashboard, and writes plain static HTML/CSS/JS to
 dist/. No runtime dependencies in the output; Python (stdlib only, this
 script) is only needed to build.
 """
+import html
 import json
 import re
 import shutil
@@ -48,6 +49,12 @@ def build_search_index(modules):
             "type": "module", "title": m["tab_label"], "module": m["tab_label"],
             "snippet": m["subtitle"], "url": f'modules/{m["id"]}.html',
         })
+        if m.get("cli_example"):
+            index.append({
+                "type": "cli", "title": m["cli_example"]["label"], "module": m["tab_label"],
+                "snippet": m["cli_example"].get("note", ""),
+                "url": f'modules/{m["id"]}.html#cli',
+            })
         for i, g in enumerate(m["glossary"]):
             index.append({
                 "type": "term", "title": g["term"], "module": m["tab_label"],
@@ -149,7 +156,7 @@ def load_modules():
     return mods
 
 
-def topnav_html(modules, active_id=None, depth="../", show_section_links=True, has_media=False):
+def topnav_html(modules, active_id=None, depth="../", show_section_links=True, has_media=False, has_cli=False):
     groups = {}
     for m in modules:
         groups.setdefault(m["group"], []).append(m)
@@ -178,9 +185,10 @@ def topnav_html(modules, active_id=None, depth="../", show_section_links=True, h
     section_links = ""
     if show_section_links:
         media_link = '<a href="#media">Видео</a>' if has_media else ""
+        cli_link = '<a href="#cli">CLI</a>' if has_cli else ""
         section_links = ('<div class="topnav-links">'
                           '<a href="#theory">Теория</a><a href="#process">Схема</a>'
-                          f'{media_link}'
+                          f'{media_link}{cli_link}'
                           '<a href="#glossary">Глоссарий</a><a href="#quiz">Квиз</a></div>')
 
     return f'''<nav class="topnav">
@@ -390,6 +398,29 @@ def related_section(m, modules_by_id):
   </section>'''
 
 
+def cli_section(m):
+    cli = m.get("cli_example")
+    if not cli:
+        return ""
+    code = html.escape(cli["code"])
+    note_html = f'<p class="cli-note">{cli["note"]}</p>' if cli.get("note") else ""
+    return f'''<section id="cli">
+    <div class="section-head">
+      <div class="section-num">— ПРИМЕР</div>
+      <div class="section-title">CLI-пример</div>
+      <p class="section-desc">Готовый конфиг для копирования — синтаксис Cisco IOS, адаптируйте под свою схему адресации.</p>
+    </div>
+    <div class="cli-panel">
+      <div class="cli-header">
+        <span class="cli-label">{cli["label"]}</span>
+        <button type="button" class="cli-copy" data-copy-target="cli-code-{m["id"]}">Копировать</button>
+      </div>
+      <pre class="cli-code" id="cli-code-{m["id"]}"><code>{code}</code></pre>
+    </div>
+    {note_html}
+  </section>'''
+
+
 def module_nav(modules, m):
     idx = next(i for i, x in enumerate(modules) if x["id"] == m["id"])
     parts = []
@@ -430,7 +461,8 @@ def page_shell(title, body, depth="../"):
 def render_module(m, modules):
     media = m.get("media") or {}
     has_media = bool(media.get("video_url") or media.get("images"))
-    nav = topnav_html(modules, active_id=m["id"], depth="../", has_media=has_media)
+    has_cli = bool(m.get("cli_example"))
+    nav = topnav_html(modules, active_id=m["id"], depth="../", has_media=has_media, has_cli=has_cli)
     breadcrumb = breadcrumb_html(m, depth="../")
     body = f'''{nav}
 <div class="wrap">
@@ -456,6 +488,7 @@ def render_module(m, modules):
   {theory_section(m)}
   {misconceptions_section(m)}
   {process_section(m)}
+  {cli_section(m)}
   {glossary_section(m)}
   {quiz_section(m)}
   {related_section(m, {x["id"]: x for x in modules})}

@@ -11,18 +11,18 @@
 <nav class="topnav">
   <div class="topnav-inner">
     <a class="topnav-brand" href="../index.html">СДСМ · <b>учебный портал</b>
-      <span class="topnav-progress-pill"><span class="val">0/18</span></span>
+      <span class="topnav-progress-pill"><span class="val">0/20</span></span>
     </a>
     <div class="nav-groups"><div class="nav-group">
       <button type="button" class="nav-group-trigger">Основы
         <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/planning.html" data-progress-id="planning">Планирование сети<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ciscoconn.html" data-progress-id="ciscoconn">Подключение к оборудованию<span class="tab-check"></span></a></div>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/planning.html" data-progress-id="planning">Планирование сети<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ciscoconn.html" data-progress-id="ciscoconn">Подключение к оборудованию<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/portup.html" data-progress-id="portup">Поднятие порта<span class="tab-check"></span></a></div>
     </div><div class="nav-group">
       <button type="button" class="nav-group-trigger">Коммутация L2
         <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vlan.html" data-progress-id="vlan">VLAN и коммутация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/stp.html" data-progress-id="stp">STP: защита от петель<span class="tab-check"></span></a></div>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vlan.html" data-progress-id="vlan">VLAN и коммутация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/lag.html" data-progress-id="lag">LAG / EtherChannel<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/stp.html" data-progress-id="stp">STP: защита от петель<span class="tab-check"></span></a></div>
     </div><div class="nav-group">
       <button type="button" class="nav-group-trigger">Маршрутизация L3
         <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -48,7 +48,7 @@
     <button type="button" class="search-trigger" aria-label="Поиск по сайту">
       <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
     </button>
-    <div class="topnav-links"><a href="#theory">Теория</a><a href="#process">Схема</a><a href="#glossary">Глоссарий</a><a href="#quiz">Квиз</a></div>
+    <div class="topnav-links"><a href="#theory">Теория</a><a href="#process">Схема</a><a href="#cli">CLI</a><a href="#glossary">Глоссарий</a><a href="#quiz">Квиз</a></div>
   </div>
 </nav>
 <div class="search-overlay">
@@ -64,7 +64,7 @@
 <div class="wrap">
   <div class="breadcrumb"><a href="../index.html">Главная</a><span class="sep">/</span><span>MPLS и провайдерские сервисы</span><span class="sep">/</span><span class="current">EVPN</span></div>
   <section class="hero">
-    <div class="eyebrow">Модуль 14 из 18 · теория + схема + квиз</div>
+    <div class="eyebrow">Модуль 16 из 20 · теория + схема + квиз</div>
     <h1>EVPN: <span>BGP вместо флуда</span> для изучения MAC</h1>
     <p class="hero-sub">VPLS учит MAC-адреса флудом неизвестного трафика в data plane. EVPN переносит эту задачу в control plane через BGP — MAC-адреса анонсируются как обычные маршруты, а не выясняются флудом.</p>
     <div class="hero-meta">
@@ -119,6 +119,26 @@
     </div>
     <ul class="steps"><li class="step"><span class="step-num">1</span><span class="step-text"><b>Локальное обучение</b> — PE1 узнаёт MAC-адрес хоста за CE1 обычным способом.</span></li><li class="step"><span class="step-num">2</span><span class="step-text"><b>BGP-анонс</b> — PE1 анонсирует этот MAC через Route Type 2 остальным PE.</span></li><li class="step"><span class="step-num">3</span><span class="step-text"><b>Заблаговременное получение</b> — PE2 заносит MAC в таблицу до прихода трафика.</span></li><li class="step"><span class="step-num">4</span><span class="step-text"><b>Без флуда</b> — трафик к этому MAC сразу идёт по известному пути.</span></li></ul>
   </section>
+  <section id="cli">
+    <div class="section-head">
+      <div class="section-num">— ПРИМЕР</div>
+      <div class="section-title">CLI-пример</div>
+      <p class="section-desc">Готовый конфиг для копирования — синтаксис Cisco IOS, адаптируйте под свою схему адресации.</p>
+    </div>
+    <div class="cli-panel">
+      <div class="cli-header">
+        <span class="cli-label">EVPN control-plane поверх MP-BGP</span>
+        <button type="button" class="cli-copy" data-copy-target="cli-code-evpn">Копировать</button>
+      </div>
+      <pre class="cli-code" id="cli-code-evpn"><code>Router(config)# l2vpn evpn
+Router(config-evpn)# router-id 10.0.0.1
+Router(config)# router bgp 65500
+Router(config-router)# address-family l2vpn evpn
+Router(config-router-af)# neighbor 10.0.0.2 activate
+Router# show bgp l2vpn evpn summary</code></pre>
+    </div>
+    <p class="cli-note">Без активации l2vpn evpn address-family соседи будут обмениваться обычными IPv4-маршрутами, а не MAC/IP-анонсами EVPN.</p>
+  </section>
   <section id="glossary">
     <div class="section-head">
       <div class="section-num">03 — ГЛОССАРИЙ</div>
@@ -153,7 +173,7 @@
   <div class="module-nav"><a class="module-nav-link prev" href="l2vpn.html"><div class="module-nav-dir">← Предыдущий</div><div class="module-nav-title">MPLS L2VPN</div></a><a class="module-nav-link next" href="evpnmh.html"><div class="module-nav-dir">Следующий →</div><div class="module-nav-title">EVPN Multihoming</div></a></div>
   <div class="footer">
     <div class="feedback-panel">
-      <h3>Модуль 14 из 18</h3>
+      <h3>Модуль 16 из 20</h3>
       <p>Результат квиза сохраняется локально в браузере — прогресс виден в верхнем меню и на главной странице.</p>
     </div>
   </div>

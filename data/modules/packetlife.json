@@ -1,6 +1,6 @@
 {
   "id": "packetlife",
-  "order": 16,
+  "order": 18,
   "group": "hardware",
   "tab_label": "Путь пакета",
   "title_html": "Packet Life: что <span>внутри коробки</span> происходит с пакетом",
@@ -180,5 +180,10 @@
   ],
   "related": [
     "qos"
-  ]
+  ],
+  "cli_example": {
+    "label": "Диагностика на уровне интерфейса и буферов",
+    "code": "Switch# show interfaces GigabitEthernet0/1 counters\nSwitch# show platform hardware qos interface GigabitEthernet0/1\nSwitch# show buffers",
+    "note": "Счётчики интерфейса и буферов — первое, что стоит проверить при подозрении на потери пакетов внутри самого коммутатора."
+  }
 }

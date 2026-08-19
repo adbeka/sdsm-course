@@ -59,15 +59,20 @@ it through one shared page template — content authors never touch HTML/CSS.
   "misconceptions": [                   // OPTIONAL — 2-3 items, rendered as "Кажется / На деле" cards right after Theory
     {"wrong": "common wrong belief, plain text", "right": "the correction, plain text"}
   ],
-  "related": ["ospf", "l3vpn", "multicast"]  // OPTIONAL — 2-3 other module ids, rendered as cards before the prev/next footer nav
+  "related": ["ospf", "l3vpn", "multicast"],  // OPTIONAL — 2-3 other module ids, rendered as cards before the prev/next footer nav
+  "cli_example": {                      // OPTIONAL — rendered as a dark terminal panel with a Copy button, between Process and Glossary
+    "label": "short heading for the block, e.g. 'Базовая настройка OSPF'",
+    "code": "raw multi-line CLI text, plain text — no markup, gets html-escaped at build time",
+    "note": "optional 1-sentence caption below the block"
+  }
 }
 ```
 
 **Auto-linked terms**: `theory.cards[].body_html` and `process.steps[].body_html` are run through `linkify_terms()` at build time — the *first* mention of one of that module's own `glossary` terms gets turned into a dotted-underline link (with the definition as a hover tooltip) pointing to that term's entry further down the same page. No authoring needed; it just works off whatever terms already exist in `glossary`. At most one link per text block, so it never turns a paragraph into a wall of links.
 
 Groups (top-nav dropdown sections, in this order):
-- `foundations` — План, CLI
-- `l2` — VLAN, STP
+- `foundations` — План, CLI, Поднятие порта
+- `l2` — VLAN, LAG / EtherChannel, STP
 - `l3` — Static, NAT, OSPF
 - `overlay` — VPN, BGP, Multicast
 - `mpls` — MPLS base, L3VPN, L2VPN, EVPN, EVPN-MH, MPLS TE

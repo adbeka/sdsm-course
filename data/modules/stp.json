@@ -1,6 +1,6 @@
 {
   "id": "stp",
-  "order": 4,
+  "order": 5,
   "group": "l2",
   "tab_label": "STP: защита от петель",
   "title_html": "STP: как <span>убить петлю</span>, не потеряв резерв",
@@ -184,5 +184,10 @@
   "related": [
     "vlan",
     "evpnmh"
-  ]
+  ],
+  "cli_example": {
+    "label": "RSTP, приоритет root и защита портов доступа",
+    "code": "SW1(config)# spanning-tree mode rapid-pvst\nSW1(config)# spanning-tree vlan 10 priority 4096\nSW1(config)# interface GigabitEthernet0/1\nSW1(config-if)# spanning-tree portfast\nSW1(config-if)# spanning-tree bpduguard enable\nSW1# show spanning-tree vlan 10",
+    "note": "portfast + bpduguard ставят только на портах доступа к хостам — не на межкоммутаторных линках."
+  }
 }

@@ -1,6 +1,6 @@
 {
   "id": "nat",
-  "order": 5,
+  "order": 7,
   "group": "l3",
   "tab_label": "ACL и NAT",
   "title_html": "NAT: <span>один публичный IP</span> на всех",
@@ -184,5 +184,10 @@
   "related": [
     "staticroute",
     "vpn"
-  ]
+  ],
+  "cli_example": {
+    "label": "PAT (NAT overload) для выхода в интернет",
+    "code": "Router(config)# access-list 1 permit 192.168.1.0 0.0.0.255\nRouter(config)# ip nat inside source list 1 interface GigabitEthernet0/0 overload\nRouter(config)# interface GigabitEthernet0/1\nRouter(config-if)# ip nat inside\nRouter(config)# interface GigabitEthernet0/0\nRouter(config-if)# ip nat outside\nRouter# show ip nat translations",
+    "note": "overload — это и есть PAT: много внутренних адресов транслируются в один внешний, различаясь портами."
+  }
 }

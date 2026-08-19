@@ -172,5 +172,10 @@
   "related": [
     "planning",
     "vlan"
-  ]
+  ],
+  "cli_example": {
+    "label": "Базовая настройка доступа к устройству",
+    "code": "Switch> enable\nSwitch# configure terminal\nSwitch(config)# hostname SW1\nSW1(config)# enable secret Cisco123\nSW1(config)# username admin secret StrongPass1\nSW1(config)# ip domain-name lab.local\nSW1(config)# crypto key generate rsa modulus 2048\nSW1(config)# line vty 0 4\nSW1(config-line)# transport input ssh\nSW1(config-line)# login local\nSW1(config-line)# exit\nSW1(config)# end\nSW1# write memory",
+    "note": "crypto key generate rsa обязателен для SSH — без ключей transport input ssh не заработает."
+  }
 }

@@ -1,6 +1,6 @@
 {
   "id": "qos",
-  "order": 17,
+  "order": 19,
   "group": "hardware",
   "tab_label": "QoS: приоритизация трафика",
   "title_html": "QoS: <span>кому достанется</span> первая очередь",
@@ -181,5 +181,10 @@
   "related": [
     "packetlife",
     "mplste"
-  ]
+  ],
+  "cli_example": {
+    "label": "Классификация голоса и приоритетная очередь",
+    "code": "Router(config)# class-map MATCH-VOICE\nRouter(config-cmap)# match dscp ef\nRouter(config)# policy-map WAN-OUT\nRouter(config-pmap)# class MATCH-VOICE\nRouter(config-pmap-c)# priority percent 20\nRouter(config)# interface GigabitEthernet0/0\nRouter(config-if)# service-policy output WAN-OUT",
+    "note": "priority — это low-latency очередь: трафик в ней обслуживается вне очереди, но с жёстким лимитом полосы (20% здесь), чтобы не задавить остальной трафик."
+  }
 }

@@ -232,9 +232,9 @@ h1 span{color:var(--teal);}
 .link-line.blocked{stroke-dasharray:5 5; stroke:#C7CEDA;}
 
 @keyframes travel-line{0%{offset-distance:0%; opacity:0;}3%{opacity:1;}97%{opacity:1;}100%{offset-distance:100%; opacity:0;}}
-.pulse-bgp{animation:travel-line 8s linear infinite;}
+.pulse-bgp{offset-path:path('M 40,80 L 300,80 L 560,80 L 820,80'); animation:travel-line 8s linear infinite;}
 @keyframes travel-ring{0%{offset-distance:0%; opacity:0;}3%{opacity:1;}72%{opacity:1;}75%{offset-distance:75%; opacity:0;}100%{offset-distance:75%; opacity:0;}}
-.pulse-stp{animation:travel-ring 6s linear infinite;}
+.pulse-stp{offset-path:path('M 430,30 L 780,150 L 430,270 L 80,150 Z'); animation:travel-ring 6s linear infinite;}
 
 @media (prefers-reduced-motion: reduce){
   .pulse-bgp, .pulse-stp{animation:none; opacity:0;}
@@ -375,6 +375,22 @@ section + section{border-top:1px solid var(--panel-border);}
 .related-card-chapter{font-family:var(--mono); font-size:10px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.05em;}
 .related-card-title{font-family:var(--mono); font-weight:600; font-size:14px; color:var(--text); margin-top:5px;}
 .related-card-sub{font-size:12.5px; color:var(--text-dim); margin-top:6px; line-height:1.5;}
+
+/* ---------------- CLI example ---------------- */
+.cli-panel{background:#0F1420; border-radius:14px; overflow:hidden; border:1px solid #232C3D;}
+.cli-header{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 16px; background:#161D2C; border-bottom:1px solid #232C3D;}
+.cli-label{font-family:var(--mono); font-size:12px; color:#9AA5BD;}
+.cli-copy{
+  font-family:var(--mono); font-size:11px; font-weight:600; color:#C3CAE0; background:#1E2637;
+  border:1px solid #2E3A52; border-radius:7px; padding:5px 11px; cursor:pointer; transition:all .15s ease;
+}
+.cli-copy:hover{color:#fff; border-color:#3D4C6B;}
+.cli-copy.copied{color:var(--good); border-color:var(--good);}
+.cli-code{
+  margin:0; padding:18px 20px; overflow-x:auto; font-family:var(--mono); font-size:13px;
+  line-height:1.65; color:#D5DCEE; white-space:pre;
+}
+.cli-note{margin-top:14px; font-size:13px; color:var(--text-dim); line-height:1.55;}
 
 /* ---------------- module footer nav ---------------- */
 .module-nav{display:flex; justify-content:space-between; gap:16px; padding:44px 0 8px; flex-wrap:wrap;}

@@ -1,6 +1,6 @@
 {
   "id": "bgp",
-  "order": 8,
+  "order": 10,
   "group": "overlay",
   "tab_label": "BGP: междоменная маршрутизация",
   "title_html": "BGP: <span>путь вектора</span>, а не карта сети",
@@ -193,5 +193,10 @@
     "ospf",
     "l3vpn",
     "multicast"
-  ]
+  ],
+  "cli_example": {
+    "label": "eBGP-сессия и анонс префикса",
+    "code": "Router(config)# router bgp 65500\nRouter(config-router)# neighbor 203.0.113.1 remote-as 9198\nRouter(config-router)# network 198.51.100.0 mask 255.255.255.0\nRouter(config-router)# neighbor 203.0.113.1 route-map SET-LP in\nRouter# show ip bgp summary",
+    "note": "network анонсирует префикс, только если он уже есть в таблице маршрутизации (или карте маршрутов) — BGP сам подсети не придумывает."
+  }
 }

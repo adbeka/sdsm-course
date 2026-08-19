@@ -1,6 +1,6 @@
 {
   "id": "vlan",
-  "order": 2,
+  "order": 3,
   "group": "l2",
   "tab_label": "VLAN и коммутация",
   "title_html": "Коммутация: <span>граница</span> широковещательного домена",
@@ -184,5 +184,10 @@
   "related": [
     "stp",
     "staticroute"
-  ]
+  ],
+  "cli_example": {
+    "label": "Access- и trunk-порты",
+    "code": "SW1(config)# vlan 10\nSW1(config-vlan)# name USERS\nSW1(config-vlan)# exit\nSW1(config)# interface GigabitEthernet0/1\nSW1(config-if)# switchport mode access\nSW1(config-if)# switchport access vlan 10\nSW1(config-if)# exit\nSW1(config)# interface GigabitEthernet0/24\nSW1(config-if)# switchport mode trunk\nSW1(config-if)# switchport trunk allowed vlan 10,20,30\nSW1(config-if)# switchport trunk native vlan 999",
+    "note": "native vlan лучше сознательно вынести на неиспользуемый VLAN (здесь 999) — это закрывает один из классических векторов VLAN hopping."
+  }
 }

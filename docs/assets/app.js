@@ -130,8 +130,8 @@
     });
   }
 
-  var TYPE_LABEL = {module: "Модуль", term: "Термин", theory: "Теория", misconception: "Заблуждение"};
-  var TYPE_RANK = {module: 0, term: 1, theory: 2, misconception: 3};
+  var TYPE_LABEL = {module: "Модуль", term: "Термин", theory: "Теория", misconception: "Заблуждение", cli: "CLI"};
+  var TYPE_RANK = {module: 0, term: 1, theory: 2, misconception: 3, cli: 4};
 
   function initSearch(){
     var trigger = document.querySelector(".search-trigger");
@@ -239,11 +239,49 @@
     });
   }
 
+  function initCliCopy(){
+    document.querySelectorAll(".cli-copy").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var target = document.getElementById(btn.dataset.copyTarget);
+        if (!target) return;
+        var text = target.textContent;
+        var done = function(){
+          var original = btn.textContent;
+          btn.textContent = "Скопировано ✓";
+          btn.classList.add("copied");
+          setTimeout(function(){
+            btn.textContent = original;
+            btn.classList.remove("copied");
+          }, 1600);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(text).then(done, function(){
+            fallbackCopy(text); done();
+          });
+        } else {
+          fallbackCopy(text); done();
+        }
+      });
+    });
+  }
+
+  function fallbackCopy(text){
+    var ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try{ document.execCommand("copy"); }catch(e){}
+    document.body.removeChild(ta);
+  }
+
   document.addEventListener("DOMContentLoaded", function(){
     document.querySelectorAll(".quiz").forEach(initQuiz);
     initNavGroups();
     initSearch();
     initGlossaryFilter();
+    initCliCopy();
     renderProgress();
   });
 })();

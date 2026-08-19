@@ -11,18 +11,18 @@
 <nav class="topnav">
   <div class="topnav-inner">
     <a class="topnav-brand" href="../index.html">СДСМ · <b>учебный портал</b>
-      <span class="topnav-progress-pill"><span class="val">0/18</span></span>
+      <span class="topnav-progress-pill"><span class="val">0/20</span></span>
     </a>
     <div class="nav-groups"><div class="nav-group">
       <button type="button" class="nav-group-trigger">Основы
         <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/planning.html" data-progress-id="planning">Планирование сети<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ciscoconn.html" data-progress-id="ciscoconn">Подключение к оборудованию<span class="tab-check"></span></a></div>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/planning.html" data-progress-id="planning">Планирование сети<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ciscoconn.html" data-progress-id="ciscoconn">Подключение к оборудованию<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/portup.html" data-progress-id="portup">Поднятие порта<span class="tab-check"></span></a></div>
     </div><div class="nav-group active">
       <button type="button" class="nav-group-trigger">Коммутация L2
         <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <div class="nav-group-menu"><a class="nav-group-item active" href="../modules/vlan.html" data-progress-id="vlan">VLAN и коммутация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/stp.html" data-progress-id="stp">STP: защита от петель<span class="tab-check"></span></a></div>
+      <div class="nav-group-menu"><a class="nav-group-item active" href="../modules/vlan.html" data-progress-id="vlan">VLAN и коммутация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/lag.html" data-progress-id="lag">LAG / EtherChannel<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/stp.html" data-progress-id="stp">STP: защита от петель<span class="tab-check"></span></a></div>
     </div><div class="nav-group">
       <button type="button" class="nav-group-trigger">Маршрутизация L3
         <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -48,7 +48,7 @@
     <button type="button" class="search-trigger" aria-label="Поиск по сайту">
       <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
     </button>
-    <div class="topnav-links"><a href="#theory">Теория</a><a href="#process">Схема</a><a href="#media">Видео</a><a href="#glossary">Глоссарий</a><a href="#quiz">Квиз</a></div>
+    <div class="topnav-links"><a href="#theory">Теория</a><a href="#process">Схема</a><a href="#media">Видео</a><a href="#cli">CLI</a><a href="#glossary">Глоссарий</a><a href="#quiz">Квиз</a></div>
   </div>
 </nav>
 <div class="search-overlay">
@@ -64,7 +64,7 @@
 <div class="wrap">
   <div class="breadcrumb"><a href="../index.html">Главная</a><span class="sep">/</span><span>Коммутация L2</span><span class="sep">/</span><span class="current">VLAN и коммутация</span></div>
   <section class="hero">
-    <div class="eyebrow">Модуль 3 из 18 · теория + схема + квиз</div>
+    <div class="eyebrow">Модуль 4 из 20 · теория + схема + квиз</div>
     <h1>Коммутация: <span>граница</span> широковещательного домена</h1>
     <p class="hero-sub">VLAN режет один физический L2-сегмент на несколько логически изолированных широковещательных доменов, ничего не меняя в кабелях — только в том, как коммутатор помечает и пересылает кадры.</p>
     <div class="hero-meta">
@@ -129,6 +129,31 @@
     </div>
     <ul class="steps"><li class="step"><span class="step-num">1</span><span class="step-text"><b>Приём</b> — кадр приходит на access-порт, коммутатор запоминает <a class="term-link" href="#gloss-vlan-0" title="Virtual LAN — логически изолированный широковещательный домен поверх общей физической инфраструктуры.">VLAN</a> этого порта.</span></li><li class="step"><span class="step-num">2</span><span class="step-text"><b>Поиск</b> — коммутатор ищет MAC-адрес назначения в CAM-таблице этого <a class="term-link" href="#gloss-vlan-0" title="Virtual LAN — логически изолированный широковещательный домен поверх общей физической инфраструктуры.">VLAN</a>.</span></li><li class="step"><span class="step-num">3</span><span class="step-text"><b>Найден → Forward</b> — кадр отправляется только на порт, где ранее видели этот MAC.</span></li><li class="step"><span class="step-num">4</span><span class="step-text"><b>Не найден → Flood</b> — кадр рассылается на все порты <a class="term-link" href="#gloss-vlan-0" title="Virtual LAN — логически изолированный широковещательный домен поверх общей физической инфраструктуры.">VLAN</a>, ответ учит CAM-таблицу.</span></li></ul>
   </section>
+  <section id="cli">
+    <div class="section-head">
+      <div class="section-num">— ПРИМЕР</div>
+      <div class="section-title">CLI-пример</div>
+      <p class="section-desc">Готовый конфиг для копирования — синтаксис Cisco IOS, адаптируйте под свою схему адресации.</p>
+    </div>
+    <div class="cli-panel">
+      <div class="cli-header">
+        <span class="cli-label">Access- и trunk-порты</span>
+        <button type="button" class="cli-copy" data-copy-target="cli-code-vlan">Копировать</button>
+      </div>
+      <pre class="cli-code" id="cli-code-vlan"><code>SW1(config)# vlan 10
+SW1(config-vlan)# name USERS
+SW1(config-vlan)# exit
+SW1(config)# interface GigabitEthernet0/1
+SW1(config-if)# switchport mode access
+SW1(config-if)# switchport access vlan 10
+SW1(config-if)# exit
+SW1(config)# interface GigabitEthernet0/24
+SW1(config-if)# switchport mode trunk
+SW1(config-if)# switchport trunk allowed vlan 10,20,30
+SW1(config-if)# switchport trunk native vlan 999</code></pre>
+    </div>
+    <p class="cli-note">native vlan лучше сознательно вынести на неиспользуемый VLAN (здесь 999) — это закрывает один из классических векторов VLAN hopping.</p>
+  </section>
   <section id="glossary">
     <div class="section-head">
       <div class="section-num">03 — ГЛОССАРИЙ</div>
@@ -160,10 +185,10 @@
     </div>
     <div class="related-grid"><a class="related-card" href="stp.html"><div class="related-card-chapter">Гл. 4</div><div class="related-card-title">STP: защита от петель</div><div class="related-card-sub">Резервный линк в L2-сети — это одновременно и страховка на случай обрыва, и готовое кольцо…</div></a><a class="related-card" href="staticroute.html"><div class="related-card-chapter">Гл. 3</div><div class="related-card-title">Статическая маршрутизация</div><div class="related-card-sub">Статический маршрут — это явно прописанная администратором запись «куда идти дальше». Ника…</div></a></div>
   </section>
-  <div class="module-nav"><a class="module-nav-link prev" href="ciscoconn.html"><div class="module-nav-dir">← Предыдущий</div><div class="module-nav-title">Подключение к оборудованию</div></a><a class="module-nav-link next" href="staticroute.html"><div class="module-nav-dir">Следующий →</div><div class="module-nav-title">Статическая маршрутизация</div></a></div>
+  <div class="module-nav"><a class="module-nav-link prev" href="portup.html"><div class="module-nav-dir">← Предыдущий</div><div class="module-nav-title">Поднятие порта</div></a><a class="module-nav-link next" href="lag.html"><div class="module-nav-dir">Следующий →</div><div class="module-nav-title">LAG / EtherChannel</div></a></div>
   <div class="footer">
     <div class="feedback-panel">
-      <h3>Модуль 3 из 18</h3>
+      <h3>Модуль 4 из 20</h3>
       <p>Результат квиза сохраняется локально в браузере — прогресс виден в верхнем меню и на главной странице.</p>
     </div>
   </div>

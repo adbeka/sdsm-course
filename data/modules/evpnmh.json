@@ -1,6 +1,6 @@
 {
   "id": "evpnmh",
-  "order": 14,
+  "order": 16,
   "group": "mpls",
   "tab_label": "EVPN Multihoming",
   "title_html": "EVPN Multihoming: <span>два аплинка</span> без ручного MC-LAG",
@@ -181,5 +181,10 @@
   "related": [
     "evpn",
     "stp"
-  ]
+  ],
+  "cli_example": {
+    "label": "Ethernet Segment на дуал-хомед порте",
+    "code": "Router(config)# interface Port-channel1\nRouter(config-if)# ethernet segment\nRouter(config-if-es)# identifier type 0 11.11.11.11.11.11.11.11.11\nRouter(config-if-es)# exit\nRouter# show evpn ethernet-segment",
+    "note": "identifier должен быть одинаковым на обоих PE, к которым подключено общее устройство — иначе DF election не сработает как единый сегмент."
+  }
 }

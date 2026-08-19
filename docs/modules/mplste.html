@@ -11,18 +11,18 @@
 <nav class="topnav">
   <div class="topnav-inner">
     <a class="topnav-brand" href="../index.html">СДСМ · <b>учебный портал</b>
-      <span class="topnav-progress-pill"><span class="val">0/18</span></span>
+      <span class="topnav-progress-pill"><span class="val">0/20</span></span>
     </a>
     <div class="nav-groups"><div class="nav-group">
       <button type="button" class="nav-group-trigger">Основы
         <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/planning.html" data-progress-id="planning">Планирование сети<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ciscoconn.html" data-progress-id="ciscoconn">Подключение к оборудованию<span class="tab-check"></span></a></div>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/planning.html" data-progress-id="planning">Планирование сети<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ciscoconn.html" data-progress-id="ciscoconn">Подключение к оборудованию<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/portup.html" data-progress-id="portup">Поднятие порта<span class="tab-check"></span></a></div>
     </div><div class="nav-group">
       <button type="button" class="nav-group-trigger">Коммутация L2
         <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vlan.html" data-progress-id="vlan">VLAN и коммутация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/stp.html" data-progress-id="stp">STP: защита от петель<span class="tab-check"></span></a></div>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vlan.html" data-progress-id="vlan">VLAN и коммутация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/lag.html" data-progress-id="lag">LAG / EtherChannel<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/stp.html" data-progress-id="stp">STP: защита от петель<span class="tab-check"></span></a></div>
     </div><div class="nav-group">
       <button type="button" class="nav-group-trigger">Маршрутизация L3
         <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -48,7 +48,7 @@
     <button type="button" class="search-trigger" aria-label="Поиск по сайту">
       <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
     </button>
-    <div class="topnav-links"><a href="#theory">Теория</a><a href="#process">Схема</a><a href="#glossary">Глоссарий</a><a href="#quiz">Квиз</a></div>
+    <div class="topnav-links"><a href="#theory">Теория</a><a href="#process">Схема</a><a href="#cli">CLI</a><a href="#glossary">Глоссарий</a><a href="#quiz">Квиз</a></div>
   </div>
 </nav>
 <div class="search-overlay">
@@ -64,7 +64,7 @@
 <div class="wrap">
   <div class="breadcrumb"><a href="../index.html">Главная</a><span class="sep">/</span><span>MPLS и провайдерские сервисы</span><span class="sep">/</span><span class="current">MPLS Traffic Engineering</span></div>
   <section class="hero">
-    <div class="eyebrow">Модуль 16 из 18 · теория + схема + квиз</div>
+    <div class="eyebrow">Модуль 18 из 20 · теория + схема + квиз</div>
     <h1>MPLS TE: <span>явно указанный путь</span>, а не тот, что выбрал IGP</h1>
     <p class="hero-sub">Обычная маршрутизация выбирает путь по метрике IGP, не глядя на загрузку линков. MPLS TE резервирует полосу и может явно проложить путь в обход перегруженного участка.</p>
     <div class="hero-meta">
@@ -119,6 +119,26 @@
     </div>
     <ul class="steps"><li class="step"><span class="step-num">1</span><span class="step-text"><b>IGP-выбор</b> — IGP посчитал бы кратчайший путь по метрике, не глядя на загрузку.</span></li><li class="step"><span class="step-num">2</span><span class="step-text"><b>Обнаружение проблемы</b> — этот путь перегружен или не подходит по ограничениям.</span></li><li class="step"><span class="step-num">3</span><span class="step-text"><b>Резервирование</b> — RSVP-TE резервирует полосу вдоль альтернативного пути.</span></li><li class="step"><span class="step-num">4</span><span class="step-text"><b>Направление</b> — трафик направляется в TE-туннель одним из способов.</span></li></ul>
   </section>
+  <section id="cli">
+    <div class="section-head">
+      <div class="section-num">— ПРИМЕР</div>
+      <div class="section-title">CLI-пример</div>
+      <p class="section-desc">Готовый конфиг для копирования — синтаксис Cisco IOS, адаптируйте под свою схему адресации.</p>
+    </div>
+    <div class="cli-panel">
+      <div class="cli-header">
+        <span class="cli-label">TE-туннель с явным путём</span>
+        <button type="button" class="cli-copy" data-copy-target="cli-code-mplste">Копировать</button>
+      </div>
+      <pre class="cli-code" id="cli-code-mplste"><code>Router(config)# interface Tunnel1
+Router(config-if)# tunnel mode mpls traffic-eng
+Router(config-if)# tunnel destination 10.0.0.5
+Router(config-if)# tunnel mpls traffic-eng bandwidth 50000
+Router(config-if)# tunnel mpls traffic-eng path-option 1 explicit name PRIMARY
+Router# show mpls traffic-eng tunnels</code></pre>
+    </div>
+    <p class="cli-note">bandwidth резервирует полосу вдоль всего пути — RSVP-TE откажет в установлении туннеля, если по дороге её не хватает.</p>
+  </section>
   <section id="glossary">
     <div class="section-head">
       <div class="section-num">03 — ГЛОССАРИЙ</div>
@@ -153,7 +173,7 @@
   <div class="module-nav"><a class="module-nav-link prev" href="evpnmh.html"><div class="module-nav-dir">← Предыдущий</div><div class="module-nav-title">EVPN Multihoming</div></a><a class="module-nav-link next" href="packetlife.html"><div class="module-nav-dir">Следующий →</div><div class="module-nav-title">Путь пакета</div></a></div>
   <div class="footer">
     <div class="feedback-panel">
-      <h3>Модуль 16 из 18</h3>
+      <h3>Модуль 18 из 20</h3>
       <p>Результат квиза сохраняется локально в браузере — прогресс виден в верхнем меню и на главной странице.</p>
     </div>
   </div>

@@ -1,6 +1,6 @@
 {
   "id": "multicast",
-  "order": 9,
+  "order": 11,
   "group": "overlay",
   "tab_label": "Multicast-рассылка",
   "title_html": "Multicast: <span>один поток</span>, много получателей",
@@ -184,5 +184,10 @@
   "related": [
     "bgp",
     "ospf"
-  ]
+  ],
+  "cli_example": {
+    "label": "PIM Sparse-Mode с явным RP",
+    "code": "Router(config)# ip multicast-routing\nRouter(config)# interface GigabitEthernet0/0\nRouter(config-if)# ip pim sparse-mode\nRouter(config)# ip pim rp-address 10.0.0.1\nRouter# show ip mroute",
+    "note": "ip pim sparse-mode нужен на каждом интерфейсе, через который может пойти multicast-трафик, включая линк к RP."
+  }
 }

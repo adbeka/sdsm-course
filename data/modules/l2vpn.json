@@ -1,6 +1,6 @@
 {
   "id": "l2vpn",
-  "order": 12,
+  "order": 14,
   "group": "mpls",
   "tab_label": "MPLS L2VPN",
   "title_html": "MPLS L2VPN: <span>кабель</span>, которого физически нет",
@@ -184,5 +184,10 @@
   "related": [
     "mplsbase",
     "evpn"
-  ]
+  ],
+  "cli_example": {
+    "label": "Точка-точка VPWS через xconnect",
+    "code": "Router(config)# interface GigabitEthernet0/1\nRouter(config-if)# xconnect 10.0.0.2 100 encapsulation mpls\nRouter# show mpls l2transport vc",
+    "note": "10.0.0.2 100 — это адрес удалённого PE и VC ID псевдопровода; на другом конце должна быть точно такая же пара."
+  }
 }

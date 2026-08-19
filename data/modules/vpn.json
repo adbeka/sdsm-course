@@ -1,6 +1,6 @@
 {
   "id": "vpn",
-  "order": 7,
+  "order": 9,
   "group": "overlay",
   "tab_label": "VPN-туннели",
   "title_html": "VPN: <span>приватный туннель</span> поверх чужой сети",
@@ -184,5 +184,10 @@
   "related": [
     "nat",
     "mplsbase"
-  ]
+  ],
+  "cli_example": {
+    "label": "GRE-туннель между площадками",
+    "code": "Router(config)# interface Tunnel0\nRouter(config-if)# ip address 172.16.0.1 255.255.255.252\nRouter(config-if)# tunnel source GigabitEthernet0/0\nRouter(config-if)# tunnel destination 203.0.113.10\nRouter(config-if)# tunnel mode gre ip\nRouter# show interfaces tunnel 0",
+    "note": "Это только GRE — без IPSec поверх трафик внутри туннеля идёт в открытом виде."
+  }
 }

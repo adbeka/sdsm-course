@@ -1,6 +1,6 @@
 {
   "id": "mplsbase",
-  "order": 10,
+  "order": 12,
   "group": "mpls",
   "tab_label": "Базовый MPLS",
   "title_html": "MPLS: <span>метка</span> вместо разбора IP на каждом хопе",
@@ -185,5 +185,10 @@
     "l3vpn",
     "l2vpn",
     "mplste"
-  ]
+  ],
+  "cli_example": {
+    "label": "Включение MPLS с LDP",
+    "code": "Router(config)# mpls label protocol ldp\nRouter(config)# interface GigabitEthernet0/0\nRouter(config-if)# mpls ip\nRouter# show mpls ldp neighbor\nRouter# show mpls forwarding-table",
+    "note": "mpls ip включается на каждом транзитном интерфейсе внутри MPLS-домена — на клиентских портах (CE-facing) он не нужен."
+  }
 }

@@ -1,6 +1,6 @@
 {
   "id": "evpn",
-  "order": 13,
+  "order": 15,
   "group": "mpls",
   "tab_label": "EVPN",
   "title_html": "EVPN: <span>BGP вместо флуда</span> для изучения MAC",
@@ -181,5 +181,10 @@
   "related": [
     "l2vpn",
     "evpnmh"
-  ]
+  ],
+  "cli_example": {
+    "label": "EVPN control-plane поверх MP-BGP",
+    "code": "Router(config)# l2vpn evpn\nRouter(config-evpn)# router-id 10.0.0.1\nRouter(config)# router bgp 65500\nRouter(config-router)# address-family l2vpn evpn\nRouter(config-router-af)# neighbor 10.0.0.2 activate\nRouter# show bgp l2vpn evpn summary",
+    "note": "Без активации l2vpn evpn address-family соседи будут обмениваться обычными IPv4-маршрутами, а не MAC/IP-анонсами EVPN."
+  }
 }

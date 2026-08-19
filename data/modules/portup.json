@@ -1,0 +1,191 @@
+{
+  "id": "portup",
+  "order": 2,
+  "group": "foundations",
+  "tab_label": "Поднятие порта",
+  "title_html": "Поднятие порта: <span>от кабеля до Up/Up</span>",
+  "subtitle": "Интерфейс не работает «из коробки» — административное состояние, физический линк и согласование канального уровня должны сойтись вместе, только тогда порт реально передаёт трафик.",
+  "meta": {
+    "ИСТОЧНИК": "linkmeup / СДСМ, гл. 1–2 (практика)",
+    "ФОРМАТ": "теория + схема + квиз",
+    "ВРЕМЯ": "~7 минут"
+  },
+  "diagram": {
+    "label": "Путь порта от shutdown до Up/Up",
+    "svg_html": "<svg class=\"path-svg\" viewbox=\"0 0 860 140\" xmlns=\"http://www.w3.org/2000/svg\">\n<path class=\"link-line\" d=\"M 40,80 L 300,80 L 560,80 L 820,80\"></path>\n<circle class=\"pulse-bgp\" fill=\"#D97706\" r=\"5\"></circle>\n<circle cx=\"40\" cy=\"80\" fill=\"#0D9488\" r=\"7\"></circle>\n<text class=\"node-id self\" text-anchor=\"middle\" x=\"40\" y=\"55\">shutdown</text>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"40\" y=\"108\">админ. выключен</text>\n<circle cx=\"300\" cy=\"80\" fill=\"#0D9488\" r=\"7\"></circle>\n<text class=\"node-id self\" text-anchor=\"middle\" x=\"300\" y=\"55\">no shutdown</text>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"300\" y=\"108\">ждём линк</text>\n<circle cx=\"560\" cy=\"80\" fill=\"#475569\" r=\"7\"></circle>\n<text class=\"node-id\" text-anchor=\"middle\" x=\"560\" y=\"55\">Up/Down</text>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"560\" y=\"108\">нет согласования</text>\n<circle cx=\"820\" cy=\"80\" fill=\"#475569\" r=\"7\"></circle>\n<text class=\"node-id\" text-anchor=\"middle\" x=\"820\" y=\"55\">Up/Up</text>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"820\" y=\"108\">готов к работе</text>\n</svg>",
+    "readout": {
+      "kind": "stp",
+      "lines": [
+        "int Gi0/1 — состояние: administratively down",
+        "no shutdown — порт включён программно, ждём сигнал по линии",
+        "Line protocol: down — не сошлись скорость/дуплекс или нет сигнала",
+        "Line protocol: up — Up/Up, порт готов передавать трафик"
+      ]
+    },
+    "caption": "Первая строка show interface — административный и физический статус порта, вторая (line protocol) — согласование канального уровня. Только Up/Up означает, что порт реально пересылает трафик."
+  },
+  "theory": {
+    "title": "Из чего складывается состояние порта",
+    "desc": "Шесть понятий: от административного выключения до err-disabled — состояний, в которых может застрять порт.",
+    "tldr": "Проще говоря: «физически подключено» и «реально работает» — разные вещи; между ними стоит команда no shutdown и согласование параметров линка.",
+    "cards": [
+      {
+        "title": "Administratively down",
+        "body_html": "Порт выключен вручную командой <code>shutdown</code> — независимо от того, воткнут кабель или нет. Первое, что стоит проверить, если порт вообще не поднимается."
+      },
+      {
+        "title": "Line protocol",
+        "body_html": "Отдельный от физического статуса показатель: означает, что канальный уровень согласован (keepalive, encapsulation). Порт может быть физически up, но line protocol down."
+      },
+      {
+        "title": "Duplex mismatch",
+        "body_html": "Рассинхрон half/full duplex на двух концах линка. Линк часто остаётся Up/Up, но растут счётчики ошибок (late collisions, CRC) — производительность деградирует незаметно для беглого взгляда."
+      },
+      {
+        "title": "Auto-negotiation",
+        "body_html": "Автоматическое согласование скорости и дуплекса между двумя устройствами. На проблемных линках (разное оборудование, старые SFP) иногда надёжнее зафиксировать параметры вручную."
+      },
+      {
+        "title": "Interface description",
+        "body_html": "Текстовая подпись на порту — куда идёт кабель, чей это аплинк. Не влияет на работу, но экономит часы при диагностике через полгода."
+      },
+      {
+        "title": "err-disabled",
+        "body_html": "Порт физически исправен, но программно заблокирован после срабатывания защиты — <code>BPDU Guard</code>, <code>port security</code>, storm-control. Нужен явный <code>shutdown</code> / <code>no shutdown</code>, чтобы вывести его обратно."
+      }
+    ]
+  },
+  "process": {
+    "title": "Как поднять порт и проверить, что он реально работает",
+    "desc": "Порядок имеет значение: пропущенный шаг — самая частая причина «кабель воткнут, а линка нет».",
+    "steps": [
+      {
+        "num": "1",
+        "body_html": "<b>Физическое подключение</b> — кабель, трансивер (SFP), убедиться, что оба конца исправны."
+      },
+      {
+        "num": "2",
+        "body_html": "<b>no shutdown</b> — перевести порт из административно выключенного состояния."
+      },
+      {
+        "num": "3",
+        "body_html": "<b>Скорость и дуплекс</b> — оставить auto или зафиксировать вручную на обеих сторонах одинаково."
+      },
+      {
+        "num": "4",
+        "body_html": "<b>Description</b> — подписать порт, чтобы через полгода не гадать, что к нему подключено."
+      },
+      {
+        "num": "5",
+        "body_html": "<b>Проверка show interface status</b> — убедиться, что статус именно connected / Up/Up, а не err-disabled или notconnect."
+      }
+    ]
+  },
+  "glossary": [
+    {
+      "term": "SFP",
+      "def_html": "Small Form-factor Pluggable — съёмный трансивер, определяющий физическую среду порта (медь/оптика, дальность)."
+    },
+    {
+      "term": "MDI/MDIX",
+      "def_html": "Авто-определение прямого/кроссового кабеля на медном порту — избавляет от необходимости думать, какой патч-корд нужен."
+    },
+    {
+      "term": "Keepalive",
+      "def_html": "Периодические служебные кадры, подтверждающие, что канальный уровень на линке жив."
+    },
+    {
+      "term": "CRC error",
+      "def_html": "Счётчик кадров с ошибкой контрольной суммы — частый признак плохого кабеля или duplex mismatch."
+    },
+    {
+      "term": "Runts / Giants",
+      "def_html": "Кадры короче или длиннее допустимого размера Ethernet — тоже сигнал физических проблем на линке."
+    },
+    {
+      "term": "err-disabled",
+      "def_html": "Состояние порта после срабатывания защитного механизма — физически исправен, но заблокирован программно."
+    },
+    {
+      "term": "show interfaces status",
+      "def_html": "Компактная команда для проверки статуса, VLAN, дуплекса и скорости сразу по всем портам коммутатора."
+    }
+  ],
+  "quiz": {
+    "slug": "portup",
+    "correct": [
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "questions": [
+      {
+        "q": "Что означает состояние порта «administratively down»?",
+        "options": [
+          "Порт неисправен физически",
+          "Порт выключен вручную командой shutdown",
+          "Нет согласования дуплекса",
+          "Порт заблокирован STP"
+        ]
+      },
+      {
+        "q": "Чем line protocol отличается от физического статуса порта?",
+        "options": [
+          "Это одно и то же",
+          "Line protocol — это согласование канального уровня, отдельно от физического линка",
+          "Line protocol относится только к оптике",
+          "Line protocol не проверяется на access-портах"
+        ]
+      },
+      {
+        "q": "Частый симптом duplex mismatch?",
+        "options": [
+          "Порт сразу уходит в Down/Down",
+          "Порт остаётся Up/Up, но растут счётчики ошибок (CRC, late collisions)",
+          "VLAN автоматически меняется",
+          "Скорость порта удваивается"
+        ]
+      },
+      {
+        "q": "Что нужно сделать, чтобы вывести порт из err-disabled?",
+        "options": [
+          "Подождать 24 часа",
+          "Переткнуть кабель в другой порт",
+          "Явно выполнить shutdown / no shutdown на порту",
+          "Перезагрузить коммутатор"
+        ]
+      },
+      {
+        "q": "Зачем нужен description на интерфейсе?",
+        "options": [
+          "Ускоряет работу порта",
+          "Влияет на приоритет STP",
+          "Не влияет на работу, но упрощает диагностику в будущем",
+          "Обязателен для поднятия линка"
+        ]
+      }
+    ]
+  },
+  "misconceptions": [
+    {
+      "wrong": "Если кабель воткнут — порт автоматически заработает.",
+      "right": "Порт может быть в состоянии shutdown (административно выключен) — физическое подключение не поможет, пока не выполнена no shutdown."
+    },
+    {
+      "wrong": "Duplex mismatch сразу рвёт линк (Down/Down).",
+      "right": "При duplex mismatch порт часто остаётся Up/Up, но с ростом ошибок (late collisions, CRC) и деградацией производительности — заметно только по счётчикам."
+    }
+  ],
+  "related": [
+    "ciscoconn",
+    "vlan",
+    "lag"
+  ],
+  "cli_example": {
+    "label": "Поднятие и проверка порта",
+    "code": "SW1(config)# interface GigabitEthernet0/1\nSW1(config-if)# description Uplink-to-SW2\nSW1(config-if)# no shutdown\nSW1(config-if)# speed 1000\nSW1(config-if)# duplex full\nSW1(config-if)# end\nSW1# show interfaces GigabitEthernet0/1 status\n\nPort      Name               Status       Vlan       Duplex  Speed  Type\nGi0/1     Uplink-to-SW2      connected    trunk      full    1000   1000BaseT",
+    "note": "show interfaces status — самый быстрый способ увидеть реальное состояние порта, а не то, что вы думаете, что настроили."
+  }
+}

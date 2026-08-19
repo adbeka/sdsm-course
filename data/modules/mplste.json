@@ -1,6 +1,6 @@
 {
   "id": "mplste",
-  "order": 15,
+  "order": 17,
   "group": "mpls",
   "tab_label": "MPLS Traffic Engineering",
   "title_html": "MPLS TE: <span>явно указанный путь</span>, а не тот, что выбрал IGP",
@@ -181,5 +181,10 @@
   "related": [
     "mplsbase",
     "qos"
-  ]
+  ],
+  "cli_example": {
+    "label": "TE-туннель с явным путём",
+    "code": "Router(config)# interface Tunnel1\nRouter(config-if)# tunnel mode mpls traffic-eng\nRouter(config-if)# tunnel destination 10.0.0.5\nRouter(config-if)# tunnel mpls traffic-eng bandwidth 50000\nRouter(config-if)# tunnel mpls traffic-eng path-option 1 explicit name PRIMARY\nRouter# show mpls traffic-eng tunnels",
+    "note": "bandwidth резервирует полосу вдоль всего пути — RSVP-TE откажет в установлении туннеля, если по дороге её не хватает."
+  }
 }

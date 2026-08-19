@@ -1,6 +1,6 @@
 {
   "id": "ospf",
-  "order": 6,
+  "order": 8,
   "group": "l3",
   "tab_label": "OSPF: динамическая маршрутизация",
   "title_html": "OSPF: сеть, которая <span>сама</span> строит карту",
@@ -184,5 +184,10 @@
   "related": [
     "staticroute",
     "bgp"
-  ]
+  ],
+  "cli_example": {
+    "label": "Базовый OSPF с двумя area",
+    "code": "Router(config)# router ospf 1\nRouter(config-router)# router-id 1.1.1.1\nRouter(config-router)# network 10.0.0.0 0.0.0.255 area 0\nRouter(config-router)# network 10.0.1.0 0.0.0.255 area 1\nRouter(config-router)# passive-interface GigabitEthernet0/2\nRouter# show ip ospf neighbor",
+    "note": "passive-interface на порту к хостам — OSPF не шлёт туда Hello, но подсеть всё равно анонсируется."
+  }
 }

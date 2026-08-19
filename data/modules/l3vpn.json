@@ -1,6 +1,6 @@
 {
   "id": "l3vpn",
-  "order": 11,
+  "order": 13,
   "group": "mpls",
   "tab_label": "MPLS L3VPN",
   "title_html": "MPLS L3VPN: <span>своя таблица маршрутов</span> для каждого клиента",
@@ -185,5 +185,10 @@
     "bgp",
     "mplsbase",
     "l2vpn"
-  ]
+  ],
+  "cli_example": {
+    "label": "VRF и BGP address-family для клиента",
+    "code": "Router(config)# ip vrf CUSTOMER_A\nRouter(config-vrf)# rd 65500:100\nRouter(config-vrf)# route-target both 65500:100\nRouter(config)# interface GigabitEthernet0/1\nRouter(config-if)# ip vrf forwarding CUSTOMER_A\nRouter(config-if)# ip address 10.1.1.1 255.255.255.0\nRouter(config)# router bgp 65500\nRouter(config-router)# address-family ipv4 vrf CUSTOMER_A",
+    "note": "route-target both сразу и импортирует, и экспортирует — для несимметричных схем (hub-and-spoke) import/export задаются раздельно."
+  }
 }

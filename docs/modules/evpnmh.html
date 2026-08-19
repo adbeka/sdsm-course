@@ -11,18 +11,18 @@
 <nav class="topnav">
   <div class="topnav-inner">
     <a class="topnav-brand" href="../index.html">СДСМ · <b>учебный портал</b>
-      <span class="topnav-progress-pill"><span class="val">0/18</span></span>
+      <span class="topnav-progress-pill"><span class="val">0/20</span></span>
     </a>
     <div class="nav-groups"><div class="nav-group">
       <button type="button" class="nav-group-trigger">Основы
         <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/planning.html" data-progress-id="planning">Планирование сети<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ciscoconn.html" data-progress-id="ciscoconn">Подключение к оборудованию<span class="tab-check"></span></a></div>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/planning.html" data-progress-id="planning">Планирование сети<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ciscoconn.html" data-progress-id="ciscoconn">Подключение к оборудованию<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/portup.html" data-progress-id="portup">Поднятие порта<span class="tab-check"></span></a></div>
     </div><div class="nav-group">
       <button type="button" class="nav-group-trigger">Коммутация L2
         <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vlan.html" data-progress-id="vlan">VLAN и коммутация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/stp.html" data-progress-id="stp">STP: защита от петель<span class="tab-check"></span></a></div>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vlan.html" data-progress-id="vlan">VLAN и коммутация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/lag.html" data-progress-id="lag">LAG / EtherChannel<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/stp.html" data-progress-id="stp">STP: защита от петель<span class="tab-check"></span></a></div>
     </div><div class="nav-group">
       <button type="button" class="nav-group-trigger">Маршрутизация L3
         <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -48,7 +48,7 @@
     <button type="button" class="search-trigger" aria-label="Поиск по сайту">
       <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
     </button>
-    <div class="topnav-links"><a href="#theory">Теория</a><a href="#process">Схема</a><a href="#glossary">Глоссарий</a><a href="#quiz">Квиз</a></div>
+    <div class="topnav-links"><a href="#theory">Теория</a><a href="#process">Схема</a><a href="#cli">CLI</a><a href="#glossary">Глоссарий</a><a href="#quiz">Квиз</a></div>
   </div>
 </nav>
 <div class="search-overlay">
@@ -64,7 +64,7 @@
 <div class="wrap">
   <div class="breadcrumb"><a href="../index.html">Главная</a><span class="sep">/</span><span>MPLS и провайдерские сервисы</span><span class="sep">/</span><span class="current">EVPN Multihoming</span></div>
   <section class="hero">
-    <div class="eyebrow">Модуль 15 из 18 · теория + схема + квиз</div>
+    <div class="eyebrow">Модуль 17 из 20 · теория + схема + квиз</div>
     <h1>EVPN Multihoming: <span>два аплинка</span> без ручного MC-LAG</h1>
     <p class="hero-sub">Когда CE подключён к двум PE одновременно, кто-то должен решить, кто активно форвардит трафик и как не задублировать BUM. EVPN решает это через BGP, а не через проприетарный MC-LAG.</p>
     <div class="hero-meta">
@@ -119,6 +119,25 @@
     </div>
     <ul class="steps"><li class="step"><span class="step-num">1</span><span class="step-text"><b>Подключение</b> — CE физически подключается к двум (или более) PE через один <a class="term-link" href="#gloss-evpnmh-0" title="Логическая группа физических подключений одного CE к нескольким PE, идентифицируемая общим ESI.">Ethernet Segment</a>.</span></li><li class="step"><span class="step-num">2</span><span class="step-text"><b>Анонс ESI</b> — PE анонсируют участие в этом ESI через Route Type 4 друг другу.</span></li><li class="step"><span class="step-num">3</span><span class="step-text"><b>DF election</b> — между PE на этом ESI избирается Designated Forwarder для BUM.</span></li><li class="step"><span class="step-num">4</span><span class="step-text"><b>Aliasing</b> — unicast-трафик балансируется между PE, минуя ограничение «только через DF».</span></li></ul>
   </section>
+  <section id="cli">
+    <div class="section-head">
+      <div class="section-num">— ПРИМЕР</div>
+      <div class="section-title">CLI-пример</div>
+      <p class="section-desc">Готовый конфиг для копирования — синтаксис Cisco IOS, адаптируйте под свою схему адресации.</p>
+    </div>
+    <div class="cli-panel">
+      <div class="cli-header">
+        <span class="cli-label">Ethernet Segment на дуал-хомед порте</span>
+        <button type="button" class="cli-copy" data-copy-target="cli-code-evpnmh">Копировать</button>
+      </div>
+      <pre class="cli-code" id="cli-code-evpnmh"><code>Router(config)# interface Port-channel1
+Router(config-if)# ethernet segment
+Router(config-if-es)# identifier type 0 11.11.11.11.11.11.11.11.11
+Router(config-if-es)# exit
+Router# show evpn ethernet-segment</code></pre>
+    </div>
+    <p class="cli-note">identifier должен быть одинаковым на обоих PE, к которым подключено общее устройство — иначе DF election не сработает как единый сегмент.</p>
+  </section>
   <section id="glossary">
     <div class="section-head">
       <div class="section-num">03 — ГЛОССАРИЙ</div>
@@ -153,7 +172,7 @@
   <div class="module-nav"><a class="module-nav-link prev" href="evpn.html"><div class="module-nav-dir">← Предыдущий</div><div class="module-nav-title">EVPN</div></a><a class="module-nav-link next" href="mplste.html"><div class="module-nav-dir">Следующий →</div><div class="module-nav-title">MPLS Traffic Engineering</div></a></div>
   <div class="footer">
     <div class="feedback-panel">
-      <h3>Модуль 15 из 18</h3>
+      <h3>Модуль 17 из 20</h3>
       <p>Результат квиза сохраняется локально в браузере — прогресс виден в верхнем меню и на главной странице.</p>
     </div>
   </div>

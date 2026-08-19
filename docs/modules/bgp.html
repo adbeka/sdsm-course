@@ -11,18 +11,18 @@
 <nav class="topnav">
   <div class="topnav-inner">
     <a class="topnav-brand" href="../index.html">СДСМ · <b>учебный портал</b>
-      <span class="topnav-progress-pill"><span class="val">0/18</span></span>
+      <span class="topnav-progress-pill"><span class="val">0/20</span></span>
     </a>
     <div class="nav-groups"><div class="nav-group">
       <button type="button" class="nav-group-trigger">Основы
         <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/planning.html" data-progress-id="planning">Планирование сети<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ciscoconn.html" data-progress-id="ciscoconn">Подключение к оборудованию<span class="tab-check"></span></a></div>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/planning.html" data-progress-id="planning">Планирование сети<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ciscoconn.html" data-progress-id="ciscoconn">Подключение к оборудованию<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/portup.html" data-progress-id="portup">Поднятие порта<span class="tab-check"></span></a></div>
     </div><div class="nav-group">
       <button type="button" class="nav-group-trigger">Коммутация L2
         <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vlan.html" data-progress-id="vlan">VLAN и коммутация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/stp.html" data-progress-id="stp">STP: защита от петель<span class="tab-check"></span></a></div>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vlan.html" data-progress-id="vlan">VLAN и коммутация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/lag.html" data-progress-id="lag">LAG / EtherChannel<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/stp.html" data-progress-id="stp">STP: защита от петель<span class="tab-check"></span></a></div>
     </div><div class="nav-group">
       <button type="button" class="nav-group-trigger">Маршрутизация L3
         <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -48,7 +48,7 @@
     <button type="button" class="search-trigger" aria-label="Поиск по сайту">
       <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
     </button>
-    <div class="topnav-links"><a href="#theory">Теория</a><a href="#process">Схема</a><a href="#media">Видео</a><a href="#glossary">Глоссарий</a><a href="#quiz">Квиз</a></div>
+    <div class="topnav-links"><a href="#theory">Теория</a><a href="#process">Схема</a><a href="#media">Видео</a><a href="#cli">CLI</a><a href="#glossary">Глоссарий</a><a href="#quiz">Квиз</a></div>
   </div>
 </nav>
 <div class="search-overlay">
@@ -64,7 +64,7 @@
 <div class="wrap">
   <div class="breadcrumb"><a href="../index.html">Главная</a><span class="sep">/</span><span>Оверлеи и внешняя связность</span><span class="sep">/</span><span class="current">BGP: междоменная маршрутизация</span></div>
   <section class="hero">
-    <div class="eyebrow">Модуль 9 из 18 · теория + схема + квиз</div>
+    <div class="eyebrow">Модуль 11 из 20 · теория + схема + квиз</div>
     <h1>BGP: <span>путь вектора</span>, а не карта сети</h1>
     <p class="hero-sub">BGP не знает топологию сети целиком. Каждый роутер знает только своих соседей и списки AS, через которые уже прошёл маршрут. Из этих коротких списков и договорённостей (атрибутов) складывается решение, куда отправить трафик.</p>
     <div class="hero-meta">
@@ -129,6 +129,25 @@
     </div>
     <ul class="steps"><li class="step"><span class="step-num">1</span><span class="step-text"><b>Выше LOCAL_PREFERENCE</b> — сначала смотрим, что предпочитает выходить наружу наша собственная AS.</span></li><li class="step"><span class="step-num">2</span><span class="step-text"><b>Короче AS-PATH</b> — меньше списков AS в пути обычно означает более прямой маршрут.</span></li><li class="step"><span class="step-num">3</span><span class="step-text"><b>Ниже MED</b> — но только между маршрутами от одной и той же соседней AS.</span></li><li class="step"><span class="step-num">4</span><span class="step-text"><b>eBGP предпочтительнее iBGP</b> — маршрут, полученный напрямую от соседней AS, приоритетнее полученного изнутри своей.</span></li><li class="step"><span class="step-num">5</span><span class="step-text"><b>Ниже IGP-метрика до next-hop</b> — если предыдущие шаги не дали ответа, сравниваем «дальность» до next-hop внутри своей сети.</span></li><li class="step"><span class="step-num">6</span><span class="step-text"><b>Ниже router-ID</b> — последний тай-брейк, когда всё остальное равно.</span></li></ul>
   </section>
+  <section id="cli">
+    <div class="section-head">
+      <div class="section-num">— ПРИМЕР</div>
+      <div class="section-title">CLI-пример</div>
+      <p class="section-desc">Готовый конфиг для копирования — синтаксис Cisco IOS, адаптируйте под свою схему адресации.</p>
+    </div>
+    <div class="cli-panel">
+      <div class="cli-header">
+        <span class="cli-label">eBGP-сессия и анонс префикса</span>
+        <button type="button" class="cli-copy" data-copy-target="cli-code-bgp">Копировать</button>
+      </div>
+      <pre class="cli-code" id="cli-code-bgp"><code>Router(config)# router bgp 65500
+Router(config-router)# neighbor 203.0.113.1 remote-as 9198
+Router(config-router)# network 198.51.100.0 mask 255.255.255.0
+Router(config-router)# neighbor 203.0.113.1 route-map SET-LP in
+Router# show ip bgp summary</code></pre>
+    </div>
+    <p class="cli-note">network анонсирует префикс, только если он уже есть в таблице маршрутизации (или карте маршрутов) — BGP сам подсети не придумывает.</p>
+  </section>
   <section id="glossary">
     <div class="section-head">
       <div class="section-num">03 — ГЛОССАРИЙ</div>
@@ -163,7 +182,7 @@
   <div class="module-nav"><a class="module-nav-link prev" href="vpn.html"><div class="module-nav-dir">← Предыдущий</div><div class="module-nav-title">VPN-туннели</div></a><a class="module-nav-link next" href="multicast.html"><div class="module-nav-dir">Следующий →</div><div class="module-nav-title">Multicast-рассылка</div></a></div>
   <div class="footer">
     <div class="feedback-panel">
-      <h3>Модуль 9 из 18</h3>
+      <h3>Модуль 11 из 20</h3>
       <p>Результат квиза сохраняется локально в браузере — прогресс виден в верхнем меню и на главной странице.</p>
     </div>
   </div>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>СДСМ · Поднятие порта</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body data-depth="../">
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a class="topnav-brand" href="../index.html">СДСМ · <b>учебный портал</b>
+      <span class="topnav-progress-pill"><span class="val">0/20</span></span>
+    </a>
+    <div class="nav-groups"><div class="nav-group active">
+      <button type="button" class="nav-group-trigger">Основы
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/planning.html" data-progress-id="planning">Планирование сети<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ciscoconn.html" data-progress-id="ciscoconn">Подключение к оборудованию<span class="tab-check"></span></a><a class="nav-group-item active" href="../modules/portup.html" data-progress-id="portup">Поднятие порта<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Коммутация L2
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vlan.html" data-progress-id="vlan">VLAN и коммутация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/lag.html" data-progress-id="lag">LAG / EtherChannel<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/stp.html" data-progress-id="stp">STP: защита от петель<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Маршрутизация L3
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/staticroute.html" data-progress-id="staticroute">Статическая маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/nat.html" data-progress-id="nat">ACL и NAT<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ospf.html" data-progress-id="ospf">OSPF: динамическая маршрутизация<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Оверлеи и внешняя связность
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vpn.html" data-progress-id="vpn">VPN-туннели<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/bgp.html" data-progress-id="bgp">BGP: междоменная маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/multicast.html" data-progress-id="multicast">Multicast-рассылка<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">MPLS и провайдерские сервисы
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/mplsbase.html" data-progress-id="mplsbase">Базовый MPLS<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/l3vpn.html" data-progress-id="l3vpn">MPLS L3VPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/l2vpn.html" data-progress-id="l2vpn">MPLS L2VPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/evpn.html" data-progress-id="evpn">EVPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/evpnmh.html" data-progress-id="evpnmh">EVPN Multihoming<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/mplste.html" data-progress-id="mplste">MPLS Traffic Engineering<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Железо и качество
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/packetlife.html" data-progress-id="packetlife">Путь пакета<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/qos.html" data-progress-id="qos">QoS: приоритизация трафика<span class="tab-check"></span></a></div>
+    </div></div>
+    <a class="nav-glossary-link" href="../glossary.html">Глоссарий</a>
+    <button type="button" class="search-trigger" aria-label="Поиск по сайту">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    </button>
+    <div class="topnav-links"><a href="#theory">Теория</a><a href="#process">Схема</a><a href="#cli">CLI</a><a href="#glossary">Глоссарий</a><a href="#quiz">Квиз</a></div>
+  </div>
+</nav>
+<div class="search-overlay">
+  <div class="search-panel">
+    <div class="search-input-row">
+      <svg width="16" height="16" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <input type="text" class="search-input" placeholder="Искать тему или термин…" autocomplete="off">
+      <button type="button" class="search-close" aria-label="Закрыть">Esc</button>
+    </div>
+    <div class="search-results"></div>
+  </div>
+</div>
+<div class="wrap">
+  <div class="breadcrumb"><a href="../index.html">Главная</a><span class="sep">/</span><span>Основы</span><span class="sep">/</span><span class="current">Поднятие порта</span></div>
+  <section class="hero">
+    <div class="eyebrow">Модуль 3 из 20 · теория + схема + квиз</div>
+    <h1>Поднятие порта: <span>от кабеля до Up/Up</span></h1>
+    <p class="hero-sub">Интерфейс не работает «из коробки» — административное состояние, физический линк и согласование канального уровня должны сойтись вместе, только тогда порт реально передаёт трафик.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">ИСТОЧНИК<b>linkmeup / СДСМ, гл. 1–2 (практика)</b></div>
+      <div class="hero-meta-item">ФОРМАТ<b>теория + схема + квиз</b></div>
+      <div class="hero-meta-item">ВРЕМЯ<b>~7 минут</b></div>
+    </div>
+    <div class="diagram-panel">
+      <div class="diagram-label">Путь порта от shutdown до Up/Up</div>
+      <svg class="path-svg" viewbox="0 0 860 140" xmlns="http://www.w3.org/2000/svg">
+<path class="link-line" d="M 40,80 L 300,80 L 560,80 L 820,80"></path>
+<circle class="pulse-bgp" fill="#D97706" r="5"></circle>
+<circle cx="40" cy="80" fill="#0D9488" r="7"></circle>
+<text class="node-id self" text-anchor="middle" x="40" y="55">shutdown</text>
+<text class="node-label" text-anchor="middle" x="40" y="108">админ. выключен</text>
+<circle cx="300" cy="80" fill="#0D9488" r="7"></circle>
+<text class="node-id self" text-anchor="middle" x="300" y="55">no shutdown</text>
+<text class="node-label" text-anchor="middle" x="300" y="108">ждём линк</text>
+<circle cx="560" cy="80" fill="#475569" r="7"></circle>
+<text class="node-id" text-anchor="middle" x="560" y="55">Up/Down</text>
+<text class="node-label" text-anchor="middle" x="560" y="108">нет согласования</text>
+<circle cx="820" cy="80" fill="#475569" r="7"></circle>
+<text class="node-id" text-anchor="middle" x="820" y="55">Up/Up</text>
+<text class="node-label" text-anchor="middle" x="820" y="108">готов к работе</text>
+</svg>
+      <div class="diagram-legend"><span class="legend-item"><span class="legend-dot self"></span>ключевой узел на схеме</span><span class="legend-item"><span class="legend-dot"></span>соседний / промежуточный узел</span></div>
+      <ol class="readout-steps"><li class="readout-step dim"><span class="readout-step-num">1</span><span class="readout-step-text">int Gi0/1 — состояние: administratively down</span></li><li class="readout-step amber"><span class="readout-step-num">2</span><span class="readout-step-text">no shutdown — порт включён программно, ждём сигнал по линии</span></li><li class="readout-step amber"><span class="readout-step-num">3</span><span class="readout-step-text">Line protocol: down — не сошлись скорость/дуплекс или нет сигнала</span></li><li class="readout-step good"><span class="readout-step-num">4</span><span class="readout-step-text">Line protocol: up — Up/Up, порт готов передавать трафик</span></li></ol>
+      <p class="diagram-caption">Первая строка show interface — административный и физический статус порта, вторая (line protocol) — согласование канального уровня. Только Up/Up означает, что порт реально пересылает трафик.</p>
+    </div>
+  </section>
+  
+  <section id="theory">
+    <div class="section-head">
+      <div class="section-num">01 — ТЕОРИЯ</div>
+      <div class="section-title">Из чего складывается состояние порта</div>
+      <p class="section-desc">Шесть понятий: от административного выключения до err-disabled — состояний, в которых может застрять порт.</p>
+      <p class="theory-tldr">Проще говоря: «физически подключено» и «реально работает» — разные вещи; между ними стоит команда no shutdown и согласование параметров линка.</p>
+    </div>
+    <div class="theory-grid"><div class="theory-card" id="theory-portup-0"><div class="theory-card-title">Administratively down</div><div class="theory-card-body">Порт выключен вручную командой <code>shutdown</code> — независимо от того, воткнут кабель или нет. Первое, что стоит проверить, если порт вообще не поднимается.</div></div><div class="theory-card" id="theory-portup-1"><div class="theory-card-title">Line protocol</div><div class="theory-card-body">Отдельный от физического статуса показатель: означает, что канальный уровень согласован (keepalive, encapsulation). Порт может быть физически up, но line protocol down.</div></div><div class="theory-card" id="theory-portup-2"><div class="theory-card-title">Duplex mismatch</div><div class="theory-card-body">Рассинхрон half/full duplex на двух концах линка. Линк часто остаётся Up/Up, но растут счётчики ошибок (late collisions, CRC) — производительность деградирует незаметно для беглого взгляда.</div></div><div class="theory-card" id="theory-portup-3"><div class="theory-card-title">Auto-negotiation</div><div class="theory-card-body">Автоматическое согласование скорости и дуплекса между двумя устройствами. На проблемных линках (разное оборудование, старые <a class="term-link" href="#gloss-portup-0" title="Small Form-factor Pluggable — съёмный трансивер, определяющий физическую среду порта (медь/оптика, дальность).">SFP</a>) иногда надёжнее зафиксировать параметры вручную.</div></div><div class="theory-card" id="theory-portup-4"><div class="theory-card-title">Interface description</div><div class="theory-card-body">Текстовая подпись на порту — куда идёт кабель, чей это аплинк. Не влияет на работу, но экономит часы при диагностике через полгода.</div></div><div class="theory-card" id="theory-portup-5"><div class="theory-card-title">err-disabled</div><div class="theory-card-body">Порт физически исправен, но программно заблокирован после срабатывания защиты — <code>BPDU Guard</code>, <code>port security</code>, storm-control. Нужен явный <code>shutdown</code> / <code>no shutdown</code>, чтобы вывести его обратно.</div></div></div>
+  </section>
+  <section id="misconceptions">
+    <div class="section-head">
+      <div class="section-num">— ЧАСТЫЕ ЗАБЛУЖДЕНИЯ</div>
+      <div class="section-title">Что обычно путают</div>
+      <p class="section-desc">Типичные неверные представления про эту тему — и как на самом деле.</p>
+    </div>
+    <div class="misc-grid"><div class="misc-card" id="misc-portup-0"><div class="misc-wrong"><span class="misc-tag bad">Кажется</span>Если кабель воткнут — порт автоматически заработает.</div><div class="misc-right"><span class="misc-tag good">На деле</span>Порт может быть в состоянии shutdown (административно выключен) — физическое подключение не поможет, пока не выполнена no shutdown.</div></div><div class="misc-card" id="misc-portup-1"><div class="misc-wrong"><span class="misc-tag bad">Кажется</span>Duplex mismatch сразу рвёт линк (Down/Down).</div><div class="misc-right"><span class="misc-tag good">На деле</span>При duplex mismatch порт часто остаётся Up/Up, но с ростом ошибок (late collisions, CRC) и деградацией производительности — заметно только по счётчикам.</div></div></div>
+  </section>
+  <section id="process">
+    <div class="section-head">
+      <div class="section-num">02 — ПРОЦЕСС</div>
+      <div class="section-title">Как поднять порт и проверить, что он реально работает</div>
+      <p class="section-desc">Порядок имеет значение: пропущенный шаг — самая частая причина «кабель воткнут, а линка нет».</p>
+    </div>
+    <ul class="steps"><li class="step"><span class="step-num">1</span><span class="step-text"><b>Физическое подключение</b> — кабель, трансивер (<a class="term-link" href="#gloss-portup-0" title="Small Form-factor Pluggable — съёмный трансивер, определяющий физическую среду порта (медь/оптика, дальность).">SFP</a>), убедиться, что оба конца исправны.</span></li><li class="step"><span class="step-num">2</span><span class="step-text"><b>no shutdown</b> — перевести порт из административно выключенного состояния.</span></li><li class="step"><span class="step-num">3</span><span class="step-text"><b>Скорость и дуплекс</b> — оставить auto или зафиксировать вручную на обеих сторонах одинаково.</span></li><li class="step"><span class="step-num">4</span><span class="step-text"><b>Description</b> — подписать порт, чтобы через полгода не гадать, что к нему подключено.</span></li><li class="step"><span class="step-num">5</span><span class="step-text"><b>Проверка show interface status</b> — убедиться, что статус именно connected / Up/Up, а не <a class="term-link" href="#gloss-portup-5" title="Состояние порта после срабатывания защитного механизма — физически исправен, но заблокирован программно.">err-disabled</a> или notconnect.</span></li></ul>
+  </section>
+  <section id="cli">
+    <div class="section-head">
+      <div class="section-num">— ПРИМЕР</div>
+      <div class="section-title">CLI-пример</div>
+      <p class="section-desc">Готовый конфиг для копирования — синтаксис Cisco IOS, адаптируйте под свою схему адресации.</p>
+    </div>
+    <div class="cli-panel">
+      <div class="cli-header">
+        <span class="cli-label">Поднятие и проверка порта</span>
+        <button type="button" class="cli-copy" data-copy-target="cli-code-portup">Копировать</button>
+      </div>
+      <pre class="cli-code" id="cli-code-portup"><code>SW1(config)# interface GigabitEthernet0/1
+SW1(config-if)# description Uplink-to-SW2
+SW1(config-if)# no shutdown
+SW1(config-if)# speed 1000
+SW1(config-if)# duplex full
+SW1(config-if)# end
+SW1# show interfaces GigabitEthernet0/1 status
+
+Port      Name               Status       Vlan       Duplex  Speed  Type
+Gi0/1     Uplink-to-SW2      connected    trunk      full    1000   1000BaseT</code></pre>
+    </div>
+    <p class="cli-note">show interfaces status — самый быстрый способ увидеть реальное состояние порта, а не то, что вы думаете, что настроили.</p>
+  </section>
+  <section id="glossary">
+    <div class="section-head">
+      <div class="section-num">03 — ГЛОССАРИЙ</div>
+      <div class="section-title">Термины модуля</div>
+      <p class="section-desc">Короткий справочник — можно оставить открытым рядом с CLI.</p>
+    </div>
+    <div class="glossary-grid"><div class="gloss-item" id="gloss-portup-0"><div class="gloss-term">SFP</div><div class="gloss-def">Small Form-factor Pluggable — съёмный трансивер, определяющий физическую среду порта (медь/оптика, дальность).</div></div><div class="gloss-item" id="gloss-portup-1"><div class="gloss-term">MDI/MDIX</div><div class="gloss-def">Авто-определение прямого/кроссового кабеля на медном порту — избавляет от необходимости думать, какой патч-корд нужен.</div></div><div class="gloss-item" id="gloss-portup-2"><div class="gloss-term">Keepalive</div><div class="gloss-def">Периодические служебные кадры, подтверждающие, что канальный уровень на линке жив.</div></div><div class="gloss-item" id="gloss-portup-3"><div class="gloss-term">CRC error</div><div class="gloss-def">Счётчик кадров с ошибкой контрольной суммы — частый признак плохого кабеля или duplex mismatch.</div></div><div class="gloss-item" id="gloss-portup-4"><div class="gloss-term">Runts / Giants</div><div class="gloss-def">Кадры короче или длиннее допустимого размера Ethernet — тоже сигнал физических проблем на линке.</div></div><div class="gloss-item" id="gloss-portup-5"><div class="gloss-term">err-disabled</div><div class="gloss-def">Состояние порта после срабатывания защитного механизма — физически исправен, но заблокирован программно.</div></div><div class="gloss-item" id="gloss-portup-6"><div class="gloss-term">show interfaces status</div><div class="gloss-def">Компактная команда для проверки статуса, VLAN, дуплекса и скорости сразу по всем портам коммутатора.</div></div></div>
+  </section>
+  <section id="quiz">
+    <div class="section-head">
+      <div class="section-num">04 — ПРОВЕРКА</div>
+      <div class="section-title">Квиз (5 вопросов)</div>
+      <p class="section-desc">Без подвохов — если теория выше прочитана, займёт минуту.</p>
+    </div>
+    <div class="quiz" data-quiz="portup" data-module="portup" data-correct="1,1,1,1,1">
+      <div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">1</span>Что означает состояние порта «administratively down»?</div><div class="quiz-options" data-q="0"><label class="quiz-opt"><input type="radio" name="portup-q0" value="0"> Порт неисправен физически</label><label class="quiz-opt"><input type="radio" name="portup-q0" value="1"> Порт выключен вручную командой shutdown</label><label class="quiz-opt"><input type="radio" name="portup-q0" value="2"> Нет согласования дуплекса</label><label class="quiz-opt"><input type="radio" name="portup-q0" value="3"> Порт заблокирован STP</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">2</span>Чем line protocol отличается от физического статуса порта?</div><div class="quiz-options" data-q="1"><label class="quiz-opt"><input type="radio" name="portup-q1" value="0"> Это одно и то же</label><label class="quiz-opt"><input type="radio" name="portup-q1" value="1"> Line protocol — это согласование канального уровня, отдельно от физического линка</label><label class="quiz-opt"><input type="radio" name="portup-q1" value="2"> Line protocol относится только к оптике</label><label class="quiz-opt"><input type="radio" name="portup-q1" value="3"> Line protocol не проверяется на access-портах</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">3</span>Частый симптом duplex mismatch?</div><div class="quiz-options" data-q="2"><label class="quiz-opt"><input type="radio" name="portup-q2" value="0"> Порт сразу уходит в Down/Down</label><label class="quiz-opt"><input type="radio" name="portup-q2" value="1"> Порт остаётся Up/Up, но растут счётчики ошибок (CRC, late collisions)</label><label class="quiz-opt"><input type="radio" name="portup-q2" value="2"> VLAN автоматически меняется</label><label class="quiz-opt"><input type="radio" name="portup-q2" value="3"> Скорость порта удваивается</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">4</span>Что нужно сделать, чтобы вывести порт из err-disabled?</div><div class="quiz-options" data-q="3"><label class="quiz-opt"><input type="radio" name="portup-q3" value="0"> Подождать 24 часа</label><label class="quiz-opt"><input type="radio" name="portup-q3" value="1"> Переткнуть кабель в другой порт</label><label class="quiz-opt"><input type="radio" name="portup-q3" value="2"> Явно выполнить shutdown / no shutdown на порту</label><label class="quiz-opt"><input type="radio" name="portup-q3" value="3"> Перезагрузить коммутатор</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">5</span>Зачем нужен description на интерфейсе?</div><div class="quiz-options" data-q="4"><label class="quiz-opt"><input type="radio" name="portup-q4" value="0"> Ускоряет работу порта</label><label class="quiz-opt"><input type="radio" name="portup-q4" value="1"> Влияет на приоритет STP</label><label class="quiz-opt"><input type="radio" name="portup-q4" value="2"> Не влияет на работу, но упрощает диагностику в будущем</label><label class="quiz-opt"><input type="radio" name="portup-q4" value="3"> Обязателен для поднятия линка</label></div></div>
+      <div class="quiz-footer">
+        <button type="button" class="btn quiz-check">Проверить результат</button>
+        <button type="button" class="btn secondary quiz-reset">Сбросить</button>
+        <span class="quiz-score"></span>
+      </div>
+    </div>
+  </section>
+  <section id="related">
+    <div class="section-head">
+      <div class="section-num">— СВЯЗАННЫЕ ТЕМЫ</div>
+      <div class="section-title">Куда это ведёт дальше</div>
+      <p class="section-desc">Эти модули опираются на то, что вы только что прочитали, или используются вместе с этим.</p>
+    </div>
+    <div class="related-grid"><a class="related-card" href="ciscoconn.html"><div class="related-card-chapter">Гл. 1</div><div class="related-card-title">Подключение к оборудованию</div><div class="related-card-sub">Прежде чем настраивать что-либо, нужно попасть в устройство — консоль, Telnet, SSH — и пон…</div></a><a class="related-card" href="vlan.html"><div class="related-card-chapter">Гл. 2</div><div class="related-card-title">VLAN и коммутация</div><div class="related-card-sub">VLAN режет один физический L2-сегмент на несколько логически изолированных широковещательн…</div></a><a class="related-card" href="lag.html"><div class="related-card-chapter">Гл. 2, 4 (практика)</div><div class="related-card-title">LAG / EtherChannel</div><div class="related-card-sub">EtherChannel объединяет 2–8 физических линков между двумя устройствами в одно логическое с…</div></a></div>
+  </section>
+  <div class="module-nav"><a class="module-nav-link prev" href="ciscoconn.html"><div class="module-nav-dir">← Предыдущий</div><div class="module-nav-title">Подключение к оборудованию</div></a><a class="module-nav-link next" href="vlan.html"><div class="module-nav-dir">Следующий →</div><div class="module-nav-title">VLAN и коммутация</div></a></div>
+  <div class="footer">
+    <div class="feedback-panel">
+      <h3>Модуль 3 из 20</h3>
+      <p>Результат квиза сохраняется локально в браузере — прогресс виден в верхнем меню и на главной странице.</p>
+    </div>
+  </div>
+</div>
+<script src="../assets/app.js"></script>
+</body>
+</html>
