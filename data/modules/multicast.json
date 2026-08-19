@@ -1,7 +1,7 @@
 {
   "id": "multicast",
   "order": 11,
-  "group": "overlay",
+  "group": "l3",
   "tab_label": "Multicast-рассылка",
   "title_html": "Multicast: <span>один поток</span>, много получателей",
   "subtitle": "Вместо N копий одного и того же потока для N получателей, multicast отправляет один поток, а сеть сама размножает его только там, где есть подписчики.",

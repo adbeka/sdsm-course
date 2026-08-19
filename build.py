@@ -18,13 +18,11 @@ DIST = ROOT / "dist"
 
 GROUP_LABEL = {
     "foundations": "Основы",
-    "l2": "Коммутация L2",
-    "l3": "Маршрутизация L3",
-    "overlay": "Оверлеи и внешняя связность",
-    "mpls": "MPLS и провайдерские сервисы",
-    "hardware": "Железо и качество",
+    "l2": "L2 layer",
+    "l3": "L3 layer",
+    "mpls": "Провайдерские сервисы",
 }
-GROUP_ORDER = ["foundations", "l2", "l3", "overlay", "mpls", "hardware"]
+GROUP_ORDER = ["foundations", "l2", "l3", "mpls"]
 
 FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com">'
          '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
@@ -193,7 +191,7 @@ def topnav_html(modules, active_id=None, depth="../", show_section_links=True, h
 
     return f'''<nav class="topnav">
   <div class="topnav-inner">
-    <a class="topnav-brand" href="{depth}index.html">СДСМ · <b>учебный портал</b>
+    <a class="topnav-brand" href="{depth}index.html">БЗПД · <b>учебный портал</b>
       <span class="topnav-progress-pill"><span class="val">0/{len(modules)}</span></span>
     </a>
     <div class="nav-groups">{"".join(dropdowns)}</div>
@@ -500,7 +498,7 @@ def render_module(m, modules):
     </div>
   </div>
 </div>'''
-    return page_shell(f'СДСМ · {m["tab_label"]}', body, depth="../")
+    return page_shell(f'БЗПД · {m["tab_label"]}', body, depth="../")
 
 
 def render_home(modules):
@@ -536,7 +534,7 @@ def render_home(modules):
   <section class="home-hero">
     <div class="eyebrow">linkmeup · «Сети для самых маленьких» · внутренний курс</div>
     <h1>Теория сетей: <span>от VLAN до EVPN</span>, по шагам</h1>
-    <p>18 модулей — от базового плана сети и коммутации до MPLS L3VPN, EVPN и QoS. В каждом: теория, схема с разбором по шагам, глоссарий и квиз на 5 вопросов.</p>
+    <p>{len(modules)} модулей — от базового плана сети и коммутации до MPLS L3VPN, EVPN и QoS. В каждом: теория, схема с разбором по шагам, CLI-пример, глоссарий и квиз на 5 вопросов.</p>
     <div class="home-progress">
       <div class="home-progress-ring">
         <svg width="64" height="64" viewBox="0 0 64 64">
@@ -554,7 +552,7 @@ def render_home(modules):
   </section>
   {"".join(group_blocks)}
 </div>'''
-    return page_shell("СДСМ · Учебный портал", body, depth="")
+    return page_shell("БЗПД · Учебный портал", body, depth="")
 
 
 def render_glossary_page(modules):
@@ -584,7 +582,7 @@ def render_glossary_page(modules):
   <section class="hero" style="padding-bottom:16px;">
     <div class="eyebrow">Все термины курса · {len(entries)}</div>
     <h1>Общий <span>глоссарий</span></h1>
-    <p class="hero-sub">Термины из всех 18 модулей в одном месте — для быстрого поиска по работе, без чтения модуля целиком. Клик по термину открывает его в контексте модуля.</p>
+    <p class="hero-sub">Термины из всех {len(modules)} модулей в одном месте — для быстрого поиска по работе, без чтения модуля целиком. Клик по термину открывает его в контексте модуля.</p>
     <div class="gloss-page-filter-row">
       <input type="text" class="gloss-page-filter" placeholder="Фильтр по термину или определению…" autocomplete="off">
       <span class="gloss-page-count">{len(entries)} терминов</span>
@@ -595,7 +593,7 @@ def render_glossary_page(modules):
     <p class="gloss-page-empty" hidden>Ничего не найдено.</p>
   </section>
 </div>'''
-    return page_shell("СДСМ · Глоссарий", body, depth="")
+    return page_shell("БЗПД · Глоссарий", body, depth="")
 
 
 def main():

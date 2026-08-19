@@ -388,7 +388,7 @@ section + section{border-top:1px solid var(--panel-border);}
 .cli-copy.copied{color:var(--good); border-color:var(--good);}
 .cli-code{
   margin:0; padding:18px 20px; overflow-x:auto; font-family:var(--mono); font-size:13px;
-  line-height:1.65; color:#D5DCEE; white-space:pre;
+  line-height:1.65; color:#4ADE80; white-space:pre;
 }
 .cli-note{margin-top:14px; font-size:13px; color:var(--text-dim); line-height:1.55;}
 

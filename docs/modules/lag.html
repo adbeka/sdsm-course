@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>СДСМ · LAG / EtherChannel</title>
+<title>БЗПД · LAG / EtherChannel</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body data-depth="../">
 <nav class="topnav">
   <div class="topnav-inner">
-    <a class="topnav-brand" href="../index.html">СДСМ · <b>учебный портал</b>
+    <a class="topnav-brand" href="../index.html">БЗПД · <b>учебный портал</b>
       <span class="topnav-progress-pill"><span class="val">0/20</span></span>
     </a>
     <div class="nav-groups"><div class="nav-group">
@@ -19,30 +19,20 @@
       </button>
       <div class="nav-group-menu"><a class="nav-group-item" href="../modules/planning.html" data-progress-id="planning">Планирование сети<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ciscoconn.html" data-progress-id="ciscoconn">Подключение к оборудованию<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/portup.html" data-progress-id="portup">Поднятие порта<span class="tab-check"></span></a></div>
     </div><div class="nav-group active">
-      <button type="button" class="nav-group-trigger">Коммутация L2
+      <button type="button" class="nav-group-trigger">L2 layer
         <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vlan.html" data-progress-id="vlan">VLAN и коммутация<span class="tab-check"></span></a><a class="nav-group-item active" href="../modules/lag.html" data-progress-id="lag">LAG / EtherChannel<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/stp.html" data-progress-id="stp">STP: защита от петель<span class="tab-check"></span></a></div>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vlan.html" data-progress-id="vlan">VLAN и коммутация<span class="tab-check"></span></a><a class="nav-group-item active" href="../modules/lag.html" data-progress-id="lag">LAG / EtherChannel<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/stp.html" data-progress-id="stp">STP: защита от петель<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/packetlife.html" data-progress-id="packetlife">Путь пакета<span class="tab-check"></span></a></div>
     </div><div class="nav-group">
-      <button type="button" class="nav-group-trigger">Маршрутизация L3
+      <button type="button" class="nav-group-trigger">L3 layer
         <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/staticroute.html" data-progress-id="staticroute">Статическая маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/nat.html" data-progress-id="nat">ACL и NAT<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ospf.html" data-progress-id="ospf">OSPF: динамическая маршрутизация<span class="tab-check"></span></a></div>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/staticroute.html" data-progress-id="staticroute">Статическая маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/nat.html" data-progress-id="nat">ACL и NAT<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ospf.html" data-progress-id="ospf">OSPF: динамическая маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/vpn.html" data-progress-id="vpn">VPN-туннели<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/bgp.html" data-progress-id="bgp">BGP: междоменная маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/multicast.html" data-progress-id="multicast">Multicast-рассылка<span class="tab-check"></span></a></div>
     </div><div class="nav-group">
-      <button type="button" class="nav-group-trigger">Оверлеи и внешняя связность
+      <button type="button" class="nav-group-trigger">Провайдерские сервисы
         <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vpn.html" data-progress-id="vpn">VPN-туннели<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/bgp.html" data-progress-id="bgp">BGP: междоменная маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/multicast.html" data-progress-id="multicast">Multicast-рассылка<span class="tab-check"></span></a></div>
-    </div><div class="nav-group">
-      <button type="button" class="nav-group-trigger">MPLS и провайдерские сервисы
-        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/mplsbase.html" data-progress-id="mplsbase">Базовый MPLS<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/l3vpn.html" data-progress-id="l3vpn">MPLS L3VPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/l2vpn.html" data-progress-id="l2vpn">MPLS L2VPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/evpn.html" data-progress-id="evpn">EVPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/evpnmh.html" data-progress-id="evpnmh">EVPN Multihoming<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/mplste.html" data-progress-id="mplste">MPLS Traffic Engineering<span class="tab-check"></span></a></div>
-    </div><div class="nav-group">
-      <button type="button" class="nav-group-trigger">Железо и качество
-        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/packetlife.html" data-progress-id="packetlife">Путь пакета<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/qos.html" data-progress-id="qos">QoS: приоритизация трафика<span class="tab-check"></span></a></div>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/mplsbase.html" data-progress-id="mplsbase">Базовый MPLS<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/l3vpn.html" data-progress-id="l3vpn">MPLS L3VPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/l2vpn.html" data-progress-id="l2vpn">MPLS L2VPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/evpn.html" data-progress-id="evpn">EVPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/evpnmh.html" data-progress-id="evpnmh">EVPN Multihoming<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/mplste.html" data-progress-id="mplste">MPLS Traffic Engineering<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/qos.html" data-progress-id="qos">QoS: приоритизация трафика<span class="tab-check"></span></a></div>
     </div></div>
     <a class="nav-glossary-link" href="../glossary.html">Глоссарий</a>
     <button type="button" class="search-trigger" aria-label="Поиск по сайту">
@@ -62,7 +52,7 @@
   </div>
 </div>
 <div class="wrap">
-  <div class="breadcrumb"><a href="../index.html">Главная</a><span class="sep">/</span><span>Коммутация L2</span><span class="sep">/</span><span class="current">LAG / EtherChannel</span></div>
+  <div class="breadcrumb"><a href="../index.html">Главная</a><span class="sep">/</span><span>L2 layer</span><span class="sep">/</span><span class="current">LAG / EtherChannel</span></div>
   <section class="hero">
     <div class="eyebrow">Модуль 5 из 20 · теория + схема + квиз</div>
     <h1>LAG: <span>несколько линков</span> — один логический</h1>
