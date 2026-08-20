@@ -6,6 +6,7 @@ template plus a home dashboard, and writes plain static HTML/CSS/JS to
 dist/. No runtime dependencies in the output; Python (stdlib only, this
 script) is only needed to build.
 """
+import hashlib
 import html
 import json
 import re
@@ -15,6 +16,19 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 DATA = ROOT / "data" / "modules"
 DIST = ROOT / "dist"
+
+
+def asset_version():
+    """Content hash of style.css + app.js — used as a cache-busting query
+    param so a deploy always forces browsers to fetch the new assets,
+    instead of relying on a manual hard-refresh."""
+    h = hashlib.sha1()
+    for name in ("style.css", "app.js"):
+        h.update((ROOT / "assets" / name).read_bytes())
+    return h.hexdigest()[:10]
+
+
+ASSET_VERSION = asset_version()
 
 GROUP_LABEL = {
     "foundations": "Основы",
@@ -447,11 +461,11 @@ def page_shell(title, body, depth="../"):
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{title}</title>
 {FONTS}
-<link rel="stylesheet" href="{depth}assets/style.css">
+<link rel="stylesheet" href="{depth}assets/style.css?v={ASSET_VERSION}">
 </head>
 <body data-depth="{depth}">
 {body}
-<script src="{depth}assets/app.js"></script>
+<script src="{depth}assets/app.js?v={ASSET_VERSION}"></script>
 </body>
 </html>'''
 

@@ -148,7 +148,7 @@
 
     function loadIndex(){
       if (!indexPromise){
-        indexPromise = fetch(depth + "assets/search-index.json")
+        indexPromise = fetch(depth + "assets/search-index.json", {cache: "no-cache"})
           .then(function(r){ return r.json(); })
           .then(function(data){ index = data; return data; })
           .catch(function(){ index = []; return []; });
