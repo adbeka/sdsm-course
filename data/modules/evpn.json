@@ -3,7 +3,7 @@
   "order": 15,
   "group": "mpls",
   "tab_label": "EVPN",
-  "title_html": "EVPN: <span>BGP вместо флуда</span> для изучения MAC",
+  "title_html": "EVPN: <span>анонс MAC/IP через BGP</span> вместо обучения флудом",
   "subtitle": "VPLS учит MAC-адреса флудом неизвестного трафика в data plane. EVPN переносит эту задачу в control plane через BGP — MAC-адреса анонсируются как обычные маршруты, а не выясняются флудом.",
   "meta": {
     "ИСТОЧНИК": "linkmeup / СДСМ, гл. 12.1",

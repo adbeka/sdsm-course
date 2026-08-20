@@ -3,7 +3,7 @@
   "order": 14,
   "group": "mpls",
   "tab_label": "MPLS L2VPN",
-  "title_html": "MPLS L2VPN: <span>кабель</span>, которого физически нет",
+  "title_html": "MPLS L2VPN: <span>эмуляция канального соединения</span> поверх MPLS",
   "subtitle": "VPWS и VPLS переносят Ethernet-кадры клиента через MPLS core прозрачно — для CE это выглядит как обычный провод или коммутатор, а не как сеть провайдера.",
   "meta": {
     "ИСТОЧНИК": "linkmeup / СДСМ, гл. 12",

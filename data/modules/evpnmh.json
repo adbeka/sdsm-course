@@ -3,7 +3,7 @@
   "order": 16,
   "group": "mpls",
   "tab_label": "EVPN Multihoming",
-  "title_html": "EVPN Multihoming: <span>два аплинка</span> без ручного MC-LAG",
+  "title_html": "EVPN Multihoming: <span>подключение к нескольким PE</span> без ручного MC-LAG",
   "subtitle": "Когда CE подключён к двум PE одновременно, кто-то должен решить, кто активно форвардит трафик и как не задублировать BUM. EVPN решает это через BGP, а не через проприетарный MC-LAG.",
   "meta": {
     "ИСТОЧНИК": "linkmeup / СДСМ, гл. 12.2",

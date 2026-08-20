@@ -3,7 +3,7 @@
   "order": 17,
   "group": "mpls",
   "tab_label": "MPLS Traffic Engineering",
-  "title_html": "MPLS TE: <span>явно указанный путь</span>, а не тот, что выбрал IGP",
+  "title_html": "MPLS Traffic Engineering: <span>явное управление путём</span> трафика",
   "subtitle": "Обычная маршрутизация выбирает путь по метрике IGP, не глядя на загрузку линков. MPLS TE резервирует полосу и может явно проложить путь в обход перегруженного участка.",
   "meta": {
     "ИСТОЧНИК": "linkmeup / СДСМ, гл. 13",
