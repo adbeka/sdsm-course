@@ -64,21 +64,20 @@
     </div>
     <div class="diagram-panel">
       <div class="diagram-label">Путь порта от shutdown до Up/Up</div>
-      <svg class="path-svg" viewbox="0 0 860 140" xmlns="http://www.w3.org/2000/svg">
-<path class="link-line" d="M 40,80 L 300,80 L 560,80 L 820,80"></path>
-<circle class="pulse-bgp" fill="#D97706" r="5"></circle>
-<circle cx="40" cy="80" fill="#0D9488" r="7"></circle>
-<text class="node-id self" text-anchor="middle" x="40" y="55">shutdown</text>
-<text class="node-label" text-anchor="middle" x="40" y="108">админ. выключен</text>
-<circle cx="300" cy="80" fill="#0D9488" r="7"></circle>
-<text class="node-id self" text-anchor="middle" x="300" y="55">no shutdown</text>
-<text class="node-label" text-anchor="middle" x="300" y="108">ждём линк</text>
-<circle cx="560" cy="80" fill="#475569" r="7"></circle>
-<text class="node-id" text-anchor="middle" x="560" y="55">Up/Down</text>
-<text class="node-label" text-anchor="middle" x="560" y="108">нет согласования</text>
-<circle cx="820" cy="80" fill="#475569" r="7"></circle>
-<text class="node-id" text-anchor="middle" x="820" y="55">Up/Up</text>
-<text class="node-label" text-anchor="middle" x="820" y="108">готов к работе</text>
+      <svg class="path-svg" viewbox="0 0 860 230" xmlns="http://www.w3.org/2000/svg">
+<path class="link-line" d="M 150,115 L 500,115"></path>
+<text class="node-label" text-anchor="middle" x="325" y="105">патч-корд</text>
+<path class="link-line" d="M 500,115 L 800,115"></path>
+<text class="node-label" text-anchor="middle" x="650" y="105">Gi0/1 · Up/Up</text>
+<g transform="translate(133.0,98.0) scale(1.4167)" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id" text-anchor="middle" x="150" y="88">PC1</text>
+<text class="node-label" text-anchor="middle" x="150" y="150">NIC</text>
+<g transform="translate(483.0,98.0) scale(1.4167)" fill="none" stroke="#0D9488" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id self" text-anchor="middle" x="500" y="88">SW1</text>
+<text class="node-label" text-anchor="middle" x="500" y="150">Gi0/1</text>
+<g transform="translate(783.0,98.0) scale(1.4167)" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id" text-anchor="middle" x="800" y="88">SW-CORE</text>
+<text class="node-label" text-anchor="middle" x="800" y="150">uplink</text>
 </svg>
       <div class="diagram-legend"><span class="legend-item"><span class="legend-dot self"></span>ключевой узел на схеме</span><span class="legend-item"><span class="legend-dot"></span>соседний / промежуточный узел</span></div>
       <ol class="readout-steps"><li class="readout-step dim"><span class="readout-step-num">1</span><span class="readout-step-text">int Gi0/1 — состояние: administratively down</span></li><li class="readout-step amber"><span class="readout-step-num">2</span><span class="readout-step-text">no shutdown — порт включён программно, ждём сигнал по линии</span></li><li class="readout-step amber"><span class="readout-step-num">3</span><span class="readout-step-text">Line protocol: down — не сошлись скорость/дуплекс или нет сигнала</span></li><li class="readout-step good"><span class="readout-step-num">4</span><span class="readout-step-text">Line protocol: up — Up/Up, порт готов передавать трафик</span></li></ol>

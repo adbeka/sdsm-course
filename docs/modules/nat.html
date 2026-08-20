@@ -64,20 +64,23 @@
     </div>
     <div class="diagram-panel">
       <div class="diagram-label">Трансляция адреса и порта (PAT)</div>
-      <svg class="path-svg" viewbox="0 0 860 140" xmlns="http://www.w3.org/2000/svg">
-<path class="link-line" d="M 40,80 L 300,80 L 560,80 L 820,80"></path>
-<circle class="pulse-bgp" fill="#D97706" r="5"></circle>
-<circle cx="40" cy="80" fill="#0D9488" r="7"></circle>
-<text class="node-id self" text-anchor="middle" x="40" y="55">Host</text>
-<text class="node-label" text-anchor="middle" x="40" y="108">192.168.1.10</text>
-<circle cx="300" cy="80" fill="#0D9488" r="7"></circle>
-<text class="node-id self" text-anchor="middle" x="300" y="55">NAT</text>
-<text class="node-label" text-anchor="middle" x="300" y="108">устройство</text>
-<circle cx="560" cy="80" fill="#475569" r="7"></circle>
-<text class="node-id" text-anchor="middle" x="560" y="55">Public IP</text>
-<text class="node-label" text-anchor="middle" x="560" y="108">203.0.113.5</text>
-<circle cx="820" cy="80" fill="#475569" r="7"></circle>
-<text class="node-id" text-anchor="middle" x="820" y="55">Интернет</text>
+      <svg class="path-svg" viewbox="0 0 860 230" xmlns="http://www.w3.org/2000/svg">
+<path class="link-line" d="M 90,160 L 420,110"></path>
+<path class="link-line" d="M 90,60 L 420,110"></path>
+<path class="link-line" d="M 420,110 L 760,110"></path>
+<text class="node-label" text-anchor="middle" x="590" y="100">Gi0/0 outside</text>
+<g transform="translate(75.0,145.0) scale(1.2500)" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></g>
+<text class="node-id" text-anchor="middle" x="90" y="135">PC1</text>
+<text class="node-label" text-anchor="middle" x="90" y="193">192.168.1.10</text>
+<g transform="translate(75.0,45.0) scale(1.2500)" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></g>
+<text class="node-id" text-anchor="middle" x="90" y="35">PC2</text>
+<text class="node-label" text-anchor="middle" x="90" y="93">192.168.1.11</text>
+<g transform="translate(403.0,93.0) scale(1.4167)" fill="none" stroke="#0D9488" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></g>
+<text class="node-id self" text-anchor="middle" x="420" y="83">R1</text>
+<text class="node-label" text-anchor="middle" x="420" y="145">NAT overload</text>
+<g transform="translate(731.0,81.0) scale(2.4167)" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></g>
+<text class="node-id" text-anchor="middle" x="760" y="71">Интернет</text>
+<text class="node-label" text-anchor="middle" x="760" y="157">203.0.113.5</text>
 </svg>
       <div class="diagram-legend"><span class="legend-item"><span class="legend-dot self"></span>ключевой узел на схеме</span><span class="legend-item"><span class="legend-dot"></span>соседний / промежуточный узел</span></div>
       <ol class="readout-steps"><li class="readout-step plain"><span class="readout-step-num">1</span><span class="readout-step-text">Src: 192.168.1.10:5000 (приватный адрес)</span></li><li class="readout-step plain"><span class="readout-step-num">2</span><span class="readout-step-text">NAT ищет/создаёт трансляцию в таблице</span></li><li class="readout-step plain"><span class="readout-step-num">3</span><span class="readout-step-text">Src переписан: 203.0.113.5:40012</span></li><li class="readout-step plain"><span class="readout-step-num">4</span><span class="readout-step-text">Пакет уходит в интернет с публичным адресом</span></li></ol>

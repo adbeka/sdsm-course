@@ -64,19 +64,29 @@
     </div>
     <div class="diagram-panel">
       <div class="diagram-label">Путь пакета через классификацию и очереди</div>
-      <svg class="path-svg" viewbox="0 0 860 140" xmlns="http://www.w3.org/2000/svg">
-<path class="link-line" d="M 40,80 L 300,80 L 560,80 L 820,80"></path>
-<circle class="pulse-bgp" fill="#D97706" r="5"></circle>
-<circle cx="40" cy="80" fill="#475569" r="7"></circle>
-<text class="node-id" text-anchor="middle" x="40" y="55">Пакет</text>
-<text class="node-label" text-anchor="middle" x="40" y="108">без метки</text>
-<circle cx="300" cy="80" fill="#0D9488" r="7"></circle>
-<text class="node-id self" text-anchor="middle" x="300" y="55">Classify</text>
-<circle cx="560" cy="80" fill="#0D9488" r="7"></circle>
-<text class="node-id self" text-anchor="middle" x="560" y="55">Mark + Queue</text>
-<circle cx="820" cy="80" fill="#475569" r="7"></circle>
-<text class="node-id" text-anchor="middle" x="820" y="55">Egress</text>
-<text class="node-label" text-anchor="middle" x="820" y="108">по приоритету</text>
+      <svg class="path-svg" viewbox="0 0 860 320" xmlns="http://www.w3.org/2000/svg">
+<path class="link-line" d="M 70,150 L 240,150"></path>
+<path class="link-line" d="M 240,150 L 460,40"></path>
+<path class="link-line" d="M 240,150 L 460,150"></path>
+<path class="link-line" d="M 240,150 L 460,260"></path>
+<path class="link-line" d="M 460,40 L 780,150"></path>
+<path class="link-line" d="M 460,150 L 780,150"></path>
+<path class="link-line" d="M 460,260 L 780,150"></path>
+<g transform="translate(56.0,136.0) scale(1.1667)" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id" text-anchor="middle" x="70" y="126">Вход</text>
+<g transform="translate(223.0,133.0) scale(1.4167)" fill="none" stroke="#0D9488" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id self" text-anchor="middle" x="240" y="123">Классификация</text>
+<text class="node-label" text-anchor="middle" x="240" y="185">DSCP</text>
+<g transform="translate(445.0,25.0) scale(1.2500)" fill="none" stroke="#0D9488" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id self" text-anchor="middle" x="460" y="15">Priority queue</text>
+<text class="node-label" text-anchor="middle" x="460" y="73">voice/video</text>
+<g transform="translate(445.0,135.0) scale(1.2500)" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id" text-anchor="middle" x="460" y="125">Normal queue</text>
+<g transform="translate(445.0,245.0) scale(1.2500)" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id" text-anchor="middle" x="460" y="235">Scavenger</text>
+<g transform="translate(757.0,127.0) scale(1.9167)" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></g>
+<text class="node-id" text-anchor="middle" x="780" y="117">Egress</text>
+<text class="node-label" text-anchor="middle" x="780" y="191">WAN-OUT</text>
 </svg>
       <div class="diagram-legend"><span class="legend-item"><span class="legend-dot self"></span>ключевой узел на схеме</span><span class="legend-item"><span class="legend-dot"></span>соседний / промежуточный узел</span></div>
       <ol class="readout-steps"><li class="readout-step plain"><span class="readout-step-num">1</span><span class="readout-step-text">Пакет без QoS-метки на входе</span></li><li class="readout-step plain"><span class="readout-step-num">2</span><span class="readout-step-text">Classify: определён как голосовой трафик (VoIP)</span></li><li class="readout-step plain"><span class="readout-step-num">3</span><span class="readout-step-text">Mark: DSCP EF, помещён в приоритетную очередь</span></li><li class="readout-step plain"><span class="readout-step-num">4</span><span class="readout-step-text">Egress: отправлен без задержки, минуя очередь best-effort</span></li></ol>

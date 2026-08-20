@@ -64,22 +64,22 @@
     </div>
     <div class="diagram-panel">
       <div class="diagram-label">Кольцо из 4 коммутаторов: один линк заблокирован</div>
-      <svg class="path-svg" viewbox="0 0 860 300" xmlns="http://www.w3.org/2000/svg">
-<path class="link-line" d="M 430,30 L 780,150"></path>
-<path class="link-line" d="M 780,150 L 430,270"></path>
-<path class="link-line" d="M 430,270 L 80,150"></path>
-<path class="link-line blocked" d="M 80,150 L 430,30"></path>
-<circle class="pulse-stp" fill="#D97706" r="5"></circle>
-<circle cx="430" cy="30" fill="#0D9488" r="8"></circle>
-<text class="node-id self" text-anchor="middle" x="430" y="16">SW1 · ROOT</text>
-<circle cx="780" cy="150" fill="#475569" r="7"></circle>
-<text class="node-id" text-anchor="start" x="815" y="145">SW2</text>
-<text class="node-label" text-anchor="start" x="815" y="163">designated</text>
-<circle cx="430" cy="270" fill="#475569" r="7"></circle>
-<text class="node-id" text-anchor="middle" x="430" y="296">SW3</text>
-<circle cx="80" cy="150" fill="#475569" r="7"></circle>
-<text class="node-id" text-anchor="end" x="45" y="145">SW4</text>
-<text class="node-label" text-anchor="end" x="45" y="163">blocked-порт</text>
+      <svg class="path-svg" viewbox="0 0 860 310" xmlns="http://www.w3.org/2000/svg">
+<path class="link-line" d="M 430,40 L 780,150"></path>
+<path class="link-line" d="M 780,150 L 430,260"></path>
+<path class="link-line" d="M 430,260 L 80,150"></path>
+<path class="link-line blocked" d="M 80,150 L 430,40"></path>
+<g transform="translate(413.0,23.0) scale(1.4167)" fill="none" stroke="#0D9488" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id self" text-anchor="middle" x="430" y="13">SW1</text>
+<text class="node-label" text-anchor="middle" x="430" y="75">ROOT</text>
+<g transform="translate(763.0,133.0) scale(1.4167)" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id" text-anchor="middle" x="780" y="123">SW2</text>
+<text class="node-label" text-anchor="middle" x="780" y="185">designated</text>
+<g transform="translate(413.0,243.0) scale(1.4167)" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id" text-anchor="middle" x="430" y="233">SW3</text>
+<g transform="translate(63.0,133.0) scale(1.4167)" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id" text-anchor="middle" x="80" y="123">SW4</text>
+<text class="node-label" text-anchor="middle" x="80" y="185">blocked-порт</text>
 </svg>
       <div class="diagram-legend"><span class="legend-item"><span class="legend-dot self"></span>ключевой узел на схеме</span><span class="legend-item"><span class="legend-dot"></span>соседний / промежуточный узел</span><span class="legend-item"><span class="legend-dash"></span>путь заблокирован / не пересылает</span></div>
       <ol class="readout-steps"><li class="readout-step dim"><span class="readout-step-num">1</span><span class="readout-step-text">SW4-порт: Blocking — слушает BPDU, трафик не пускает</span></li><li class="readout-step amber"><span class="readout-step-num">2</span><span class="readout-step-text">SW4-порт: Listening — участвует в выборе топологии</span></li><li class="readout-step amber"><span class="readout-step-num">3</span><span class="readout-step-text">SW4-порт: Learning — учит MAC-адреса, ещё не пересылает</span></li><li class="readout-step good"><span class="readout-step-num">4</span><span class="readout-step-text">SW4-порт: Blocking (финал) — путь через SW1↔SW4 логически выключен, кольца нет</span></li></ol>

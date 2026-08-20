@@ -64,21 +64,19 @@
     </div>
     <div class="diagram-panel">
       <div class="diagram-label">Как физические линки становятся одним Port-channel</div>
-      <svg class="path-svg" viewbox="0 0 860 140" xmlns="http://www.w3.org/2000/svg">
-<path class="link-line" d="M 40,80 L 300,80 L 560,80 L 820,80"></path>
-<circle class="pulse-bgp" fill="#D97706" r="5"></circle>
-<circle cx="40" cy="80" fill="#0D9488" r="7"></circle>
-<text class="node-id self" text-anchor="middle" x="40" y="55">Gi0/1</text>
-<text class="node-label" text-anchor="middle" x="40" y="108">линк 1, down</text>
-<circle cx="300" cy="80" fill="#0D9488" r="7"></circle>
-<text class="node-id self" text-anchor="middle" x="300" y="55">+ Gi0/2, Gi0/3</text>
-<text class="node-label" text-anchor="middle" x="300" y="108">добавлены в группу</text>
-<circle cx="560" cy="80" fill="#475569" r="7"></circle>
-<text class="node-id" text-anchor="middle" x="560" y="55">LACP</text>
-<text class="node-label" text-anchor="middle" x="560" y="108">согласование</text>
-<circle cx="820" cy="80" fill="#475569" r="7"></circle>
-<text class="node-id" text-anchor="middle" x="820" y="55">Po1: Up</text>
-<text class="node-label" text-anchor="middle" x="820" y="108">3 линка, 1 логический порт</text>
+      <svg class="path-svg" viewbox="0 0 860 200" xmlns="http://www.w3.org/2000/svg">
+<path class="link-line" d="M 130,115 L 730,115"></path>
+<text class="node-label" text-anchor="middle" x="430" y="69">Gi0/1</text>
+<path class="link-line" d="M 130,115 L 730,115"></path>
+<text class="node-label" text-anchor="middle" x="430" y="105">Gi0/2</text>
+<path class="link-line" d="M 130,115 L 730,115"></path>
+<text class="node-label" text-anchor="middle" x="430" y="139">Gi0/3</text>
+<g transform="translate(113.0,98.0) scale(1.4167)" fill="none" stroke="#0D9488" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id self" text-anchor="middle" x="130" y="88">SW1</text>
+<text class="node-label" text-anchor="middle" x="130" y="150">Po1</text>
+<g transform="translate(713.0,98.0) scale(1.4167)" fill="none" stroke="#0D9488" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id self" text-anchor="middle" x="730" y="88">SW2</text>
+<text class="node-label" text-anchor="middle" x="730" y="150">Po1</text>
 </svg>
       <div class="diagram-legend"><span class="legend-item"><span class="legend-dot self"></span>ключевой узел на схеме</span><span class="legend-item"><span class="legend-dot"></span>соседний / промежуточный узел</span></div>
       <ol class="readout-steps"><li class="readout-step plain"><span class="readout-step-num">1</span><span class="readout-step-text">channel-group 1 mode active — Gi0/1 добавлен в LACP-группу</span></li><li class="readout-step plain"><span class="readout-step-num">2</span><span class="readout-step-text">channel-group 1 mode active — Gi0/2, Gi0/3 присоединяются</span></li><li class="readout-step plain"><span class="readout-step-num">3</span><span class="readout-step-text">LACP: согласование параметров между SW1 и SW2</span></li><li class="readout-step plain"><span class="readout-step-num">4</span><span class="readout-step-text">Port-channel1: Up — трафик распределяется по всем линкам</span></li></ol>

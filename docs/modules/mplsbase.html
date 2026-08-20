@@ -64,21 +64,26 @@
     </div>
     <div class="diagram-panel">
       <div class="diagram-label">Push → Swap → Pop на пути пакета</div>
-      <svg class="path-svg" viewbox="0 0 860 140" xmlns="http://www.w3.org/2000/svg">
-<path class="link-line" d="M 40,80 L 300,80 L 560,80 L 820,80"></path>
-<circle class="pulse-bgp" fill="#D97706" r="5"></circle>
-<circle cx="40" cy="80" fill="#475569" r="7"></circle>
-<text class="node-id" text-anchor="middle" x="40" y="55">CE</text>
-<text class="node-label" text-anchor="middle" x="40" y="108">без метки</text>
-<circle cx="300" cy="80" fill="#0D9488" r="7"></circle>
-<text class="node-id self" text-anchor="middle" x="300" y="55">PE-in</text>
-<text class="node-label" text-anchor="middle" x="300" y="108">push</text>
-<circle cx="560" cy="80" fill="#475569" r="7"></circle>
-<text class="node-id" text-anchor="middle" x="560" y="55">P</text>
-<text class="node-label" text-anchor="middle" x="560" y="108">swap</text>
-<circle cx="820" cy="80" fill="#0D9488" r="7"></circle>
-<text class="node-id self" text-anchor="middle" x="820" y="55">PE-out</text>
-<text class="node-label" text-anchor="middle" x="820" y="108">pop</text>
+      <svg class="path-svg" viewbox="0 0 860 230" xmlns="http://www.w3.org/2000/svg">
+<path class="link-line" d="M 60,115 L 260,115"></path>
+<path class="link-line" d="M 260,115 L 480,115"></path>
+<text class="node-label" text-anchor="middle" x="370" y="105">label 100</text>
+<path class="link-line" d="M 480,115 L 700,115"></path>
+<text class="node-label" text-anchor="middle" x="590" y="105">label 200</text>
+<path class="link-line" d="M 700,115 L 800,115"></path>
+<g transform="translate(46.0,101.0) scale(1.1667)" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id" text-anchor="middle" x="60" y="91">CE1</text>
+<g transform="translate(243.0,98.0) scale(1.4167)" fill="none" stroke="#0D9488" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id self" text-anchor="middle" x="260" y="88">PE1</text>
+<text class="node-label" text-anchor="middle" x="260" y="150">push</text>
+<g transform="translate(463.0,98.0) scale(1.4167)" fill="none" stroke="#0D9488" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id self" text-anchor="middle" x="480" y="88">P</text>
+<text class="node-label" text-anchor="middle" x="480" y="150">swap</text>
+<g transform="translate(683.0,98.0) scale(1.4167)" fill="none" stroke="#0D9488" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id self" text-anchor="middle" x="700" y="88">PE2</text>
+<text class="node-label" text-anchor="middle" x="700" y="150">pop</text>
+<g transform="translate(786.0,101.0) scale(1.1667)" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id" text-anchor="middle" x="800" y="91">CE2</text>
 </svg>
       <div class="diagram-legend"><span class="legend-item"><span class="legend-dot self"></span>ключевой узел на схеме</span><span class="legend-item"><span class="legend-dot"></span>соседний / промежуточный узел</span></div>
       <ol class="readout-steps"><li class="readout-step plain"><span class="readout-step-num">1</span><span class="readout-step-text">Пакет без метки приходит на PE</span></li><li class="readout-step plain"><span class="readout-step-num">2</span><span class="readout-step-text">PE делает push: метка 100 добавлена</span></li><li class="readout-step plain"><span class="readout-step-num">3</span><span class="readout-step-text">P-роутер делает swap: метка 100 → 200</span></li><li class="readout-step plain"><span class="readout-step-num">4</span><span class="readout-step-text">PE-out делает pop, дальше — обычная IP-пересылка</span></li></ol>

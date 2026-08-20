@@ -64,21 +64,27 @@
     </div>
     <div class="diagram-panel">
       <div class="diagram-label">Обход перегруженного IGP-пути через TE-туннель</div>
-      <svg class="path-svg" viewbox="0 0 860 140" xmlns="http://www.w3.org/2000/svg">
-<path class="link-line" d="M 40,80 L 300,80 L 560,80 L 820,80"></path>
-<circle class="pulse-bgp" fill="#D97706" r="5"></circle>
-<circle cx="40" cy="80" fill="#0D9488" r="7"></circle>
-<text class="node-id self" text-anchor="middle" x="40" y="55">Ingress</text>
-<circle cx="300" cy="80" fill="#475569" r="7"></circle>
-<text class="node-id" text-anchor="middle" x="300" y="55">IGP-путь</text>
-<text class="node-label" text-anchor="middle" x="300" y="108">перегружен</text>
-<circle cx="560" cy="80" fill="#0D9488" r="7"></circle>
-<text class="node-id self" text-anchor="middle" x="560" y="55">TE-туннель</text>
-<text class="node-label" text-anchor="middle" x="560" y="108">explicit path</text>
-<circle cx="820" cy="80" fill="#475569" r="7"></circle>
-<text class="node-id" text-anchor="middle" x="820" y="55">Egress</text>
+      <svg class="path-svg" viewbox="0 0 860 240" xmlns="http://www.w3.org/2000/svg">
+<path class="link-line" d="M 90,115 L 350,60"></path>
+<text class="node-label" text-anchor="middle" x="220" y="78">explicit path</text>
+<path class="link-line" d="M 350,60 L 770,115"></path>
+<path class="link-line blocked" d="M 90,115 L 350,190"></path>
+<text class="node-label" text-anchor="middle" x="220" y="142">path-option 2</text>
+<path class="link-line blocked" d="M 350,190 L 770,115"></path>
+<g transform="translate(75.0,100.0) scale(1.2500)" fill="none" stroke="#0D9488" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id self" text-anchor="middle" x="90" y="90">Tunnel1</text>
+<text class="node-label" text-anchor="middle" x="90" y="148">head-end</text>
+<g transform="translate(333.0,43.0) scale(1.4167)" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id" text-anchor="middle" x="350" y="33">P1</text>
+<text class="node-label" text-anchor="middle" x="350" y="95">primary</text>
+<g transform="translate(333.0,173.0) scale(1.4167)" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id" text-anchor="middle" x="350" y="163">P2</text>
+<text class="node-label" text-anchor="middle" x="350" y="225">backup (FRR)</text>
+<g transform="translate(755.0,100.0) scale(1.2500)" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id" text-anchor="middle" x="770" y="90">R5</text>
+<text class="node-label" text-anchor="middle" x="770" y="148">tail-end</text>
 </svg>
-      <div class="diagram-legend"><span class="legend-item"><span class="legend-dot self"></span>ключевой узел на схеме</span><span class="legend-item"><span class="legend-dot"></span>соседний / промежуточный узел</span></div>
+      <div class="diagram-legend"><span class="legend-item"><span class="legend-dot self"></span>ключевой узел на схеме</span><span class="legend-item"><span class="legend-dot"></span>соседний / промежуточный узел</span><span class="legend-item"><span class="legend-dash"></span>путь заблокирован / не пересылает</span></div>
       <ol class="readout-steps"><li class="readout-step plain"><span class="readout-step-num">1</span><span class="readout-step-text">IGP выбрал бы кратчайший путь по метрике</span></li><li class="readout-step plain"><span class="readout-step-num">2</span><span class="readout-step-text">Но этот путь перегружен — недостаточно свободной полосы</span></li><li class="readout-step plain"><span class="readout-step-num">3</span><span class="readout-step-text">RSVP-TE резервирует полосу по альтернативному явному пути</span></li><li class="readout-step plain"><span class="readout-step-num">4</span><span class="readout-step-text">Трафик идёт через TE-туннель, обходя узкое место</span></li></ol>
       <p class="diagram-caption">IGP сам по себе никогда бы не выбрал этот более длинный путь — решение принимается поверх него, явно.</p>
     </div>

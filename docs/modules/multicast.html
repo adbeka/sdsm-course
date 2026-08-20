@@ -64,19 +64,24 @@
     </div>
     <div class="diagram-panel">
       <div class="diagram-label">От источника до подписчиков</div>
-      <svg class="path-svg" viewbox="0 0 860 140" xmlns="http://www.w3.org/2000/svg">
-<path class="link-line" d="M 40,80 L 300,80 L 560,80 L 820,80"></path>
-<circle class="pulse-bgp" fill="#D97706" r="5"></circle>
-<circle cx="40" cy="80" fill="#0D9488" r="7"></circle>
-<text class="node-id self" text-anchor="middle" x="40" y="55">Источник</text>
-<circle cx="300" cy="80" fill="#0D9488" r="7"></circle>
-<text class="node-id self" text-anchor="middle" x="300" y="55">IGMP</text>
-<text class="node-label" text-anchor="middle" x="300" y="108">кто подписан</text>
-<circle cx="560" cy="80" fill="#475569" r="7"></circle>
-<text class="node-id" text-anchor="middle" x="560" y="55">PIM</text>
-<text class="node-label" text-anchor="middle" x="560" y="108">строит дерево</text>
-<circle cx="820" cy="80" fill="#475569" r="7"></circle>
-<text class="node-id" text-anchor="middle" x="820" y="55">Получатели</text>
+      <svg class="path-svg" viewbox="0 0 860 250" xmlns="http://www.w3.org/2000/svg">
+<path class="link-line" d="M 90,60 L 430,60"></path>
+<text class="node-label" text-anchor="middle" x="260" y="50">PIM register</text>
+<path class="link-line" d="M 430,60 L 220,200"></path>
+<path class="link-line" d="M 430,60 L 430,200"></path>
+<path class="link-line" d="M 430,60 L 640,200"></path>
+<g transform="translate(75.0,45.0) scale(1.2500)" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></g>
+<text class="node-id" text-anchor="middle" x="90" y="35">Источник</text>
+<text class="node-label" text-anchor="middle" x="90" y="93">239.1.1.1</text>
+<g transform="translate(413.0,43.0) scale(1.4167)" fill="none" stroke="#0D9488" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id self" text-anchor="middle" x="430" y="33">R1</text>
+<text class="node-label" text-anchor="middle" x="430" y="95">RP</text>
+<g transform="translate(206.0,186.0) scale(1.1667)" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></g>
+<text class="node-id" text-anchor="middle" x="220" y="176">Получатель 1</text>
+<g transform="translate(416.0,186.0) scale(1.1667)" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></g>
+<text class="node-id" text-anchor="middle" x="430" y="176">Получатель 2</text>
+<g transform="translate(626.0,186.0) scale(1.1667)" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></g>
+<text class="node-id" text-anchor="middle" x="640" y="176">Получатель 3</text>
 </svg>
       <div class="diagram-legend"><span class="legend-item"><span class="legend-dot self"></span>ключевой узел на схеме</span><span class="legend-item"><span class="legend-dot"></span>соседний / промежуточный узел</span></div>
       <ol class="readout-steps"><li class="readout-step plain"><span class="readout-step-num">1</span><span class="readout-step-text">Источник шлёт поток на групповой адрес 239.x.x.x</span></li><li class="readout-step plain"><span class="readout-step-num">2</span><span class="readout-step-text">IGMP: хосты сообщают роутеру о подписке</span></li><li class="readout-step plain"><span class="readout-step-num">3</span><span class="readout-step-text">PIM строит дерево доставки только туда, где есть подписчики</span></li><li class="readout-step plain"><span class="readout-step-num">4</span><span class="readout-step-text">Получатели получают поток без лишних копий на промежуточных линках</span></li></ol>
