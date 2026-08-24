@@ -67,6 +67,12 @@ def build_search_index(modules):
                 "snippet": m["cli_example"].get("note", ""),
                 "url": f'modules/{m["id"]}.html#cli',
             })
+        if m.get("lab"):
+            index.append({
+                "type": "lab", "title": "Лабораторная работа", "module": m["tab_label"],
+                "snippet": m["lab"]["scenario"][:140],
+                "url": f'modules/{m["id"]}.html#lab',
+            })
         for i, g in enumerate(m["glossary"]):
             index.append({
                 "type": "term", "title": g["term"], "module": m["tab_label"],
@@ -168,7 +174,7 @@ def load_modules():
     return mods
 
 
-def topnav_html(modules, active_id=None, depth="../", show_section_links=True, has_media=False, has_cli=False):
+def topnav_html(modules, active_id=None, depth="../", show_section_links=True, has_media=False, has_cli=False, has_lab=False):
     groups = {}
     for m in modules:
         groups.setdefault(m["group"], []).append(m)
@@ -198,9 +204,10 @@ def topnav_html(modules, active_id=None, depth="../", show_section_links=True, h
     if show_section_links:
         media_link = '<a href="#media">Видео</a>' if has_media else ""
         cli_link = '<a href="#cli">CLI</a>' if has_cli else ""
+        lab_link = '<a href="#lab">Практика</a>' if has_lab else ""
         section_links = ('<div class="topnav-links">'
                           '<a href="#theory">Теория</a><a href="#process">Схема</a>'
-                          f'{media_link}{cli_link}'
+                          f'{media_link}{cli_link}{lab_link}'
                           '<a href="#glossary">Глоссарий</a><a href="#quiz">Квиз</a></div>')
 
     return f'''<nav class="topnav">
@@ -433,6 +440,37 @@ def cli_section(m):
   </section>'''
 
 
+def lab_section(m):
+    lab = m.get("lab")
+    if not lab:
+        return ""
+    tasks = "".join(f"<li>{t}</li>" for t in lab["tasks"])
+    solution_code = html.escape(lab["solution_code"])
+    verify_html = f'<p class="lab-verify"><b>Как проверить:</b> {lab["verify"]}</p>' if lab.get("verify") else ""
+    return f'''<section id="lab">
+    <div class="section-head">
+      <div class="section-num">— ПРАКТИКА</div>
+      <div class="section-title">Лабораторная работа</div>
+      <p class="section-desc">Попробуйте сами в Packet Tracer/GNS3 или на реальном стенде, прежде чем открывать решение.</p>
+    </div>
+    <div class="lab-panel">
+      <p class="lab-scenario">{lab["scenario"]}</p>
+      <ol class="lab-tasks">{tasks}</ol>
+      <details class="lab-solution">
+        <summary>Показать решение</summary>
+        <div class="cli-panel">
+          <div class="cli-header">
+            <span class="cli-label">Решение</span>
+            <button type="button" class="cli-copy" data-copy-target="lab-code-{m["id"]}">Копировать</button>
+          </div>
+          <pre class="cli-code" id="lab-code-{m["id"]}"><code>{solution_code}</code></pre>
+        </div>
+        {verify_html}
+      </details>
+    </div>
+  </section>'''
+
+
 def module_nav(modules, m):
     idx = next(i for i, x in enumerate(modules) if x["id"] == m["id"])
     parts = []
@@ -474,7 +512,8 @@ def render_module(m, modules):
     media = m.get("media") or {}
     has_media = bool(media.get("video_url") or media.get("images"))
     has_cli = bool(m.get("cli_example"))
-    nav = topnav_html(modules, active_id=m["id"], depth="../", has_media=has_media, has_cli=has_cli)
+    has_lab = bool(m.get("lab"))
+    nav = topnav_html(modules, active_id=m["id"], depth="../", has_media=has_media, has_cli=has_cli, has_lab=has_lab)
     breadcrumb = breadcrumb_html(m, depth="../")
     body = f'''{nav}
 <div class="wrap">
@@ -501,6 +540,7 @@ def render_module(m, modules):
   {misconceptions_section(m)}
   {process_section(m)}
   {cli_section(m)}
+  {lab_section(m)}
   {glossary_section(m)}
   {quiz_section(m)}
   {related_section(m, {x["id"]: x for x in modules})}

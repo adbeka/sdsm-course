@@ -1,6 +1,6 @@
 {
   "id": "bgp",
-  "order": 10,
+  "order": 13,
   "group": "l3",
   "tab_label": "BGP: междоменная маршрутизация",
   "title_html": "BGP: <span>протокол вектора пути</span> между автономными системами",
@@ -198,5 +198,16 @@
     "label": "eBGP-сессия и анонс префикса",
     "code": "Router(config)# router bgp 65500\nRouter(config-router)# neighbor 203.0.113.1 remote-as 9198\nRouter(config-router)# network 198.51.100.0 mask 255.255.255.0\nRouter(config-router)# neighbor 203.0.113.1 route-map SET-LP in\nRouter# show ip bgp summary",
     "note": "network анонсирует префикс, только если он уже есть в таблице маршрутизации (или карте маршрутов) — BGP сам подсети не придумывает."
+  },
+  "lab": {
+    "scenario": "Компания подключена сразу к двум провайдерам и хочет, чтобы входящий трафик предпочтительно шёл через первого из них.",
+    "tasks": [
+      "Поднимите eBGP-сессии с обоими аплинками",
+      "Анонсируйте свой префикс обоим соседям",
+      "С помощью route-map/community сделайте путь через первого аплинка более предпочтительным",
+      "Проверьте таблицу BGP на выбранный best path"
+    ],
+    "solution_code": "Router(config)# router bgp 65500\nRouter(config-router)# neighbor 203.0.113.1 remote-as 9198\nRouter(config-router)# network 198.51.100.0 mask 255.255.255.0\nRouter(config-router)# neighbor 203.0.113.1 route-map SET-LP in\nRouter# show ip bgp summary",
+    "verify": "show ip bgp <ваш префикс> должен показывать выбранный best path именно через нужного аплинка."
   }
 }

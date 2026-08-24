@@ -1,6 +1,6 @@
 {
   "id": "evpnmh",
-  "order": 16,
+  "order": 19,
   "group": "mpls",
   "tab_label": "EVPN Multihoming",
   "title_html": "EVPN Multihoming: <span>подключение к нескольким PE</span> без ручного MC-LAG",
@@ -186,5 +186,16 @@
     "label": "Ethernet Segment на дуал-хомед порте",
     "code": "Router(config)# interface Port-channel1\nRouter(config-if)# ethernet segment\nRouter(config-if-es)# identifier type 0 11.11.11.11.11.11.11.11.11\nRouter(config-if-es)# exit\nRouter# show evpn ethernet-segment",
     "note": "identifier должен быть одинаковым на обоих PE, к которым подключено общее устройство — иначе DF election не сработает как единый сегмент."
+  },
+  "lab": {
+    "scenario": "Клиентский коммутатор подключён одновременно к двум PE через Port-channel. Нужно active/active подключение без ручного MC-LAG.",
+    "tasks": [
+      "Настройте одинаковый Ethernet Segment ID на обоих PE",
+      "Соберите линки от CE в Port-channel",
+      "Проверьте, кто из PE выбран Designated Forwarder",
+      "Смоделируйте отказ DF-PE и убедитесь, что трафик не потерялся"
+    ],
+    "solution_code": "Router(config)# interface Port-channel1\nRouter(config-if)# ethernet segment\nRouter(config-if-es)# identifier type 0 11.11.11.11.11.11.11.11.11\nRouter# show evpn ethernet-segment",
+    "verify": "show evpn ethernet-segment должен показать один и тот же ES ID на обоих PE и явную роль DF на одном из них."
   }
 }

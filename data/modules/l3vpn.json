@@ -1,6 +1,6 @@
 {
   "id": "l3vpn",
-  "order": 13,
+  "order": 16,
   "group": "mpls",
   "tab_label": "MPLS L3VPN",
   "title_html": "MPLS L3VPN: <span>изолированная таблица маршрутов</span> для каждого клиента",
@@ -190,5 +190,16 @@
     "label": "VRF и BGP address-family для клиента",
     "code": "Router(config)# ip vrf CUSTOMER_A\nRouter(config-vrf)# rd 65500:100\nRouter(config-vrf)# route-target both 65500:100\nRouter(config)# interface GigabitEthernet0/1\nRouter(config-if)# ip vrf forwarding CUSTOMER_A\nRouter(config-if)# ip address 10.1.1.1 255.255.255.0\nRouter(config)# router bgp 65500\nRouter(config-router)# address-family ipv4 vrf CUSTOMER_A",
     "note": "route-target both сразу и импортирует, и экспортирует — для несимметричных схем (hub-and-spoke) import/export задаются раздельно."
+  },
+  "lab": {
+    "scenario": "Два клиента на одном физическом PE не должны видеть таблицы маршрутов друг друга, хотя оба используют пересекающиеся частные адреса.",
+    "tasks": [
+      "Создайте VRF для клиента с RD и route-target",
+      "Привяжите клиентский интерфейс к VRF",
+      "Настройте BGP address-family для VRF",
+      "Убедитесь, что маршруты клиента видны только внутри его VRF"
+    ],
+    "solution_code": "Router(config)# ip vrf CUSTOMER_A\nRouter(config-vrf)# rd 65500:100\nRouter(config-vrf)# route-target both 65500:100\nRouter(config)# interface GigabitEthernet0/1\nRouter(config-if)# ip vrf forwarding CUSTOMER_A\nRouter(config-if)# ip address 10.1.1.1 255.255.255.0\nRouter(config)# router bgp 65500\nRouter(config-router)# address-family ipv4 vrf CUSTOMER_A",
+    "verify": "show ip route vrf CUSTOMER_A должен показывать только маршруты этого клиента — show ip route (global) их не увидит вообще."
   }
 }

@@ -1,6 +1,6 @@
 {
   "id": "packetlife",
-  "order": 18,
+  "order": 21,
   "group": "l2",
   "tab_label": "Путь пакета",
   "title_html": "Packet Life: <span>путь пакета</span> внутри коммутационного оборудования",
@@ -185,5 +185,16 @@
     "label": "Диагностика на уровне интерфейса и буферов",
     "code": "Switch# show interfaces GigabitEthernet0/1 counters\nSwitch# show platform hardware qos interface GigabitEthernet0/1\nSwitch# show buffers",
     "note": "Счётчики интерфейса и буферов — первое, что стоит проверить при подозрении на потери пакетов внутри самого коммутатора."
+  },
+  "lab": {
+    "scenario": "Под пиковой нагрузкой на коммутаторе периодически теряются пакеты, хотя счётчики интерфейса не показывают ошибок линии.",
+    "tasks": [
+      "Проверьте счётчики интерфейса на ошибки/дропы",
+      "Проверьте состояние буферов",
+      "Сопоставьте время дропов с пиками трафика",
+      "Определите, дропает ли конкретная очередь, а не порт целиком"
+    ],
+    "solution_code": "Switch# show interfaces GigabitEthernet0/1 counters\nSwitch# show platform hardware qos interface GigabitEthernet0/1\nSwitch# show buffers",
+    "verify": "Рост счётчика output drops именно в моменты пиков трафика указывает на переполнение буфера/очереди, а не на физическую проблему линка."
   }
 }

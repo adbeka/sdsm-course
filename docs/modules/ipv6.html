@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>БЗПД · IPv6</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=ef89152292">
+</head>
+<body data-depth="../">
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a class="topnav-brand" href="../index.html">БЗПД · <b>учебный портал</b>
+      <span class="topnav-progress-pill"><span class="val">0/24</span></span>
+    </a>
+    <div class="nav-groups"><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Основы
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/planning.html" data-progress-id="planning">Планирование сети<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ciscoconn.html" data-progress-id="ciscoconn">Подключение к оборудованию<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/portup.html" data-progress-id="portup">Поднятие порта<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/dhcpdns.html" data-progress-id="dhcpdns">DHCP и DNS<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/troubleshooting.html" data-progress-id="troubleshooting">Методология траблшутинга<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">L2 layer
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/vlan.html" data-progress-id="vlan">VLAN и коммутация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/lag.html" data-progress-id="lag">LAG / EtherChannel<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/aaa8021x.html" data-progress-id="aaa8021x">AAA и 802.1X<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/stp.html" data-progress-id="stp">STP: защита от петель<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/packetlife.html" data-progress-id="packetlife">Путь пакета<span class="tab-check"></span></a></div>
+    </div><div class="nav-group active">
+      <button type="button" class="nav-group-trigger">L3 layer
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/staticroute.html" data-progress-id="staticroute">Статическая маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/nat.html" data-progress-id="nat">ACL и NAT<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/ospf.html" data-progress-id="ospf">OSPF: динамическая маршрутизация<span class="tab-check"></span></a><a class="nav-group-item active" href="../modules/ipv6.html" data-progress-id="ipv6">IPv6<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/vpn.html" data-progress-id="vpn">VPN-туннели<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/bgp.html" data-progress-id="bgp">BGP: междоменная маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/multicast.html" data-progress-id="multicast">Multicast-рассылка<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Провайдерские сервисы
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="../modules/mplsbase.html" data-progress-id="mplsbase">Базовый MPLS<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/l3vpn.html" data-progress-id="l3vpn">MPLS L3VPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/l2vpn.html" data-progress-id="l2vpn">MPLS L2VPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/evpn.html" data-progress-id="evpn">EVPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/evpnmh.html" data-progress-id="evpnmh">EVPN Multihoming<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/mplste.html" data-progress-id="mplste">MPLS Traffic Engineering<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/qos.html" data-progress-id="qos">QoS: приоритизация трафика<span class="tab-check"></span></a></div>
+    </div></div>
+    <a class="nav-glossary-link" href="../glossary.html">Глоссарий</a>
+    <button type="button" class="search-trigger" aria-label="Поиск по сайту">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    </button>
+    <div class="topnav-links"><a href="#theory">Теория</a><a href="#process">Схема</a><a href="#cli">CLI</a><a href="#lab">Практика</a><a href="#glossary">Глоссарий</a><a href="#quiz">Квиз</a></div>
+  </div>
+</nav>
+<div class="search-overlay">
+  <div class="search-panel">
+    <div class="search-input-row">
+      <svg width="16" height="16" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <input type="text" class="search-input" placeholder="Искать тему или термин…" autocomplete="off">
+      <button type="button" class="search-close" aria-label="Закрыть">Esc</button>
+    </div>
+    <div class="search-results"></div>
+  </div>
+</div>
+<div class="wrap">
+  <div class="breadcrumb"><a href="../index.html">Главная</a><span class="sep">/</span><span>L3 layer</span><span class="sep">/</span><span class="current">IPv6</span></div>
+  <section class="hero">
+    <div class="eyebrow">Модуль 12 из 24 · теория + схема + квиз</div>
+    <h1>IPv6: <span>адресация нового поколения</span> без NAT и broadcast</h1>
+    <p class="hero-sub">IPv6 — не «IPv4 с более длинными адресами», а другая модель: нет broadcast, соседи находятся через NDP вместо ARP, а адресного пространства хватает, чтобы не изобретать NAT для экономии адресов.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">ИСТОЧНИК<b>Дополнительный модуль (вне цикла SDSM)</b></div>
+      <div class="hero-meta-item">ФОРМАТ<b>теория + схема + квиз</b></div>
+      <div class="hero-meta-item">ВРЕМЯ<b>~10 минут</b></div>
+    </div>
+    <div class="diagram-panel">
+      <div class="diagram-label">Базовая IPv6-маршрутизация между тремя роутерами</div>
+      <svg class="path-svg" viewbox="0 0 860 230" xmlns="http://www.w3.org/2000/svg">
+<path class="link-line" d="M 110,115 L 430,115"></path>
+<text class="node-label" text-anchor="middle" x="270" y="105">fe80::/10 link-local + NDP</text>
+<path class="link-line" d="M 430,115 L 750,115"></path>
+<text class="node-label" text-anchor="middle" x="590" y="105">ipv6 route ::/0</text>
+<g transform="translate(94.0,99.0) scale(1.3333)" fill="none" stroke="#0D9488" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id self" text-anchor="middle" x="110" y="89">R1</text>
+<text class="node-label" text-anchor="middle" x="110" y="149">2001:db8:0:1::1/64</text>
+<g transform="translate(414.0,99.0) scale(1.3333)" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id" text-anchor="middle" x="430" y="89">R2</text>
+<text class="node-label" text-anchor="middle" x="430" y="149">2001:db8:0:2::1/64</text>
+<g transform="translate(734.0,99.0) scale(1.3333)" fill="none" stroke="#475569" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></g>
+<text class="node-id" text-anchor="middle" x="750" y="89">R3</text>
+<text class="node-label" text-anchor="middle" x="750" y="149">2001:db8:0:3::1/64</text>
+</svg>
+      <div class="diagram-legend"><span class="legend-item"><span class="legend-dot self"></span>ключевой узел на схеме</span><span class="legend-item"><span class="legend-dot"></span>соседний / промежуточный узел</span></div>
+      <ol class="readout-steps"><li class="readout-step plain"><span class="readout-step-num">1</span><span class="readout-step-text">R1: ipv6 address 2001:db8:0:1::1/64 — глобальный unicast на интерфейсе</span></li><li class="readout-step plain"><span class="readout-step-num">2</span><span class="readout-step-text">R1 ↔ R2: NDP (Neighbor Discovery) вместо ARP находит link-layer адрес соседа</span></li><li class="readout-step plain"><span class="readout-step-num">3</span><span class="readout-step-text">R2: ipv6 route ::/0 в сторону R3 — маршрут по умолчанию</span></li><li class="readout-step plain"><span class="readout-step-num">4</span><span class="readout-step-text">R3: получает пакет — путь построен без единого NAT на пути</span></li></ol>
+      <p class="diagram-caption">Каждый интерфейс с IPv6 получает не только глобальный адрес, но и автоматический link-local (fe80::/10) — именно он чаще всего используется как next-hop во внутренних маршрутах.</p>
+    </div>
+  </section>
+  
+  <section id="theory">
+    <div class="section-head">
+      <div class="section-num">01 — ТЕОРИЯ</div>
+      <div class="section-title">Из чего состоит адресация IPv6</div>
+      <p class="section-desc">Шесть понятий — от типов адресов до того, почему NAT здесь не обязателен.</p>
+      <p class="theory-tldr">Проще говоря: у IPv6 адресов настолько много, что каждому устройству можно дать честный глобальный адрес напрямую, а вместо ARP и broadcast используются NDP и multicast.</p>
+    </div>
+    <div class="theory-grid"><div class="theory-card" id="theory-ipv6-0"><div class="theory-card-title">Типы адресов</div><div class="theory-card-body">IPv6 знает <code>unicast</code> (одному получателю), <code>multicast</code> (группе) и <code>anycast</code> (ближайшему из группы одинаковых адресов). Broadcast как класса не существует вообще.</div></div><div class="theory-card" id="theory-ipv6-1"><div class="theory-card-title">Link-local (fe80::/10)</div><div class="theory-card-body">Автоматически назначается на каждый IPv6-интерфейс, работает только в пределах одного сегмента и не маршрutizируется — но именно он часто используется как next-hop для соседних маршрутизаторов.</div></div><div class="theory-card" id="theory-ipv6-2"><div class="theory-card-title">NDP вместо ARP</div><div class="theory-card-body">Neighbor Discovery Protocol поверх ICMPv6 находит link-layer адрес соседа (Neighbor Solicitation/Advertisement) и объявления роутера (Router Advertisement) — делает то же, что ARP + часть DHCP в IPv4.</div></div><div class="theory-card" id="theory-ipv6-3"><div class="theory-card-title">SLAAC</div><div class="theory-card-body">Stateless Address Autoconfiguration — хост может сам собрать себе глобальный адрес из префикса, полученного в Router Advertisement, без отдельного DHCPv6-сервера.</div></div><div class="theory-card" id="theory-ipv6-4"><div class="theory-card-title">Сокращение записи</div><div class="theory-card-body">Ведущие нули в каждой группе можно опускать, а одну последовательность нулевых групп подряд — заменить на <code>::</code>, но только один раз в адресе, иначе запись станет неоднозначной.</div></div><div class="theory-card" id="theory-ipv6-5"><div class="theory-card-title">Dual-stack</div><div class="theory-card-body">IPv4 и IPv6 обычно работают параллельно на одном интерфейсе на переходный период — это не «либо-либо», а сосуществование, пока IPv6 не станет основным.</div></div></div>
+  </section>
+  <section id="misconceptions">
+    <div class="section-head">
+      <div class="section-num">— ЧАСТЫЕ ЗАБЛУЖДЕНИЯ</div>
+      <div class="section-title">Что обычно путают</div>
+      <p class="section-desc">Типичные неверные представления про эту тему — и как на самом деле.</p>
+    </div>
+    <div class="misc-grid"><div class="misc-card" id="misc-ipv6-0"><div class="misc-wrong"><span class="misc-tag bad">Кажется</span>IPv6 использует broadcast так же, как IPv4.</div><div class="misc-right"><span class="misc-tag good">На деле</span>В IPv6 broadcast не существует вообще — вместо него используется multicast (например, all-nodes ff02::1).</div></div><div class="misc-card" id="misc-ipv6-1"><div class="misc-wrong"><span class="misc-tag bad">Кажется</span>NAT так же обязателен в IPv6, как и в IPv4.</div><div class="misc-right"><span class="misc-tag good">На деле</span>Из-за огромного адресного пространства IPv6 задуман без необходимости NAT для экономии адресов — хотя NPTv6 существует для отдельных задач вроде смены провайдера.</div></div></div>
+  </section>
+  <section id="process">
+    <div class="section-head">
+      <div class="section-num">02 — ПРОЦЕСС</div>
+      <div class="section-title">Как включить и проверить IPv6-маршрутизацию</div>
+      <p class="section-desc">Похоже на IPv4, но с парой обязательных дополнительных шагов.</p>
+    </div>
+    <ul class="steps"><li class="step"><span class="step-num">1</span><span class="step-text"><b>ipv6 unicast-routing</b> — глобально включить маршрутизацию IPv6 (без этого роутер ведёт себя как хост, а не как router).</span></li><li class="step"><span class="step-num">2</span><span class="step-text"><b>ipv6 address на интерфейсе</b> — назначить глобальный unicast-адрес; link-local появится автоматически.</span></li><li class="step"><span class="step-num">3</span><span class="step-text"><b><a class="term-link" href="#gloss-ipv6-1" title="Neighbor Discovery Protocol — набор ICMPv6-сообщений для поиска соседей, роутеров и автонастройки, заменяет ARP из IPv4.">NDP</a> находит соседей</b> — Neighbor Solicitation/Advertisement строит таблицу соседей, аналог ARP-кэша.</span></li><li class="step"><span class="step-num">4</span><span class="step-text"><b>Статический или динамический маршрут</b> — ipv6 route или OSPFv3/IPv6 BGP для построения таблицы маршрутизации.</span></li><li class="step"><span class="step-num">5</span><span class="step-text"><b>Проверка</b> — show ipv6 interface brief и show ipv6 route подтверждают, что адреса и маршруты на месте.</span></li></ul>
+  </section>
+  <section id="cli">
+    <div class="section-head">
+      <div class="section-num">— ПРИМЕР</div>
+      <div class="section-title">CLI-пример</div>
+      <p class="section-desc">Готовый конфиг для копирования — синтаксис Cisco IOS, адаптируйте под свою схему адресации.</p>
+    </div>
+    <div class="cli-panel">
+      <div class="cli-header">
+        <span class="cli-label">Базовая настройка IPv6 на интерфейсе и статический маршрут</span>
+        <button type="button" class="cli-copy" data-copy-target="cli-code-ipv6">Копировать</button>
+      </div>
+      <pre class="cli-code" id="cli-code-ipv6"><code>Router(config)# ipv6 unicast-routing
+Router(config)# interface GigabitEthernet0/0
+Router(config-if)# ipv6 address 2001:db8:0:1::1/64
+Router(config-if)# ipv6 enable
+Router(config-if)# exit
+Router(config)# ipv6 route ::/0 2001:db8:0:1::2
+Router# show ipv6 interface brief
+Router# show ipv6 route</code></pre>
+    </div>
+    <p class="cli-note">ipv6 enable на интерфейсе включает link-local и обработку NDP, даже если вы по какой-то причине не назначаете глобальный адрес на этом интерфейсе.</p>
+  </section>
+  <section id="lab">
+    <div class="section-head">
+      <div class="section-num">— ПРАКТИКА</div>
+      <div class="section-title">Лабораторная работа</div>
+      <p class="section-desc">Попробуйте сами в Packet Tracer/GNS3 или на реальном стенде, прежде чем открывать решение.</p>
+    </div>
+    <div class="lab-panel">
+      <p class="lab-scenario">Два офисных роутера R1 и R2 соединены линком и должны обмениваться IPv6-трафиком; R2 смотрит в интернет через провайдера.</p>
+      <ol class="lab-tasks"><li>Включите ipv6 unicast-routing на обоих роутерах</li><li>Назначьте R1 адрес 2001:db8:0:1::1/64, R2 — 2001:db8:0:1::2/64 на общем линке</li><li>Проверьте, что R1 видит link-local сосед R2 через show ipv6 neighbors</li><li>Настройте на R2 маршрут по умолчанию в сторону провайдера</li><li>С R1 проверьте связность до внешнего адреса через ping ipv6</li></ol>
+      <details class="lab-solution">
+        <summary>Показать решение</summary>
+        <div class="cli-panel">
+          <div class="cli-header">
+            <span class="cli-label">Решение</span>
+            <button type="button" class="cli-copy" data-copy-target="lab-code-ipv6">Копировать</button>
+          </div>
+          <pre class="cli-code" id="lab-code-ipv6"><code>R1(config)# ipv6 unicast-routing
+R1(config)# interface GigabitEthernet0/0
+R1(config-if)# ipv6 address 2001:db8:0:1::1/64
+R1(config-if)# exit
+R1(config)# ipv6 route ::/0 2001:db8:0:1::2
+R1# show ipv6 neighbors
+R1# ping ipv6 2001:4860:4860::8888</code></pre>
+        </div>
+        <p class="lab-verify"><b>Как проверить:</b> show ipv6 route на R1 должен показать маршрут по умолчанию через R2, а ping ipv6 — получить ответ.</p>
+      </details>
+    </div>
+  </section>
+  <section id="glossary">
+    <div class="section-head">
+      <div class="section-num">03 — ГЛОССАРИЙ</div>
+      <div class="section-title">Термины модуля</div>
+      <p class="section-desc">Короткий справочник — можно оставить открытым рядом с CLI.</p>
+    </div>
+    <div class="glossary-grid"><div class="gloss-item" id="gloss-ipv6-0"><div class="gloss-term">EUI-64</div><div class="gloss-def">Способ автоматически собрать интерфейсную часть IPv6-адреса из MAC-адреса интерфейса.</div></div><div class="gloss-item" id="gloss-ipv6-1"><div class="gloss-term">NDP</div><div class="gloss-def">Neighbor Discovery Protocol — набор ICMPv6-сообщений для поиска соседей, роутеров и автонастройки, заменяет ARP из IPv4.</div></div><div class="gloss-item" id="gloss-ipv6-2"><div class="gloss-term">RA / RS</div><div class="gloss-def">Router Advertisement / Router Solicitation — объявление роутером своего префикса и явный запрос хостом такого объявления.</div></div><div class="gloss-item" id="gloss-ipv6-3"><div class="gloss-term">SLAAC</div><div class="gloss-def">Stateless Address Autoconfiguration — автоматическая сборка адреса хостом на основе полученного префикса, без DHCPv6.</div></div><div class="gloss-item" id="gloss-ipv6-4"><div class="gloss-term">ULA (fc00::/7)</div><div class="gloss-def">Unique Local Address — аналог приватных адресов IPv4 (RFC1918), не маршрутизируется в интернете.</div></div><div class="gloss-item" id="gloss-ipv6-5"><div class="gloss-term">Anycast</div><div class="gloss-def">Один и тот же адрес назначен нескольким устройствам — пакет доставляется ближайшему из них по метрике маршрутизации.</div></div><div class="gloss-item" id="gloss-ipv6-6"><div class="gloss-term">Solicited-node multicast</div><div class="gloss-def">Специальная multicast-группа, формируемая из последних 24 бит адреса — используется вместо ARP-broadcast для поиска конкретного соседа.</div></div></div>
+  </section>
+  <section id="quiz">
+    <div class="section-head">
+      <div class="section-num">04 — ПРОВЕРКА</div>
+      <div class="section-title">Квиз (5 вопросов)</div>
+      <p class="section-desc">Без подвохов — если теория выше прочитана, займёт минуту.</p>
+    </div>
+    <div class="quiz" data-quiz="ipv6" data-module="ipv6" data-correct="1,1,1,1,1">
+      <div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">1</span>Что заменяет ARP в IPv6?</div><div class="quiz-options" data-q="0"><label class="quiz-opt"><input type="radio" name="ipv6-q0" value="0"> DHCP</label><label class="quiz-opt"><input type="radio" name="ipv6-q0" value="1"> NDP (Neighbor Discovery Protocol)</label><label class="quiz-opt"><input type="radio" name="ipv6-q0" value="2"> SLAAC</label><label class="quiz-opt"><input type="radio" name="ipv6-q0" value="3"> Broadcast-запрос</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">2</span>Что такое link-local адрес?</div><div class="quiz-options" data-q="1"><label class="quiz-opt"><input type="radio" name="ipv6-q1" value="0"> Глобальный адрес для интернета</label><label class="quiz-opt"><input type="radio" name="ipv6-q1" value="1"> Автоматический адрес (fe80::/10), работающий только в пределах одного сегмента</label><label class="quiz-opt"><input type="radio" name="ipv6-q1" value="2"> Адрес, который назначает провайдер</label><label class="quiz-opt"><input type="radio" name="ipv6-q1" value="3"> Устаревший тип адреса, не используется</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">3</span>Зачем в IPv6 в общем случае не нужен NAT?</div><div class="quiz-options" data-q="2"><label class="quiz-opt"><input type="radio" name="ipv6-q2" value="0"> NAT запрещён стандартом</label><label class="quiz-opt"><input type="radio" name="ipv6-q2" value="1"> Адресного пространства достаточно, чтобы дать каждому устройству глобальный адрес напрямую</label><label class="quiz-opt"><input type="radio" name="ipv6-q2" value="2"> IPv6-пакеты не содержат адреса отправителя</label><label class="quiz-opt"><input type="radio" name="ipv6-q2" value="3"> NAT работает только с IPv4-заголовками</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">4</span>Что делает SLAAC?</div><div class="quiz-options" data-q="3"><label class="quiz-opt"><input type="radio" name="ipv6-q3" value="0"> Шифрует IPv6-трафик</label><label class="quiz-opt"><input type="radio" name="ipv6-q3" value="1"> Позволяет хосту самому собрать себе адрес из полученного префикса без DHCPv6</label><label class="quiz-opt"><input type="radio" name="ipv6-q3" value="2"> Заменяет BGP</label><label class="quiz-opt"><input type="radio" name="ipv6-q3" value="3"> Строит таблицу маршрутизации между AS</label></div></div><div class="quiz-card"><div class="quiz-q"><span class="quiz-q-num">5</span>Сколько раз подряд можно использовать «::» для сокращения нулевых групп в одном IPv6-адресе?</div><div class="quiz-options" data-q="4"><label class="quiz-opt"><input type="radio" name="ipv6-q4" value="0"> Сколько угодно раз</label><label class="quiz-opt"><input type="radio" name="ipv6-q4" value="1"> Только один раз — иначе запись станет неоднозначной</label><label class="quiz-opt"><input type="radio" name="ipv6-q4" value="2"> Ровно два раза</label><label class="quiz-opt"><input type="radio" name="ipv6-q4" value="3"> Только в конце адреса</label></div></div>
+      <div class="quiz-footer">
+        <button type="button" class="btn quiz-check">Проверить результат</button>
+        <button type="button" class="btn secondary quiz-reset">Сбросить</button>
+        <span class="quiz-score"></span>
+      </div>
+    </div>
+  </section>
+  <section id="related">
+    <div class="section-head">
+      <div class="section-num">— СВЯЗАННЫЕ ТЕМЫ</div>
+      <div class="section-title">Куда это ведёт дальше</div>
+      <p class="section-desc">Эти модули опираются на то, что вы только что прочитали, или используются вместе с этим.</p>
+    </div>
+    <div class="related-grid"><a class="related-card" href="staticroute.html"><div class="related-card-chapter">Гл. 3</div><div class="related-card-title">Статическая маршрутизация</div><div class="related-card-sub">Статический маршрут — это явно прописанная администратором запись «куда идти дальше». Ника…</div></a><a class="related-card" href="ospf.html"><div class="related-card-chapter">Гл. 6</div><div class="related-card-title">OSPF: динамическая маршрутизация</div><div class="related-card-sub">В отличие от статики, OSPF рассылает соседям состояние своих линков — и каждый роутер лока…</div></a><a class="related-card" href="bgp.html"><div class="related-card-chapter">Гл. 8 и 8.1</div><div class="related-card-title">BGP: междоменная маршрутизация</div><div class="related-card-sub">BGP не знает топологию сети целиком. Каждый роутер знает только своих соседей и списки AS,…</div></a></div>
+  </section>
+  <div class="module-nav"><a class="module-nav-link prev" href="ospf.html"><div class="module-nav-dir">← Предыдущий</div><div class="module-nav-title">OSPF: динамическая маршрутизация</div></a><a class="module-nav-link next" href="vpn.html"><div class="module-nav-dir">Следующий →</div><div class="module-nav-title">VPN-туннели</div></a></div>
+  <div class="footer">
+    <div class="feedback-panel">
+      <h3>Модуль 12 из 24</h3>
+      <p>Результат квиза сохраняется локально в браузере — прогресс виден в верхнем меню и на главной странице.</p>
+    </div>
+  </div>
+</div>
+<script src="../assets/app.js?v=ef89152292"></script>
+</body>
+</html>

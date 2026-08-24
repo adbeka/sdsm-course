@@ -1,6 +1,6 @@
 {
   "id": "vpn",
-  "order": 9,
+  "order": 12,
   "group": "l3",
   "tab_label": "VPN-туннели",
   "title_html": "VPN: <span>туннелирование</span> поверх публичной сети",
@@ -189,5 +189,16 @@
     "label": "GRE-туннель между площадками",
     "code": "Router(config)# interface Tunnel0\nRouter(config-if)# ip address 172.16.0.1 255.255.255.252\nRouter(config-if)# tunnel source GigabitEthernet0/0\nRouter(config-if)# tunnel destination 203.0.113.10\nRouter(config-if)# tunnel mode gre ip\nRouter# show interfaces tunnel 0",
     "note": "Это только GRE — без IPSec поверх трафик внутри туннеля идёт в открытом виде."
+  },
+  "lab": {
+    "scenario": "Два офиса подключены к интернету напрямую и должны обмениваться трафиком через приватный туннель, не арендуя выделенный канал.",
+    "tasks": [
+      "Настройте GRE-туннель между роутерами обеих площадок",
+      "Назначьте адреса на туннельных интерфейсах",
+      "Пропишите маршрут к удалённой сети через туннель",
+      "Проверьте связность внутри туннеля"
+    ],
+    "solution_code": "Router(config)# interface Tunnel0\nRouter(config-if)# ip address 172.16.0.1 255.255.255.252\nRouter(config-if)# tunnel source GigabitEthernet0/0\nRouter(config-if)# tunnel destination 203.0.113.10\nRouter(config-if)# tunnel mode gre ip\nRouter# show interfaces tunnel 0",
+    "verify": "Интерфейс Tunnel0 должен быть Up/Up, а ping до адреса на другом конце туннеля — проходить."
   }
 }

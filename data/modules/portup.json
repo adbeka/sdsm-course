@@ -187,5 +187,17 @@
     "label": "Поднятие и проверка порта",
     "code": "SW1(config)# interface GigabitEthernet0/1\nSW1(config-if)# description Uplink-to-SW2\nSW1(config-if)# no shutdown\nSW1(config-if)# speed 1000\nSW1(config-if)# duplex full\nSW1(config-if)# end\nSW1# show interfaces GigabitEthernet0/1 status\n\nPort      Name               Status       Vlan       Duplex  Speed  Type\nGi0/1     Uplink-to-SW2      connected    trunk      full    1000   1000BaseT",
     "note": "show interfaces status — самый быстрый способ увидеть реальное состояние порта, а не то, что вы думаете, что настроили."
+  },
+  "lab": {
+    "scenario": "Аплинк между SW1 и SW2 физически подключён, но на SW1 порт показывает notconnect.",
+    "tasks": [
+      "Проверьте физический статус через show interfaces status",
+      "Убедитесь, что порт не в состоянии shutdown",
+      "Согласуйте speed/duplex на обеих сторонах линка",
+      "Подпишите порт через description",
+      "Подтвердите Up/Up и отсутствие роста ошибок в счётчиках"
+    ],
+    "solution_code": "SW1(config)# interface GigabitEthernet0/1\nSW1(config-if)# description Uplink-to-SW2\nSW1(config-if)# no shutdown\nSW1(config-if)# speed 1000\nSW1(config-if)# duplex full\nSW1(config-if)# end\nSW1# show interfaces GigabitEthernet0/1 status",
+    "verify": "show interfaces status должен показать connected, а не notconnect или err-disabled."
   }
 }

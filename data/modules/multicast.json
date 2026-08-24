@@ -1,6 +1,6 @@
 {
   "id": "multicast",
-  "order": 11,
+  "order": 14,
   "group": "l3",
   "tab_label": "Multicast-рассылка",
   "title_html": "Multicast: <span>доставка одного потока</span> нескольким получателям",
@@ -189,5 +189,16 @@
     "label": "PIM Sparse-Mode с явным RP",
     "code": "Router(config)# ip multicast-routing\nRouter(config)# interface GigabitEthernet0/0\nRouter(config-if)# ip pim sparse-mode\nRouter(config)# ip pim rp-address 10.0.0.1\nRouter# show ip mroute",
     "note": "ip pim sparse-mode нужен на каждом интерфейсе, через который может пойти multicast-трафик, включая линк к RP."
+  },
+  "lab": {
+    "scenario": "Один источник видеопотока должен доставляться трём получателям в разных частях сети, без отдельной копии на каждого.",
+    "tasks": [
+      "Включите ip multicast-routing глобально",
+      "Включите PIM sparse-mode на всех задействованных интерфейсах",
+      "Назначьте RP (Rendezvous Point)",
+      "Проверьте построение дерева доставки"
+    ],
+    "solution_code": "Router(config)# ip multicast-routing\nRouter(config)# interface GigabitEthernet0/0\nRouter(config-if)# ip pim sparse-mode\nRouter(config)# ip pim rp-address 10.0.0.1\nRouter# show ip mroute",
+    "verify": "show ip mroute должен показать (S,G) или (*,G) запись с корректным списком исходящих интерфейсов к получателям."
   }
 }

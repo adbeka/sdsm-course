@@ -1,0 +1,203 @@
+{
+  "id": "aaa8021x",
+  "order": 6,
+  "group": "l2",
+  "tab_label": "AAA и 802.1X",
+  "title_html": "AAA и 802.1X: <span>аутентификация на порту</span> до допуска в сеть",
+  "subtitle": "Порт коммутатора по умолчанию доверяет всему, что в него воткнули. 802.1X требует подтвердить личность устройства через RADIUS-сервер, прежде чем порт начнёт пропускать обычный трафик.",
+  "meta": {
+    "ИСТОЧНИК": "Дополнительный модуль (вне цикла SDSM)",
+    "ФОРМАТ": "теория + схема + квиз",
+    "ВРЕМЯ": "~9 минут"
+  },
+  "diagram": {
+    "label": "Три роли 802.1X: supplicant, authenticator, authentication server",
+    "svg_html": "<svg class=\"path-svg\" viewbox=\"0 0 860 230\" xmlns=\"http://www.w3.org/2000/svg\">\n<path class=\"link-line\" d=\"M 90,115 L 430,115\"></path>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"260\" y=\"105\">EAPOL (802.1X)</text>\n<path class=\"link-line\" d=\"M 430,115 L 770,115\"></path>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"600\" y=\"105\">RADIUS Access-Request</text>\n<g transform=\"translate(74.0,99.0) scale(1.3333)\" fill=\"none\" stroke=\"#475569\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"2\" y=\"3\" width=\"20\" height=\"14\" rx=\"2\" ry=\"2\"></rect><line x1=\"8\" y1=\"21\" x2=\"16\" y2=\"21\"></line><line x1=\"12\" y1=\"17\" x2=\"12\" y2=\"21\"></line></g>\n<text class=\"node-id\" text-anchor=\"middle\" x=\"90\" y=\"89\">PC1</text>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"90\" y=\"149\">supplicant</text>\n<g transform=\"translate(413.0,98.0) scale(1.4167)\" fill=\"none\" stroke=\"#0D9488\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"2\" y=\"2\" width=\"20\" height=\"8\" rx=\"2\" ry=\"2\"></rect><rect x=\"2\" y=\"14\" width=\"20\" height=\"8\" rx=\"2\" ry=\"2\"></rect><line x1=\"6\" y1=\"6\" x2=\"6.01\" y2=\"6\"></line><line x1=\"6\" y1=\"18\" x2=\"6.01\" y2=\"18\"></line></g>\n<text class=\"node-id self\" text-anchor=\"middle\" x=\"430\" y=\"88\">SW1</text>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"430\" y=\"150\">authenticator, Gi0/1</text>\n<g transform=\"translate(751.0,96.0) scale(1.5833)\" fill=\"none\" stroke=\"#0D9488\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4\"></path></g>\n<text class=\"node-id self\" text-anchor=\"middle\" x=\"770\" y=\"86\">10.10.10.60</text>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"770\" y=\"152\">RADIUS</text>\n</svg>",
+    "readout": {
+      "kind": "stp",
+      "lines": [
+        "PC1 → SW1: EAPOL-Start — устройство просит начать аутентификацию",
+        "SW1 → PC1: EAP-Request Identity — порт пока в состоянии unauthorized",
+        "SW1 → RADIUS: Access-Request с учётными данными клиента",
+        "RADIUS → SW1: Access-Accept — порт переходит в authorized, трафик разрешён"
+      ]
+    },
+    "caption": "До Access-Accept коммутатор пропускает только служебный EAPOL-трафик — обычные кадры клиента порт просто не форвардит, каким бы MAC он ни представился."
+  },
+  "theory": {
+    "title": "Из чего состоит 802.1X",
+    "desc": "Шесть понятий: от трёх ролей протокола до того, чем RADIUS отличается от TACACS+.",
+    "tldr": "Проще говоря: пока устройство не подтвердит личность через RADIUS-сервер, порт коммутатора пропускает только служебные пакеты аутентификации — и ничего больше.",
+    "cards": [
+      {
+        "title": "Supplicant",
+        "body_html": "ПО на клиентском устройстве (обычно встроено в ОС), которое инициирует 802.1X-обмен и предъявляет учётные данные."
+      },
+      {
+        "title": "Authenticator",
+        "body_html": "Коммутатор (или точка доступа) — посредник между supplicant и сервером аутентификации. Сам не проверяет пароли, только держит порт закрытым до ответа сервера."
+      },
+      {
+        "title": "Authentication server",
+        "body_html": "Обычно RADIUS-сервер: хранит или проверяет учётные данные и решает, разрешить доступ или нет."
+      },
+      {
+        "title": "EAP / EAPOL",
+        "body_html": "Extensible Authentication Protocol — гибкий формат обмена учётными данными (пароль, сертификат и т.д.), EAPOL — его версия поверх Ethernet между supplicant и authenticator."
+      },
+      {
+        "title": "RADIUS vs TACACS+",
+        "body_html": "<code>RADIUS</code> шифрует только пароль и объединяет authentication/authorization в одном обмене. <code>TACACS+</code> шифрует всю сессию и разделяет AAA на отдельные этапы — чаще используется для управления самими сетевыми устройствами."
+      },
+      {
+        "title": "MAB (MAC Authentication Bypass)",
+        "body_html": "Резервный механизм для устройств без supplicant (принтеры, IP-камеры) — коммутатор аутентифицирует их просто по MAC-адресу через тот же RADIUS."
+      }
+    ]
+  },
+  "process": {
+    "title": "Как проходит 802.1X-аутентификация порта",
+    "desc": "Последовательность из трёх сторон — порт остаётся закрытым, пока не получен явный Access-Accept.",
+    "steps": [
+      {
+        "num": "1",
+        "body_html": "<b>EAPOL-Start</b> — supplicant инициирует обмен (или authenticator сам запрашивает Identity при линкапе)."
+      },
+      {
+        "num": "2",
+        "body_html": "<b>EAP-Request/Response Identity</b> — коммутатор запрашивает личность, клиент отвечает."
+      },
+      {
+        "num": "3",
+        "body_html": "<b>RADIUS Access-Request</b> — authenticator пересылает данные на сервер аутентификации."
+      },
+      {
+        "num": "4",
+        "body_html": "<b>Access-Accept / Access-Reject</b> — сервер решает, пускать устройство или нет."
+      },
+      {
+        "num": "5",
+        "body_html": "<b>Порт authorized</b> — только теперь обычный трафик клиента начинает форвардиться."
+      }
+    ]
+  },
+  "glossary": [
+    {
+      "term": "Supplicant",
+      "def_html": "Программный клиент на конечном устройстве, инициирующий 802.1X-аутентификацию."
+    },
+    {
+      "term": "Authenticator",
+      "def_html": "Сетевое устройство (коммутатор/точка доступа), которое держит порт закрытым до подтверждения от сервера."
+    },
+    {
+      "term": "RADIUS",
+      "def_html": "Протокол AAA, шифрующий пароль и объединяющий authentication/authorization в одном обмене поверх UDP."
+    },
+    {
+      "term": "TACACS+",
+      "def_html": "Протокол AAA от Cisco, шифрующий сессию целиком и разделяющий authentication/authorization/accounting на отдельные этапы поверх TCP."
+    },
+    {
+      "term": "EAP",
+      "def_html": "Extensible Authentication Protocol — гибкий контейнер для разных методов аутентификации (пароль, сертификат, токен)."
+    },
+    {
+      "term": "MAB",
+      "def_html": "MAC Authentication Bypass — аутентификация устройства по MAC-адресу вместо полноценного 802.1X, для устройств без supplicant."
+    },
+    {
+      "term": "dot1x port-control",
+      "def_html": "Режим порта: auto (ждать аутентификацию), force-authorized (всегда открыт) или force-unauthorized (всегда закрыт)."
+    }
+  ],
+  "quiz": {
+    "slug": "aaa8021x",
+    "correct": [
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "questions": [
+      {
+        "q": "Что делает authenticator в схеме 802.1X?",
+        "options": [
+          "Хранит пароли пользователей",
+          "Держит порт закрытым и пересылает данные аутентификации между supplicant и сервером",
+          "Генерирует сертификаты",
+          "Заменяет DHCP-сервер"
+        ]
+      },
+      {
+        "q": "Чем TACACS+ отличается от RADIUS?",
+        "options": [
+          "Ничем, это одно и то же",
+          "TACACS+ шифрует всю сессию и разделяет AAA на этапы, чаще используется для управления устройствами",
+          "RADIUS работает только с Wi-Fi",
+          "TACACS+ не поддерживает шифрование"
+        ]
+      },
+      {
+        "q": "Зачем нужен MAB?",
+        "options": [
+          "Чтобы ускорить обычный 802.1X",
+          "Для устройств без supplicant (принтеры, камеры) — аутентификация по MAC через RADIUS",
+          "Чтобы отключить аутентификацию полностью",
+          "Это протокол маршрутизации"
+        ]
+      },
+      {
+        "q": "Что происходит с трафиком клиента до получения Access-Accept?",
+        "options": [
+          "Пропускается полностью",
+          "Порт форвардит только служебный EAPOL-трафик, обычные кадры не пропускаются",
+          "Пропускается, но с ограничением скорости",
+          "Клиент автоматически получает адрес через DHCP"
+        ]
+      },
+      {
+        "q": "Что такое EAP?",
+        "options": [
+          "Протокол маршрутизации",
+          "Гибкий формат обмена учётными данными аутентификации",
+          "Способ агрегации портов",
+          "Тип VLAN"
+        ]
+      }
+    ]
+  },
+  "misconceptions": [
+    {
+      "wrong": "802.1X и port security — одно и то же.",
+      "right": "Port security просто ограничивает набор MAC-адресов на порту без проверки личности; 802.1X — полноценная аутентификация через RADIUS с учётными данными."
+    },
+    {
+      "wrong": "RADIUS и TACACS+ взаимозаменяемы без разницы.",
+      "right": "RADIUS шифрует только пароль и объединяет AAA в одном пакете; TACACS+ шифрует всю сессию и разделяет этапы — поэтому его чаще выбирают для управления самими сетевыми устройствами."
+    }
+  ],
+  "related": [
+    "stp",
+    "lag",
+    "vlan"
+  ],
+  "cli_example": {
+    "label": "802.1X на порту доступа с RADIUS и MAB-резервом",
+    "code": "Router(config)# aaa new-model\nRouter(config)# radius server RAD1\nRouter(config-radius-server)# address ipv4 10.10.10.60 auth-port 1812 acct-port 1813\nRouter(config-radius-server)# key SharedSecret123\nRouter(config)# aaa authentication dot1x default group radius\nRouter(config)# dot1x system-auth-control\nRouter(config)# interface GigabitEthernet0/1\nRouter(config-if)# switchport mode access\nRouter(config-if)# authentication port-control auto\nRouter(config-if)# dot1x pae authenticator\nRouter(config-if)# mab",
+    "note": "mab на порту — это резервный сценарий: если supplicant не ответил за отведённое время, коммутатор пробует аутентифицировать устройство по MAC через тот же RADIUS."
+  },
+  "lab": {
+    "scenario": "На порту Gi0/1 подключается корпоративный ноутбук с supplicant, но иногда в тот же порт втыкают сетевой принтер без поддержки 802.1X.",
+    "tasks": [
+      "Настройте RADIUS-сервер 10.10.10.60 с общим ключом",
+      "Включите dot1x system-auth-control глобально",
+      "Настройте порт Gi0/1 в режим authentication port-control auto",
+      "Добавьте MAB как резервный механизм для принтера",
+      "Проверьте состояние порта через show authentication sessions"
+    ],
+    "solution_code": "Router(config)# radius server RAD1\nRouter(config-radius-server)# address ipv4 10.10.10.60 auth-port 1812 acct-port 1813\nRouter(config-radius-server)# key SharedSecret123\nRouter(config)# aaa new-model\nRouter(config)# aaa authentication dot1x default group radius\nRouter(config)# dot1x system-auth-control\nRouter(config)# interface GigabitEthernet0/1\nRouter(config-if)# authentication port-control auto\nRouter(config-if)# dot1x pae authenticator\nRouter(config-if)# mab\nRouter# show authentication sessions interface GigabitEthernet0/1",
+    "verify": "show authentication sessions должен показать метод (dot1x или mab) и статус Authz Success для подключённого устройства."
+  }
+}

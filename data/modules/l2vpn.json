@@ -1,6 +1,6 @@
 {
   "id": "l2vpn",
-  "order": 14,
+  "order": 17,
   "group": "mpls",
   "tab_label": "MPLS L2VPN",
   "title_html": "MPLS L2VPN: <span>эмуляция канального соединения</span> поверх MPLS",
@@ -189,5 +189,16 @@
     "label": "Точка-точка VPWS через xconnect",
     "code": "Router(config)# interface GigabitEthernet0/1\nRouter(config-if)# xconnect 10.0.0.2 100 encapsulation mpls\nRouter# show mpls l2transport vc",
     "note": "10.0.0.2 100 — это адрес удалённого PE и VC ID псевдопровода; на другом конце должна быть точно такая же пара."
+  },
+  "lab": {
+    "scenario": "Два офиса клиента должны обмениваться Ethernet-кадрами так, будто соединены одним кабелем — без участия провайдера в их IP-маршрутизации.",
+    "tasks": [
+      "Настройте xconnect на PE1 в сторону PE2",
+      "Убедитесь, что VC ID совпадает на обеих сторонах",
+      "Проверьте статус псевдопровода",
+      "Проверьте прохождение Ethernet-кадров между CE1 и CE2"
+    ],
+    "solution_code": "Router(config)# interface GigabitEthernet0/1\nRouter(config-if)# xconnect 10.0.0.2 100 encapsulation mpls\nRouter# show mpls l2transport vc",
+    "verify": "show mpls l2transport vc должен показать статус UP для VC 100 на обоих PE."
   }
 }

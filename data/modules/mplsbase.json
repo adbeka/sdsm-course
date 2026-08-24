@@ -1,6 +1,6 @@
 {
   "id": "mplsbase",
-  "order": 12,
+  "order": 15,
   "group": "mpls",
   "tab_label": "Базовый MPLS",
   "title_html": "MPLS: <span>коммутация по меткам</span> вместо разбора IP на каждом хопе",
@@ -190,5 +190,16 @@
     "label": "Включение MPLS с LDP",
     "code": "Router(config)# mpls label protocol ldp\nRouter(config)# interface GigabitEthernet0/0\nRouter(config-if)# mpls ip\nRouter# show mpls ldp neighbor\nRouter# show mpls forwarding-table",
     "note": "mpls ip включается на каждом транзитном интерфейсе внутри MPLS-домена — на клиентских портах (CE-facing) он не нужен."
+  },
+  "lab": {
+    "scenario": "Провайдерское ядро из нескольких P-роутеров должно пересылать трафик по меткам, не разбирая IP-заголовок на каждом транзитном узле.",
+    "tasks": [
+      "Включите mpls ip на всех транзитных интерфейсах",
+      "Дождитесь установления LDP-соседства",
+      "Проверьте таблицу меток",
+      "Проследите путь пакета от push до pop по меткам"
+    ],
+    "solution_code": "Router(config)# mpls label protocol ldp\nRouter(config)# interface GigabitEthernet0/0\nRouter(config-if)# mpls ip\nRouter# show mpls ldp neighbor\nRouter# show mpls forwarding-table",
+    "verify": "show mpls ldp neighbor должен показать соседей в состоянии Established, а forwarding-table — реальные метки на пути."
   }
 }

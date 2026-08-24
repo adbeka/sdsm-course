@@ -1,0 +1,203 @@
+{
+  "id": "dhcpdns",
+  "order": 3,
+  "group": "foundations",
+  "tab_label": "DHCP и DNS",
+  "title_html": "DHCP и DNS: <span>автоматическая выдача адресов</span> и разрешение имён",
+  "subtitle": "Хост не рождается с IP-адресом и не умеет резолвить имена сам — DHCP выдаёт адрес и параметры сети, DNS переводит имена в адреса. Без них работает только то, что настроено вручную.",
+  "meta": {
+    "ИСТОЧНИК": "Дополнительный модуль (вне цикла SDSM)",
+    "ФОРМАТ": "теория + схема + квиз",
+    "ВРЕМЯ": "~8 минут"
+  },
+  "diagram": {
+    "label": "DORA через DHCP relay",
+    "svg_html": "<svg class=\"path-svg\" viewbox=\"0 0 860 230\" xmlns=\"http://www.w3.org/2000/svg\">\n<path class=\"link-line\" d=\"M 90,115 L 400,115\"></path>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"245\" y=\"105\">DHCPDISCOVER (broadcast)</text>\n<path class=\"link-line\" d=\"M 400,115 L 740,115\"></path>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"570\" y=\"105\">юникастом на relay-адрес</text>\n<g transform=\"translate(74.0,99.0) scale(1.3333)\" fill=\"none\" stroke=\"#475569\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"2\" y=\"3\" width=\"20\" height=\"14\" rx=\"2\" ry=\"2\"></rect><line x1=\"8\" y1=\"21\" x2=\"16\" y2=\"21\"></line><line x1=\"12\" y1=\"17\" x2=\"12\" y2=\"21\"></line></g>\n<text class=\"node-id\" text-anchor=\"middle\" x=\"90\" y=\"89\">PC1</text>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"90\" y=\"149\">клиент</text>\n<g transform=\"translate(383.0,98.0) scale(1.4167)\" fill=\"none\" stroke=\"#0D9488\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"2\" y=\"2\" width=\"20\" height=\"8\" rx=\"2\" ry=\"2\"></rect><rect x=\"2\" y=\"14\" width=\"20\" height=\"8\" rx=\"2\" ry=\"2\"></rect><line x1=\"6\" y1=\"6\" x2=\"6.01\" y2=\"6\"></line><line x1=\"6\" y1=\"18\" x2=\"6.01\" y2=\"18\"></line></g>\n<text class=\"node-id self\" text-anchor=\"middle\" x=\"400\" y=\"88\">R1</text>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"400\" y=\"150\">ip helper-address</text>\n<g transform=\"translate(720.0,95.0) scale(1.6667)\" fill=\"none\" stroke=\"#0D9488\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"2\" y=\"2\" width=\"20\" height=\"8\" rx=\"2\" ry=\"2\"></rect><rect x=\"2\" y=\"14\" width=\"20\" height=\"8\" rx=\"2\" ry=\"2\"></rect><line x1=\"6\" y1=\"6\" x2=\"6.01\" y2=\"6\"></line><line x1=\"6\" y1=\"18\" x2=\"6.01\" y2=\"18\"></line></g>\n<text class=\"node-id self\" text-anchor=\"middle\" x=\"740\" y=\"85\">10.10.10.53</text>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"740\" y=\"153\">DHCP + DNS</text>\n</svg>",
+    "readout": {
+      "kind": "stp",
+      "lines": [
+        "PC1: DHCPDISCOVER — broadcast, ищет DHCP-сервер в своей подсети",
+        "R1 (ip helper-address): юникастом пересылает запрос на 10.10.10.53",
+        "Сервер: DHCPOFFER — предлагает 10.10.20.50/24, шлюз, DNS",
+        "PC1: DHCPACK получен — адрес закреплён, известен DNS-сервер"
+      ]
+    },
+    "caption": "Без ip helper-address на роутере DHCPDISCOVER (broadcast) не выйдет за пределы своей подсети — клиент в VLAN 20 никогда не достучится до сервера в другой сети сам по себе."
+  },
+  "theory": {
+    "title": "Из чего складывается DHCP и DNS",
+    "desc": "Шесть понятий: от DORA до того, почему резолвер не идёт сразу к нужному серверу.",
+    "tldr": "Проще говоря: DHCP выдаёт хосту адрес и параметры сети при включении, DNS потом переводит понятные людям имена в IP-адреса, которыми оперирует сеть.",
+    "cards": [
+      {
+        "title": "DORA",
+        "body_html": "Discover → Offer → Request → Ack — четыре шага, которыми клиент получает адрес: не «спрашивает и сразу получает», а именно предлагает/подтверждает, чтобы не было конфликтов при нескольких DHCP-серверах."
+      },
+      {
+        "title": "DHCP relay (ip helper-address)",
+        "body_html": "DHCPDISCOVER — широковещательный кадр, а роутеры broadcast между подсетями не пропускают. <code>ip helper-address</code> на интерфейсе-шлюзе превращает его в юникаст до реального сервера."
+      },
+      {
+        "title": "Lease (аренда адреса)",
+        "body_html": "Адрес выдаётся не навсегда, а на срок аренды. Ближе к его истечению клиент пытается продлить тот же адрес, не запуская DORA заново."
+      },
+      {
+        "title": "Рекурсивный резолвер",
+        "body_html": "Хост обычно спрашивает не напрямую у authoritative-сервера домена, а у рекурсивного резолвера (например, у провайдера или corporate DNS), который сам обходит корневые/TLD/authoritative серверы."
+      },
+      {
+        "title": "Типы записей DNS",
+        "body_html": "<code>A</code>/<code>AAAA</code> — имя в IPv4/IPv6, <code>PTR</code> — обратная запись (IP в имя), <code>CNAME</code> — псевдоним на другое имя, <code>MX</code> — сервер почты для домена."
+      },
+      {
+        "title": "DHCP options",
+        "body_html": "Кроме самого адреса DHCP передаёт параметры: option 3 (шлюз), option 6 (DNS-серверы), option 66/67 (PXE-загрузка) — всё, что нужно хосту, чтобы полноценно работать в сети."
+      }
+    ]
+  },
+  "process": {
+    "title": "Как хост получает адрес и находит нужный сервер",
+    "desc": "От включения хоста до первого успешного DNS-запроса.",
+    "steps": [
+      {
+        "num": "1",
+        "body_html": "<b>DHCPDISCOVER</b> — клиент рассылает broadcast-запрос в поисках DHCP-сервера."
+      },
+      {
+        "num": "2",
+        "body_html": "<b>Relay при необходимости</b> — если сервер в другой подсети, роутер с ip helper-address пересылает запрос юникастом."
+      },
+      {
+        "num": "3",
+        "body_html": "<b>DHCPOFFER → DHCPREQUEST → DHCPACK</b> — сервер предлагает адрес, клиент подтверждает, адрес закрепляется."
+      },
+      {
+        "num": "4",
+        "body_html": "<b>Клиент получает DNS-сервер</b> в составе DHCP-ответа (option 6)."
+      },
+      {
+        "num": "5",
+        "body_html": "<b>DNS-запрос к резолверу</b> — приложение обращается по имени, резолвер возвращает IP-адрес."
+      }
+    ]
+  },
+  "glossary": [
+    {
+      "term": "DORA",
+      "def_html": "Discover, Offer, Request, Ack — четыре сообщения процесса получения адреса по DHCP."
+    },
+    {
+      "term": "ip helper-address",
+      "def_html": "Команда на интерфейсе роутера, превращающая широковещательный DHCP-запрос в юникаст до конкретного сервера."
+    },
+    {
+      "term": "Lease time",
+      "def_html": "Срок, на который клиенту выдан адрес, после которого его нужно продлевать или заново запрашивать."
+    },
+    {
+      "term": "Рекурсивный резолвер",
+      "def_html": "DNS-сервер, который берёт на себя весь поиск ответа по цепочке других серверов, а клиенту отдаёт уже готовый результат."
+    },
+    {
+      "term": "Authoritative-сервер",
+      "def_html": "DNS-сервер, который хранит оригинальные записи конкретного домена и отвечает на вопросы о нём с полным доверием."
+    },
+    {
+      "term": "PTR-запись",
+      "def_html": "Обратная DNS-запись: перевод IP-адреса в доменное имя, используется, например, почтовыми серверами для проверки репутации отправителя."
+    },
+    {
+      "term": "TTL (DNS)",
+      "def_html": "Время, на которое ответ DNS-запроса можно закэшировать, не спрашивая сервер заново."
+    }
+  ],
+  "quiz": {
+    "slug": "dhcpdns",
+    "correct": [
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "questions": [
+      {
+        "q": "Что происходит, если DHCP-сервер находится в другой подсети, а на роутере не настроен ip helper-address?",
+        "options": [
+          "Всё работает как обычно",
+          "DHCPDISCOVER (broadcast) не дойдёт до сервера, клиент не получит адрес",
+          "Клиент получит адрес медленнее, но получит",
+          "Роутер сам назначит адрес вместо сервера"
+        ]
+      },
+      {
+        "q": "В каком порядке идёт процесс получения адреса по DHCP?",
+        "options": [
+          "Offer → Discover → Ack → Request",
+          "Discover → Offer → Request → Ack",
+          "Request → Discover → Offer → Ack",
+          "Ack → Discover → Offer → Request"
+        ]
+      },
+      {
+        "q": "Что делает рекурсивный DNS-резолвер?",
+        "options": [
+          "Хранит authoritative-записи всех доменов мира",
+          "Берёт на себя весь поиск ответа по цепочке серверов вместо клиента",
+          "Назначает IP-адреса хостам",
+          "Шифрует DNS-трафик"
+        ]
+      },
+      {
+        "q": "Какая DNS-запись переводит IP-адрес обратно в доменное имя?",
+        "options": [
+          "A",
+          "CNAME",
+          "PTR",
+          "MX"
+        ]
+      },
+      {
+        "q": "Зачем нужен lease time в DHCP?",
+        "options": [
+          "Чтобы адрес нельзя было использовать",
+          "Чтобы адрес выдавался не навсегда и мог быть переиспользован другим устройством",
+          "Чтобы ускорить DNS-запросы",
+          "Это параметр только для IPv6"
+        ]
+      }
+    ]
+  },
+  "misconceptions": [
+    {
+      "wrong": "DHCP-запросы всегда доходят до сервера в другой подсети сами по себе.",
+      "right": "DHCPDISCOVER — это broadcast, который роутер по умолчанию не пропускает между подсетями; нужен ip helper-address (DHCP relay)."
+    },
+    {
+      "wrong": "DNS-запрос всегда идёт напрямую к authoritative-серверу нужного домена.",
+      "right": "Обычно сначала опрашивается рекурсивный резолвер, который сам обходит корневые/TLD/authoritative серверы, если ответа нет в кэше."
+    }
+  ],
+  "related": [
+    "ciscoconn",
+    "staticroute",
+    "troubleshooting"
+  ],
+  "cli_example": {
+    "label": "DHCP relay и DHCP-пул на роутере",
+    "code": "Router(config)# interface GigabitEthernet0/1\nRouter(config-if)# ip helper-address 10.10.10.53\nRouter(config-if)# exit\nRouter(config)# ip dhcp excluded-address 10.10.20.1 10.10.20.10\nRouter(config)# ip dhcp pool USERS\nRouter(dhcp-config)# network 10.10.20.0 255.255.255.0\nRouter(dhcp-config)# default-router 10.10.20.1\nRouter(dhcp-config)# dns-server 10.10.10.53\nRouter(dhcp-config)# lease 7\nRouter# show ip dhcp binding",
+    "note": "ip dhcp excluded-address обязателен — иначе DHCP-пул может выдать адрес, который уже занят шлюзом или статическими устройствами."
+  },
+  "lab": {
+    "scenario": "В офисе один центральный DHCP/DNS-сервер на 10.10.10.53. Клиентский VLAN 20 (10.10.20.0/24) находится на другом роутере — сейчас клиенты в нём не получают адреса.",
+    "tasks": [
+      "Настройте ip helper-address на интерфейсе VLAN 20 в сторону 10.10.10.53",
+      "На сервере (или локальном пуле) исключите первые 10 адресов подсети под статику",
+      "Убедитесь, что клиент получает адрес именно из 10.10.20.0/24, а не из чужого пула",
+      "Проверьте, что клиенту приходит правильный DNS-сервер (не шлюз по ошибке)",
+      "Посмотрите активные аренды через show ip dhcp binding"
+    ],
+    "solution_code": "Router(config)# interface Vlan20\nRouter(config-if)# ip address 10.10.20.1 255.255.255.0\nRouter(config-if)# ip helper-address 10.10.10.53\nRouter(config-if)# exit\nRouter# show ip dhcp binding\nRouter# show run interface Vlan20",
+    "verify": "На клиенте: ipconfig /all (Windows) или show ip interface brief (Cisco) — должен появиться адрес из 10.10.20.0/24 и корректный DNS-сервер 10.10.10.53."
+  }
+}

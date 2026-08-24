@@ -1,6 +1,6 @@
 {
   "id": "stp",
-  "order": 5,
+  "order": 7,
   "group": "l2",
   "tab_label": "STP: защита от петель",
   "title_html": "STP: <span>устранение петель</span> с сохранением резервирования",
@@ -189,5 +189,17 @@
     "label": "RSTP, приоритет root и защита портов доступа",
     "code": "SW1(config)# spanning-tree mode rapid-pvst\nSW1(config)# spanning-tree vlan 10 priority 4096\nSW1(config)# interface GigabitEthernet0/1\nSW1(config-if)# spanning-tree portfast\nSW1(config-if)# spanning-tree bpduguard enable\nSW1# show spanning-tree vlan 10",
     "note": "portfast + bpduguard ставят только на портах доступа к хостам — не на межкоммутаторных линках."
+  },
+  "lab": {
+    "scenario": "Четыре коммутатора соединены в кольцо для отказоустойчивости. Нужно явно выбрать root bridge и защитить порты доступа от случайной петли.",
+    "tasks": [
+      "Переключитесь на rapid-pvst",
+      "Явно задайте приоритет root bridge на нужном коммутаторе",
+      "Включите portfast и bpduguard на портах доступа к хостам",
+      "Убедитесь, что резервный линк логически заблокирован, а не выключен физически",
+      "Проверьте итоговую топологию"
+    ],
+    "solution_code": "SW1(config)# spanning-tree mode rapid-pvst\nSW1(config)# spanning-tree vlan 10 priority 4096\nSW1(config)# interface GigabitEthernet0/1\nSW1(config-if)# spanning-tree portfast\nSW1(config-if)# spanning-tree bpduguard enable\nSW1# show spanning-tree vlan 10",
+    "verify": "show spanning-tree vlan 10 должен показать ровно один Root port и один Blocking порт на не-корневых коммутаторах."
   }
 }

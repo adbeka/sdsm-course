@@ -1,6 +1,6 @@
 {
   "id": "nat",
-  "order": 7,
+  "order": 9,
   "group": "l3",
   "tab_label": "ACL и NAT",
   "title_html": "NAT: <span>трансляция адресов</span> для выхода во внешнюю сеть",
@@ -189,5 +189,16 @@
     "label": "PAT (NAT overload) для выхода в интернет",
     "code": "Router(config)# access-list 1 permit 192.168.1.0 0.0.0.255\nRouter(config)# ip nat inside source list 1 interface GigabitEthernet0/0 overload\nRouter(config)# interface GigabitEthernet0/1\nRouter(config-if)# ip nat inside\nRouter(config)# interface GigabitEthernet0/0\nRouter(config-if)# ip nat outside\nRouter# show ip nat translations",
     "note": "overload — это и есть PAT: много внутренних адресов транслируются в один внешний, различаясь портами."
+  },
+  "lab": {
+    "scenario": "У офисной LAN 192.168.1.0/24 есть только один публичный IP на внешнем интерфейсе роутера.",
+    "tasks": [
+      "Определите ACL, покрывающий внутреннюю подсеть",
+      "Настройте PAT (NAT overload) на внешний интерфейс",
+      "Пометьте внутренний и внешний интерфейсы (inside/outside)",
+      "Проверьте активные трансляции"
+    ],
+    "solution_code": "Router(config)# access-list 1 permit 192.168.1.0 0.0.0.255\nRouter(config)# ip nat inside source list 1 interface GigabitEthernet0/0 overload\nRouter(config)# interface GigabitEthernet0/1\nRouter(config-if)# ip nat inside\nRouter(config)# interface GigabitEthernet0/0\nRouter(config-if)# ip nat outside\nRouter# show ip nat translations",
+    "verify": "show ip nat translations должен показать записи вида 192.168.1.x:port -> публичный_IP:port для каждого активного соединения."
   }
 }

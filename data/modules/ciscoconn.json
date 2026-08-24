@@ -177,5 +177,17 @@
     "label": "Базовая настройка доступа к устройству",
     "code": "Switch> enable\nSwitch# configure terminal\nSwitch(config)# hostname SW1\nSW1(config)# enable secret Cisco123\nSW1(config)# username admin secret StrongPass1\nSW1(config)# ip domain-name lab.local\nSW1(config)# crypto key generate rsa modulus 2048\nSW1(config)# line vty 0 4\nSW1(config-line)# transport input ssh\nSW1(config-line)# login local\nSW1(config-line)# exit\nSW1(config)# end\nSW1# write memory",
     "note": "crypto key generate rsa обязателен для SSH — без ключей transport input ssh не заработает."
+  },
+  "lab": {
+    "scenario": "Новый коммутатор пришёл с завода без единой настройки. Нужен защищённый удалённый доступ, а не голый Telnet.",
+    "tasks": [
+      "Задайте hostname и enable secret",
+      "Создайте локального пользователя с паролем",
+      "Сгенерируйте RSA-ключи и включите SSH",
+      "Разрешите на vty только SSH, запретите Telnet",
+      "Сохраните конфигурацию в NVRAM"
+    ],
+    "solution_code": "Switch(config)# hostname SW1\nSW1(config)# enable secret Cisco123\nSW1(config)# username admin secret StrongPass1\nSW1(config)# ip domain-name lab.local\nSW1(config)# crypto key generate rsa modulus 2048\nSW1(config)# line vty 0 4\nSW1(config-line)# transport input ssh\nSW1(config-line)# login local\nSW1(config-line)# exit\nSW1(config)# end\nSW1# write memory",
+    "verify": "Попытка telnet на устройство должна отклоняться; подключение по SSH с логином/паролем — проходить."
   }
 }

@@ -130,8 +130,8 @@
     });
   }
 
-  var TYPE_LABEL = {module: "Модуль", term: "Термин", theory: "Теория", misconception: "Заблуждение", cli: "CLI"};
-  var TYPE_RANK = {module: 0, term: 1, theory: 2, misconception: 3, cli: 4};
+  var TYPE_LABEL = {module: "Модуль", term: "Термин", theory: "Теория", misconception: "Заблуждение", cli: "CLI", lab: "Практика"};
+  var TYPE_RANK = {module: 0, term: 1, theory: 2, misconception: 3, cli: 4, lab: 5};
 
   function initSearch(){
     var trigger = document.querySelector(".search-trigger");

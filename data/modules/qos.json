@@ -1,6 +1,6 @@
 {
   "id": "qos",
-  "order": 19,
+  "order": 22,
   "group": "mpls",
   "tab_label": "QoS: приоритизация трафика",
   "title_html": "QoS: <span>приоритизация трафика</span> при нехватке полосы",
@@ -186,5 +186,16 @@
     "label": "Классификация голоса и приоритетная очередь",
     "code": "Router(config)# class-map MATCH-VOICE\nRouter(config-cmap)# match dscp ef\nRouter(config)# policy-map WAN-OUT\nRouter(config-pmap)# class MATCH-VOICE\nRouter(config-pmap-c)# priority percent 20\nRouter(config)# interface GigabitEthernet0/0\nRouter(config-if)# service-policy output WAN-OUT",
     "note": "priority — это low-latency очередь: трафик в ней обслуживается вне очереди, но с жёстким лимитом полосы (20% здесь), чтобы не задавить остальной трафик."
+  },
+  "lab": {
+    "scenario": "При загрузке WAN-канала качество голосовых звонков заметно деградирует, хотя обычный веб-трафик работает нормально.",
+    "tasks": [
+      "Классифицируйте голосовой трафик по DSCP EF",
+      "Создайте policy-map с приоритетной очередью для голоса",
+      "Примените policy на исходящий WAN-интерфейс",
+      "Проверьте счётчики очереди под нагрузкой"
+    ],
+    "solution_code": "Router(config)# class-map MATCH-VOICE\nRouter(config-cmap)# match dscp ef\nRouter(config)# policy-map WAN-OUT\nRouter(config-pmap)# class MATCH-VOICE\nRouter(config-pmap-c)# priority percent 20\nRouter(config)# interface GigabitEthernet0/0\nRouter(config-if)# service-policy output WAN-OUT\nRouter# show policy-map interface GigabitEthernet0/0",
+    "verify": "show policy-map interface должен показать пакеты, реально попадающие в класс MATCH-VOICE, и отсутствие drop'ов в приоритетной очереди при нагрузке."
   }
 }

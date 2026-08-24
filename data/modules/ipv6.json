@@ -1,0 +1,203 @@
+{
+  "id": "ipv6",
+  "order": 11,
+  "group": "l3",
+  "tab_label": "IPv6",
+  "title_html": "IPv6: <span>адресация нового поколения</span> без NAT и broadcast",
+  "subtitle": "IPv6 — не «IPv4 с более длинными адресами», а другая модель: нет broadcast, соседи находятся через NDP вместо ARP, а адресного пространства хватает, чтобы не изобретать NAT для экономии адресов.",
+  "meta": {
+    "ИСТОЧНИК": "Дополнительный модуль (вне цикла SDSM)",
+    "ФОРМАТ": "теория + схема + квиз",
+    "ВРЕМЯ": "~10 минут"
+  },
+  "diagram": {
+    "label": "Базовая IPv6-маршрутизация между тремя роутерами",
+    "svg_html": "<svg class=\"path-svg\" viewbox=\"0 0 860 230\" xmlns=\"http://www.w3.org/2000/svg\">\n<path class=\"link-line\" d=\"M 110,115 L 430,115\"></path>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"270\" y=\"105\">fe80::/10 link-local + NDP</text>\n<path class=\"link-line\" d=\"M 430,115 L 750,115\"></path>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"590\" y=\"105\">ipv6 route ::/0</text>\n<g transform=\"translate(94.0,99.0) scale(1.3333)\" fill=\"none\" stroke=\"#0D9488\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"2\" y=\"2\" width=\"20\" height=\"8\" rx=\"2\" ry=\"2\"></rect><rect x=\"2\" y=\"14\" width=\"20\" height=\"8\" rx=\"2\" ry=\"2\"></rect><line x1=\"6\" y1=\"6\" x2=\"6.01\" y2=\"6\"></line><line x1=\"6\" y1=\"18\" x2=\"6.01\" y2=\"18\"></line></g>\n<text class=\"node-id self\" text-anchor=\"middle\" x=\"110\" y=\"89\">R1</text>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"110\" y=\"149\">2001:db8:0:1::1/64</text>\n<g transform=\"translate(414.0,99.0) scale(1.3333)\" fill=\"none\" stroke=\"#475569\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"2\" y=\"2\" width=\"20\" height=\"8\" rx=\"2\" ry=\"2\"></rect><rect x=\"2\" y=\"14\" width=\"20\" height=\"8\" rx=\"2\" ry=\"2\"></rect><line x1=\"6\" y1=\"6\" x2=\"6.01\" y2=\"6\"></line><line x1=\"6\" y1=\"18\" x2=\"6.01\" y2=\"18\"></line></g>\n<text class=\"node-id\" text-anchor=\"middle\" x=\"430\" y=\"89\">R2</text>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"430\" y=\"149\">2001:db8:0:2::1/64</text>\n<g transform=\"translate(734.0,99.0) scale(1.3333)\" fill=\"none\" stroke=\"#475569\" stroke-width=\"1.7\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"2\" y=\"2\" width=\"20\" height=\"8\" rx=\"2\" ry=\"2\"></rect><rect x=\"2\" y=\"14\" width=\"20\" height=\"8\" rx=\"2\" ry=\"2\"></rect><line x1=\"6\" y1=\"6\" x2=\"6.01\" y2=\"6\"></line><line x1=\"6\" y1=\"18\" x2=\"6.01\" y2=\"18\"></line></g>\n<text class=\"node-id\" text-anchor=\"middle\" x=\"750\" y=\"89\">R3</text>\n<text class=\"node-label\" text-anchor=\"middle\" x=\"750\" y=\"149\">2001:db8:0:3::1/64</text>\n</svg>",
+    "readout": {
+      "kind": "plain",
+      "lines": [
+        "R1: ipv6 address 2001:db8:0:1::1/64 — глобальный unicast на интерфейсе",
+        "R1 ↔ R2: NDP (Neighbor Discovery) вместо ARP находит link-layer адрес соседа",
+        "R2: ipv6 route ::/0 в сторону R3 — маршрут по умолчанию",
+        "R3: получает пакет — путь построен без единого NAT на пути"
+      ]
+    },
+    "caption": "Каждый интерфейс с IPv6 получает не только глобальный адрес, но и автоматический link-local (fe80::/10) — именно он чаще всего используется как next-hop во внутренних маршрутах."
+  },
+  "theory": {
+    "title": "Из чего состоит адресация IPv6",
+    "desc": "Шесть понятий — от типов адресов до того, почему NAT здесь не обязателен.",
+    "tldr": "Проще говоря: у IPv6 адресов настолько много, что каждому устройству можно дать честный глобальный адрес напрямую, а вместо ARP и broadcast используются NDP и multicast.",
+    "cards": [
+      {
+        "title": "Типы адресов",
+        "body_html": "IPv6 знает <code>unicast</code> (одному получателю), <code>multicast</code> (группе) и <code>anycast</code> (ближайшему из группы одинаковых адресов). Broadcast как класса не существует вообще."
+      },
+      {
+        "title": "Link-local (fe80::/10)",
+        "body_html": "Автоматически назначается на каждый IPv6-интерфейс, работает только в пределах одного сегмента и не маршрutizируется — но именно он часто используется как next-hop для соседних маршрутизаторов."
+      },
+      {
+        "title": "NDP вместо ARP",
+        "body_html": "Neighbor Discovery Protocol поверх ICMPv6 находит link-layer адрес соседа (Neighbor Solicitation/Advertisement) и объявления роутера (Router Advertisement) — делает то же, что ARP + часть DHCP в IPv4."
+      },
+      {
+        "title": "SLAAC",
+        "body_html": "Stateless Address Autoconfiguration — хост может сам собрать себе глобальный адрес из префикса, полученного в Router Advertisement, без отдельного DHCPv6-сервера."
+      },
+      {
+        "title": "Сокращение записи",
+        "body_html": "Ведущие нули в каждой группе можно опускать, а одну последовательность нулевых групп подряд — заменить на <code>::</code>, но только один раз в адресе, иначе запись станет неоднозначной."
+      },
+      {
+        "title": "Dual-stack",
+        "body_html": "IPv4 и IPv6 обычно работают параллельно на одном интерфейсе на переходный период — это не «либо-либо», а сосуществование, пока IPv6 не станет основным."
+      }
+    ]
+  },
+  "process": {
+    "title": "Как включить и проверить IPv6-маршрутизацию",
+    "desc": "Похоже на IPv4, но с парой обязательных дополнительных шагов.",
+    "steps": [
+      {
+        "num": "1",
+        "body_html": "<b>ipv6 unicast-routing</b> — глобально включить маршрутизацию IPv6 (без этого роутер ведёт себя как хост, а не как router)."
+      },
+      {
+        "num": "2",
+        "body_html": "<b>ipv6 address на интерфейсе</b> — назначить глобальный unicast-адрес; link-local появится автоматически."
+      },
+      {
+        "num": "3",
+        "body_html": "<b>NDP находит соседей</b> — Neighbor Solicitation/Advertisement строит таблицу соседей, аналог ARP-кэша."
+      },
+      {
+        "num": "4",
+        "body_html": "<b>Статический или динамический маршрут</b> — ipv6 route или OSPFv3/IPv6 BGP для построения таблицы маршрутизации."
+      },
+      {
+        "num": "5",
+        "body_html": "<b>Проверка</b> — show ipv6 interface brief и show ipv6 route подтверждают, что адреса и маршруты на месте."
+      }
+    ]
+  },
+  "glossary": [
+    {
+      "term": "EUI-64",
+      "def_html": "Способ автоматически собрать интерфейсную часть IPv6-адреса из MAC-адреса интерфейса."
+    },
+    {
+      "term": "NDP",
+      "def_html": "Neighbor Discovery Protocol — набор ICMPv6-сообщений для поиска соседей, роутеров и автонастройки, заменяет ARP из IPv4."
+    },
+    {
+      "term": "RA / RS",
+      "def_html": "Router Advertisement / Router Solicitation — объявление роутером своего префикса и явный запрос хостом такого объявления."
+    },
+    {
+      "term": "SLAAC",
+      "def_html": "Stateless Address Autoconfiguration — автоматическая сборка адреса хостом на основе полученного префикса, без DHCPv6."
+    },
+    {
+      "term": "ULA (fc00::/7)",
+      "def_html": "Unique Local Address — аналог приватных адресов IPv4 (RFC1918), не маршрутизируется в интернете."
+    },
+    {
+      "term": "Anycast",
+      "def_html": "Один и тот же адрес назначен нескольким устройствам — пакет доставляется ближайшему из них по метрике маршрутизации."
+    },
+    {
+      "term": "Solicited-node multicast",
+      "def_html": "Специальная multicast-группа, формируемая из последних 24 бит адреса — используется вместо ARP-broadcast для поиска конкретного соседа."
+    }
+  ],
+  "quiz": {
+    "slug": "ipv6",
+    "correct": [
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "questions": [
+      {
+        "q": "Что заменяет ARP в IPv6?",
+        "options": [
+          "DHCP",
+          "NDP (Neighbor Discovery Protocol)",
+          "SLAAC",
+          "Broadcast-запрос"
+        ]
+      },
+      {
+        "q": "Что такое link-local адрес?",
+        "options": [
+          "Глобальный адрес для интернета",
+          "Автоматический адрес (fe80::/10), работающий только в пределах одного сегмента",
+          "Адрес, который назначает провайдер",
+          "Устаревший тип адреса, не используется"
+        ]
+      },
+      {
+        "q": "Зачем в IPv6 в общем случае не нужен NAT?",
+        "options": [
+          "NAT запрещён стандартом",
+          "Адресного пространства достаточно, чтобы дать каждому устройству глобальный адрес напрямую",
+          "IPv6-пакеты не содержат адреса отправителя",
+          "NAT работает только с IPv4-заголовками"
+        ]
+      },
+      {
+        "q": "Что делает SLAAC?",
+        "options": [
+          "Шифрует IPv6-трафик",
+          "Позволяет хосту самому собрать себе адрес из полученного префикса без DHCPv6",
+          "Заменяет BGP",
+          "Строит таблицу маршрутизации между AS"
+        ]
+      },
+      {
+        "q": "Сколько раз подряд можно использовать «::» для сокращения нулевых групп в одном IPv6-адресе?",
+        "options": [
+          "Сколько угодно раз",
+          "Только один раз — иначе запись станет неоднозначной",
+          "Ровно два раза",
+          "Только в конце адреса"
+        ]
+      }
+    ]
+  },
+  "misconceptions": [
+    {
+      "wrong": "IPv6 использует broadcast так же, как IPv4.",
+      "right": "В IPv6 broadcast не существует вообще — вместо него используется multicast (например, all-nodes ff02::1)."
+    },
+    {
+      "wrong": "NAT так же обязателен в IPv6, как и в IPv4.",
+      "right": "Из-за огромного адресного пространства IPv6 задуман без необходимости NAT для экономии адресов — хотя NPTv6 существует для отдельных задач вроде смены провайдера."
+    }
+  ],
+  "related": [
+    "staticroute",
+    "ospf",
+    "bgp"
+  ],
+  "cli_example": {
+    "label": "Базовая настройка IPv6 на интерфейсе и статический маршрут",
+    "code": "Router(config)# ipv6 unicast-routing\nRouter(config)# interface GigabitEthernet0/0\nRouter(config-if)# ipv6 address 2001:db8:0:1::1/64\nRouter(config-if)# ipv6 enable\nRouter(config-if)# exit\nRouter(config)# ipv6 route ::/0 2001:db8:0:1::2\nRouter# show ipv6 interface brief\nRouter# show ipv6 route",
+    "note": "ipv6 enable на интерфейсе включает link-local и обработку NDP, даже если вы по какой-то причине не назначаете глобальный адрес на этом интерфейсе."
+  },
+  "lab": {
+    "scenario": "Два офисных роутера R1 и R2 соединены линком и должны обмениваться IPv6-трафиком; R2 смотрит в интернет через провайдера.",
+    "tasks": [
+      "Включите ipv6 unicast-routing на обоих роутерах",
+      "Назначьте R1 адрес 2001:db8:0:1::1/64, R2 — 2001:db8:0:1::2/64 на общем линке",
+      "Проверьте, что R1 видит link-local сосед R2 через show ipv6 neighbors",
+      "Настройте на R2 маршрут по умолчанию в сторону провайдера",
+      "С R1 проверьте связность до внешнего адреса через ping ipv6"
+    ],
+    "solution_code": "R1(config)# ipv6 unicast-routing\nR1(config)# interface GigabitEthernet0/0\nR1(config-if)# ipv6 address 2001:db8:0:1::1/64\nR1(config-if)# exit\nR1(config)# ipv6 route ::/0 2001:db8:0:1::2\nR1# show ipv6 neighbors\nR1# ping ipv6 2001:4860:4860::8888",
+    "verify": "show ipv6 route на R1 должен показать маршрут по умолчанию через R2, а ping ipv6 — получить ответ."
+  }
+}
