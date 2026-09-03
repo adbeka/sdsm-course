@@ -30,6 +30,8 @@ def asset_version():
 
 ASSET_VERSION = asset_version()
 
+WIKI_URL = "https://claude.ai/code/artifact/549bbbba-132e-4f3b-91e6-ea57de84c1d1"
+
 GROUP_LABEL = {
     "foundations": "Основы",
     "l2": "L2 layer",
@@ -217,6 +219,7 @@ def topnav_html(modules, active_id=None, depth="../", show_section_links=True, h
     </a>
     <div class="nav-groups">{"".join(dropdowns)}</div>
     <a class="nav-glossary-link" href="{depth}glossary.html">Глоссарий</a>
+    <a class="nav-glossary-link nav-wiki-link" href="{WIKI_URL}" target="_blank" rel="noopener">Вики <span class="wiki-badge">правьте сами</span></a>
     <button type="button" class="search-trigger" aria-label="Поиск по сайту">
       <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
     </button>
@@ -604,6 +607,14 @@ def render_home(modules):
       <a class="btn home-progress-cta" href="modules/{modules[0]["id"]}.html">Начать с первого →</a>
     </div>
   </section>
+  <a class="wiki-callout" href="{WIKI_URL}" target="_blank" rel="noopener">
+    <div class="wiki-callout-icon">📝</div>
+    <div class="wiki-callout-body">
+      <div class="wiki-callout-title">Вики курса — дополняйте сами</div>
+      <div class="wiki-callout-sub">Пишите теорию своими словами, делитесь примерами из практики, предлагайте новые темы. Правки сохраняются сразу и видны всем — как в Википедии.</div>
+    </div>
+    <div class="wiki-callout-cta">Открыть вики →</div>
+  </a>
   {"".join(group_blocks)}
 </div>'''
     return page_shell("БЗПД · Учебный портал", body, depth="")
