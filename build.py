@@ -30,7 +30,7 @@ def asset_version():
 
 ASSET_VERSION = asset_version()
 
-WIKI_URL = "https://claude.ai/code/artifact/549bbbba-132e-4f3b-91e6-ea57de84c1d1"
+WIKI_URL = "https://github.com/adbeka/sdsm-course/wiki"
 
 GROUP_LABEL = {
     "foundations": "Основы",
