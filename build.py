@@ -702,7 +702,7 @@ TOOLKIT_FILE = ROOT / "data" / "toolkit.json"
 TOOLS_TOC = [
     ("labs", "Интерактивные лабы"), ("calc-subnet", "Подсети"), ("calc-summary", "Суммаризация"), ("calc-mtu", "MTU / MSS"),
     ("calc-speed", "Скорость и BDP"), ("calc-mac", "MAC / EUI-64"), ("ref-masks", "Маски"),
-    ("refs", "Справочники"), ("commands", "IOS ↔ Linux"), ("checklist", "Чек-лист"),
+    ("refs", "Справочники"), ("commands", "IOS · Junos · VRP"), ("translate", "Перевод конфигов"), ("checklist", "Чек-лист"),
     ("templates", "Шаблоны"), ("habits", "Привычки"),
 ]
 
@@ -761,12 +761,29 @@ def render_tools_page(modules, tk):
         for name, b, hint in MTU_OVERHEADS
     )
 
+    VCOLS = [("ios", "Cisco IOS"), ("junos", "Juniper Junos"), ("vrp", "Huawei VRP"), ("linux", "Linux")]
     commands = "".join(
-        f'<tr class="cmd-row" data-search="{html.escape((c["task"] + " " + c["ios"] + " " + c["linux"]).lower())}">'
+        f'<tr class="cmd-row" data-search="{html.escape(" ".join([c["task"]] + [c.get(k, "") for k, _ in VCOLS]).lower())}">'
         f'<td class="cmd-task">{c["task"]}</td>'
-        f'<td><pre class="cmd-code">{html.escape(c["ios"])}</pre></td>'
-        f'<td><pre class="cmd-code">{html.escape(c["linux"])}</pre></td></tr>'
+        + "".join(f'<td data-col="{k}"><pre class="cmd-code">{html.escape(c.get(k, "—"))}</pre></td>' for k, _ in VCOLS)
+        + '</tr>'
         for c in tk["commands"]
+    )
+    cmd_head = "".join(f'<th data-col="{k}">{t}</th>' for k, t in VCOLS)
+    col_toggles = "".join(
+        f'<label class="col-toggle"><input type="checkbox" data-col-toggle="{k}"{"" if k == "linux" else " checked"}> {t}</label>'
+        for k, t in VCOLS
+    )
+    translate = "".join(
+        f'<tr><td class="cmd-task">{c["task"]}</td>'
+        + "".join(f'<td><pre class="cmd-code">{html.escape(c[k])}</pre></td>' for k in ("ios", "junos", "vrp"))
+        + '</tr>'
+        for c in tk["config_translate"]
+    )
+    vendor_notes = "".join(
+        f'<div class="theory-card"><div class="theory-card-title">{v["title"]}</div>'
+        f'<div class="theory-card-body">{v["body_html"]}</div></div>'
+        for v in tk["vendor_notes"]
     )
 
     checklist_cols = []
@@ -915,11 +932,22 @@ def render_tools_page(modules, tk):
   </section>
 
   <section id="commands">
-    {section_head("08 — ШПАРГАЛКА", "Команды: Cisco IOS ↔ Linux", "Одна задача — две команды. Linux-колонка пригодится на серверах, white-box и FRR.")}
-    <input type="text" class="gloss-page-filter cmd-filter" placeholder="Фильтр: mac, mtu, bgp, ошибки…" autocomplete="off">
-    <div class="table-scroll"><table class="ref-table cmd-table"><thead><tr><th>Задача</th><th>Cisco IOS</th><th>Linux</th></tr></thead>
+    {section_head("08 — ШПАРГАЛКА", "Команды: Cisco · Juniper · Huawei", "Одна задача — команды трёх вендоров. Колонки можно скрыть; Linux пригодится на серверах, white-box и FRR. Прочерк — прямого аналога нет или он зависит от платформы.")}
+    <div class="cmd-tools">
+      <input type="text" class="gloss-page-filter cmd-filter" placeholder="Фильтр: mac, mtu, ospf, display…" autocomplete="off">
+      <div class="col-toggles">{col_toggles}</div>
+    </div>
+    <div class="table-scroll"><table class="ref-table cmd-table"><thead><tr><th>Задача</th>{cmd_head}</tr></thead>
     <tbody>{commands}</tbody></table></div>
     <p class="gloss-page-empty cmd-empty" hidden>Ничего не найдено.</p>
+    <p class="ref-note">Потренировать синтаксис вживую можно в <a href="labs/sandbox.html?d=vrp">песочнице</a> — там есть переключатель Cisco IOS / Huawei VRP / Juniper Junos.</p>
+  </section>
+
+  <section id="translate">
+    {section_head("08.1 — ПЕРЕВОД", "Одна задача — три конфига", "Типовые настройки в синтаксисе Cisco IOS, Juniper Junos (set-команды) и Huawei VRP. Удобно при миграции и на стыке вендоров.")}
+    <div class="table-scroll"><table class="ref-table cmd-table translate-table"><thead><tr><th>Задача</th><th>Cisco IOS</th><th>Juniper Junos</th><th>Huawei VRP</th></tr></thead>
+    <tbody>{translate}</tbody></table></div>
+    <div class="theory-grid vendor-notes">{vendor_notes}</div>
   </section>
 
   <section id="checklist">
@@ -953,7 +981,9 @@ def tools_search_entries(tk):
     entries += [{"type": "tool", "title": t, "module": label, "snippet": "", "url": f"tools.html#{a}"}
                 for t, a in extra]
     entries += [{"type": "tool", "title": c["task"], "module": label + " · команды",
-                 "snippet": c["ios"] + " " + c["linux"], "url": "tools.html#commands"} for c in tk["commands"]]
+                 "snippet": " ".join(c.get(k, "") for k in ("ios", "junos", "vrp", "linux")), "url": "tools.html#commands"} for c in tk["commands"]]
+    entries += [{"type": "tool", "title": "Перевод конфигурации: " + c["task"], "module": label + " · IOS / Junos / VRP",
+                 "snippet": c["junos"] + " " + c["vrp"], "url": "tools.html#translate"} for c in tk["config_translate"]]
     entries += [{"type": "tool", "title": lab["title"], "module": label + " · лабы",
                  "snippet": lab["desc"][:140], "url": lab["url"]} for lab in tk["labs"]]
     entries += [{"type": "tool", "title": t["label"], "module": label + " · шаблоны",

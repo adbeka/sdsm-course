@@ -12,48 +12,95 @@
   function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
   function svg(tag, attrs, parent) { const e = document.createElementNS(SVG, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
 
+  const PC_CHIPS = ['ipconfig', 'ipconfig /renew', 'ping ', 'tracert ', 'telnet '];
   const CHIPS = {
-    pc: ['ipconfig', 'ipconfig /renew', 'ping ', 'tracert ', 'telnet '],
-    sw: ['show vlan brief', 'show interfaces status', 'show interfaces trunk', 'show spanning-tree', 'show processes cpu', 'show logging', 'show running-config', 'configure terminal'],
-    rt: ['show ip interface brief', 'show ip route', 'show ip ospf neighbor', 'show ip nat translations', 'show ip dhcp pool', 'show access-lists', 'show running-config', 'ping ', 'configure terminal'],
+    ios: {
+      sw: ['show vlan brief', 'show interfaces status', 'show interfaces trunk', 'show spanning-tree', 'show processes cpu', 'show logging', 'show running-config', 'configure terminal'],
+      rt: ['show ip interface brief', 'show ip route', 'show ip ospf neighbor', 'show ip nat translations', 'show ip dhcp pool', 'show access-lists', 'show running-config', 'ping ', 'configure terminal'],
+    },
+    vrp: {
+      sw: ['display port vlan', 'display vlan', 'display interface brief', 'display stp brief', 'display cpu-usage', 'display logbuffer', 'display current-configuration', 'system-view'],
+      rt: ['display ip interface brief', 'display ip routing-table', 'display ospf peer brief', 'display ospf interface', 'display ip pool', 'display current-configuration', 'ping ', 'system-view'],
+    },
+    junos: {
+      sw: [],
+      rt: ['show interfaces terse', 'show route', 'show ospf neighbor', 'show ospf interface', 'show configuration', 'ping ', 'configure', 'show | compare', 'commit'],
+    },
   };
+  const VENDOR = { ios: 'Cisco IOS', vrp: 'Huawei VRP', junos: 'Juniper Junos' };
+  const DKEY = 'sdsm_sandbox_dialect';
+  function loadDialect() {
+    const q = new URLSearchParams(location.search).get('d');
+    if (q && VENDOR[q]) return q;
+    try { const v = localStorage.getItem(DKEY); if (v && VENDOR[v]) return v; } catch (e) {}
+    return 'ios';
+  }
 
-  const S = { sc: null, net: null, sess: {}, buf: {}, cur: null, hints: 0, sol: false, solved: load(), won: false, hist: {}, hpos: 0, anim: 0 };
+  const S = { sc: null, net: null, sess: {}, buf: {}, cur: null, hints: 0, sol: false, solved: load(), won: false, hist: {}, hpos: 0, anim: 0, dx: loadDialect() };
+  const avail = sc => S.dx === 'ios' || !!sc[S.dx];
+  const skey = sc => S.dx === 'ios' ? sc.id : S.dx + ':' + sc.id;
+  // сценарий в выбранном диалекте: подсказки, решение, вывод
+  function view(sc) {
+    const X = (S.dx !== 'ios' && sc[S.dx]) || {};
+    return { story: X.story || sc.story, hints: X.hints || sc.hints, solution: X.solution || sc.solution,
+      lesson: (X.lesson || sc.lesson) + (X.note ? '<br><br><b>' + VENDOR[S.dx] + ':</b> ' + X.note : '') };
+  }
+  function renderDialect() {
+    document.querySelectorAll('#dialect button').forEach(b => b.setAttribute('aria-pressed', b.dataset.d === S.dx ? 'true' : 'false'));
+  }
+  function setDialect(d, id) {
+    S.dx = d; try { localStorage.setItem(DKEY, d); } catch (e) {}
+    const u = new URL(location.href);
+    if (d === 'ios') u.searchParams.delete('d'); else u.searchParams.set('d', d);
+    history.replaceState(null, '', u.pathname + u.search + u.hash);
+    renderDialect();
+    let target = SC.find(x => x.id === (id || (S.sc && S.sc.id)));
+    if (!target || !avail(target)) target = SC.find(avail);
+    select(target.id);
+  }
 
   /* ---------- список сценариев ---------- */
   function renderList() {
     const L = $('#list'); L.innerHTML = '';
     L.appendChild(el('p', 'list-h', 'СЦЕНАРИИ'));
     SC.forEach((sc, i) => {
-      const b = el('button', 'sc' + (S.sc && S.sc.id === sc.id ? ' on' : '')); b.type = 'button';
+      const ok = avail(sc);
+      const b = el('button', 'sc' + (S.sc && S.sc.id === sc.id ? ' on' : '') + (ok ? '' : ' na')); b.type = 'button';
+      if (!ok) b.title = 'Этого сценария нет в выбранном синтаксисе — по клику откроется на Cisco IOS';
       b.appendChild(el('span', 'sc-n', sc.diff ? String(i + 1) : '∞'));
       const body = el('span', 'sc-b');
       body.appendChild(el('span', 'sc-t', sc.title));
       const m = el('span', 'sc-m'); m.appendChild(el('span', null, sc.topic));
       if (sc.diff) m.appendChild(el('span', 'dots', '●'.repeat(sc.diff) + '○'.repeat(3 - sc.diff)));
+      if (!ok) m.appendChild(el('span', 'only', ['ios', 'vrp', 'junos'].filter(d => d === 'ios' || sc[d]).map(d => ({ ios: 'IOS', vrp: 'VRP', junos: 'Junos' })[d]).join(' · ')));
       body.appendChild(m); b.appendChild(body);
-      if (sc.goals.length) b.appendChild(el('span', 'sc-ok' + (S.solved[sc.id] ? ' done' : '')));
-      b.addEventListener('click', () => select(sc.id));
+      if (sc.goals.length && ok) b.appendChild(el('span', 'sc-ok' + (S.solved[skey(sc)] ? ' done' : '')));
+      b.addEventListener('click', () => ok ? select(sc.id) : setDialect('ios', sc.id));
       L.appendChild(b);
     });
-    const total = SC.filter(s => s.goals.length).length;
-    $('#progress').textContent = 'Решено ' + SC.filter(s => s.goals.length && S.solved[s.id]).length + '/' + total;
+    const mine = SC.filter(s => s.goals.length && avail(s));
+    $('#progress').textContent = `${VENDOR[S.dx]}: решено ${mine.filter(s => S.solved[skey(s)]).length}/${mine.length}`;
   }
 
   /* ---------- выбор и сброс сценария ---------- */
   function select(id, keepHash) {
-    const sc = SC.find(s => s.id === id) || SC[0];
-    S.sc = sc; S.net = new N.Net(sc.build()); S.sess = {}; S.buf = {}; S.hist = {}; S.hints = 0; S.sol = false; S.won = false;
+    let sc = SC.find(s => s.id === id) || SC[0];
+    if (!avail(sc)) { S.dx = 'ios'; renderDialect(); }
+    S.sc = sc; S.net = new N.Net(sc.build()); S.net.dialect = S.dx === 'ios' ? null : S.dx;
+    S.sess = {}; S.buf = {}; S.hist = {}; S.hints = 0; S.sol = false; S.won = false;
+    const TIP = { ios: 'configure terminal — режим настройки', vrp: 'system-view — режим настройки, display — просмотр, undo — отмена', junos: 'configure → set/delete → show | compare → commit' };
     for (const d of Object.keys(S.net.dev)) {
       S.sess[d] = new N.Session(S.net, d, { changed: onChange, trace: animate });
-      S.buf[d] = [{ c: 'sys', t: `${S.net.dev[d].name} — ${{ pc: 'компьютер', sw: 'коммутатор Cisco IOS', rt: 'маршрутизатор Cisco IOS' }[S.net.dev[d].type]} (симуляция). ? — список команд, Tab — дополнение, ↑↓ — история.` }];
+      const type = S.net.dev[d].type;
+      const what = type === 'pc' ? 'компьютер' : (type === 'sw' ? 'коммутатор ' : 'маршрутизатор ') + VENDOR[S.dx];
+      S.buf[d] = [{ c: 'sys', t: `${S.net.dev[d].name} — ${what} (симуляция). ? — список команд, Tab — дополнение, ↑↓ — история.${type === 'pc' ? '' : '\n' + TIP[S.dx]}` }];
       S.hist[d] = [];
     }
     if (!keepHash) history.replaceState(null, '', '#' + sc.id);
     $('#tTopic').textContent = sc.topic;
     $('#tDiff').textContent = sc.diff ? 'СЛОЖНОСТЬ ' + '●'.repeat(sc.diff) + '○'.repeat(3 - sc.diff) : 'СВОБОДНЫЙ РЕЖИМ';
     $('#tTitle').textContent = sc.title;
-    $('#tStory').textContent = sc.story;
+    $('#tStory').textContent = view(sc).story;
     gPkt().innerHTML = ''; clearNote();
     renderList(); renderHints(); renderMap(); renderGoals(true);
     const first = Object.keys(S.net.dev).find(d => S.net.dev[d].type === 'pc') || Object.keys(S.net.dev)[0];
@@ -81,10 +128,10 @@
     if (!initial && !S.won && st.every(Boolean)) win();
   }
   function win() {
-    S.won = true; S.solved[S.sc.id] = true; save(S.solved); renderList();
+    S.won = true; S.solved[skey(S.sc)] = true; save(S.solved); renderList();
     $('#winTitle').textContent = S.sc.title;
-    $('#winLesson').innerHTML = '<b>Что запомнить.</b> ' + S.sc.lesson;
-    const idx = SC.indexOf(S.sc), next = SC.slice(idx + 1).find(s => s.goals.length && !S.solved[s.id]) || SC.slice(idx + 1)[0];
+    $('#winLesson').innerHTML = '<b>Что запомнить.</b> ' + view(S.sc).lesson;
+    const idx = SC.indexOf(S.sc), rest = SC.slice(idx + 1).filter(avail), next = rest.find(s => s.goals.length && !S.solved[skey(s)]) || rest[0];
     $('#winNext').hidden = !next;
     $('#winNext').onclick = () => { $('#win').hidden = true; select(next.id); };
     setTimeout(() => { $('#win').hidden = false; $('#winNext').focus(); }, reduce ? 0 : 900);
@@ -93,12 +140,13 @@
   /* ---------- подсказки ---------- */
   function renderHints() {
     const box = $('#hints'); box.innerHTML = '';
-    S.sc.hints.slice(0, S.hints).forEach((h, i) => { const d = el('div', 'hint'); d.appendChild(el('b', null, 'ПОДСКАЗКА ' + (i + 1))); d.appendChild(document.createTextNode(h)); box.appendChild(d); });
-    if (S.sol && S.sc.solution.length) box.appendChild(el('div', 'sol', S.sc.solution.map(s => '! ' + S.net.dev[s.dev].name + '\n' + s.cmds.join('\n')).join('\n\n')));
-    const left = S.sc.hints.length - S.hints;
-    $('#hintBtn').textContent = left ? `Подсказка (${S.hints + 1}/${S.sc.hints.length})` : 'Подсказки закончились';
+    const V = view(S.sc);
+    V.hints.slice(0, S.hints).forEach((h, i) => { const d = el('div', 'hint'); d.appendChild(el('b', null, 'ПОДСКАЗКА ' + (i + 1))); d.appendChild(document.createTextNode(h)); box.appendChild(d); });
+    if (S.sol && V.solution.length) box.appendChild(el('div', 'sol', V.solution.map(s => (S.dx === 'vrp' ? '# ' : S.dx === 'junos' ? '# ' : '! ') + S.net.dev[s.dev].name + '\n' + s.cmds.join('\n')).join('\n\n')));
+    const left = V.hints.length - S.hints;
+    $('#hintBtn').textContent = left ? `Подсказка (${S.hints + 1}/${V.hints.length})` : 'Подсказки закончились';
     $('#hintBtn').disabled = !left;
-    $('#solBtn').hidden = !S.sc.solution.length;
+    $('#solBtn').hidden = !V.solution.length;
     $('#solBtn').disabled = S.sol;
   }
 
@@ -122,7 +170,8 @@
         const blkV = l2.blocked.get(P.id + '|' + name) || [];
         const blk = blkV.length > 0, allV = blk && blkV.length === n.portVlans(P.id, name).length;
         const t = svg('text', { x, y, 'text-anchor': 'middle', fill: blk ? '#F2A541' : pu ? '#93A2B5' : '#FF7A6B', 'font-family': 'JetBrains Mono, monospace', 'font-size': 11, 'font-weight': blk ? 700 : 400 }, gL());
-        t.textContent = blk ? name + (allV ? ' BLK' : ' BLK (VLAN ' + blkV.join(',') + ')') : name;
+        const label = N.ifLabel(P, name, S.dx);
+        t.textContent = blk ? label + (allV ? ' BLK' : ' BLK (VLAN ' + blkV.join(',') + ')') : label;
         if (blk) {
           const bx = P.x + (Q.x - P.x) * 0.16, by = P.y + (Q.y - P.y) * 0.16;
           svg('rect', { x: bx - 7, y: by - 7, width: 14, height: 14, rx: 3, fill: '#F2A541', stroke: '#0E1622', 'stroke-width': 2 }, gL());
@@ -215,7 +264,8 @@
       b.addEventListener('click', () => openDev(d)); tabs.appendChild(b);
     }
     const chips = $('#chips'); chips.innerHTML = '';
-    CHIPS[S.net.dev[id].type].forEach(c => {
+    const type = S.net.dev[id].type;
+    (type === 'pc' ? PC_CHIPS : CHIPS[S.dx][type]).forEach(c => {
       const b = el('button', 'chip', c.trim() + (c.endsWith(' ') ? ' …' : '')); b.type = 'button';
       b.addEventListener('click', () => { const i = $('#cmd'); if (c.endsWith(' ')) { i.value = c; i.focus(); } else exec(c); });
       chips.appendChild(b);
@@ -234,11 +284,11 @@
     buf.push({ c: 'cmd', t: s.prompt() + ' ' + line });
     if (line.trim()) { S.hist[S.cur].push(line); S.hpos = S.hist[S.cur].length; }
     for (const out of s.run(line)) {
-      for (const part of String(out).split('\n')) buf.push({ c: /^%(LINK|LINEPROTO|OSPF|SPANTREE|PM)/.test(part) ? 'ev' : /^%/.test(part) ? 'err' : '', t: part });
+      for (const part of String(out).split('\n')) buf.push({ c: /^%(LINK|LINEPROTO|OSPF|SPANTREE|PM)|%%01/.test(part) ? 'ev' : /^%|^Error:|^error:|^unknown command|^syntax error/.test(part) ? 'err' : '', t: part });
     }
     if (buf.length > 600) buf.splice(0, buf.length - 600);
     // старый маркер «пакет потерян» неактуален после любой правки конфигурации
-    if (S.anim === animBefore && !/^\s*(sh|show|do\s+sh|ipconfig\s*$|\?|help)/i.test(line)) { gPkt().innerHTML = ''; clearNote(); }
+    if (S.anim === animBefore && !/^\s*(sh|show|do\s+sh|dis|display|run\s+sh|ipconfig\s*$|\?|help)/i.test(line)) { gPkt().innerHTML = ''; clearNote(); }
     renderOut();
   }
   function onChange() { renderMap(); renderGoals(false); }
@@ -264,5 +314,7 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#win').hidden) $('#win').hidden = true; });
   window.addEventListener('hashchange', () => { const id = location.hash.slice(1); if (id && (!S.sc || id !== S.sc.id)) select(id, true); });
 
+  document.querySelectorAll('#dialect button').forEach(b => b.addEventListener('click', () => { if (b.dataset.d !== S.dx) setDialect(b.dataset.d); }));
+  renderDialect();
   select((location.hash || '').slice(1) || SC[0].id, true);
 })();

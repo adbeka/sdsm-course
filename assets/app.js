@@ -626,7 +626,34 @@
     run();
   }
 
+  var COLS_KEY = "sdsm_cmd_cols";
+  function initColToggles(){
+    var boxes = document.querySelectorAll("[data-col-toggle]");
+    if (!boxes.length) return;
+    var saved = null;
+    try{ saved = JSON.parse(localStorage.getItem(COLS_KEY)); }catch(e){ saved = null; }
+    function apply(){
+      var state = {};
+      boxes.forEach(function(b){
+        state[b.dataset.colToggle] = b.checked;
+        document.querySelectorAll('.cmd-table:not(.translate-table) [data-col="' + b.dataset.colToggle + '"]').forEach(function(c){
+          c.classList.toggle("col-hidden", !b.checked);
+        });
+      });
+      try{ localStorage.setItem(COLS_KEY, JSON.stringify(state)); }catch(e){}
+    }
+    boxes.forEach(function(b){
+      if (saved && typeof saved[b.dataset.colToggle] === "boolean") b.checked = saved[b.dataset.colToggle];
+      b.addEventListener("change", function(){
+        if (!Array.prototype.some.call(boxes, function(x){ return x.checked; })) b.checked = true; // хотя бы одна колонка
+        apply();
+      });
+    });
+    apply();
+  }
+
   function initCmdFilter(){
+    initColToggles();
     var f = document.querySelector(".cmd-filter");
     if (!f) return;
     var rows = document.querySelectorAll(".cmd-row");

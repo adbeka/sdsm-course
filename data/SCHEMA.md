@@ -120,3 +120,16 @@ All body text is Russian: precise, no fluff, short sentences, `<code>` for proto
 `module_links` в записи лабы в `toolkit.json` задаёт, какой сценарий открывать из конкретного модуля (`{"vlan": "#vlan"}`).
 
 Проверка после правок сценариев: эталонное `solution` должно переводить все `goals` из «не выполнено» в «выполнено» (до решения хотя бы одна цель должна проваливаться).
+
+### Диалекты CLI в песочнице (`labs/sandbox/dialects.js`)
+
+Песочница умеет говорить на трёх синтаксисах — переключатель в шапке, ссылка `sandbox.html?d=vrp#ospfarea` открывает сценарий сразу в нужном диалекте.
+- **Cisco IOS** — базовая грамматика в `engine.js`.
+- **Huawei VRP** — виды `<R1>` / `[R1]` / `[R1-GigabitEthernet0/0/1]`, `display`, `undo`, `save`, `port default vlan`, `port trunk allow-pass vlan` (добавляет), `stp enable` (MSTP, сразу на все VLAN), `ospf 1` → `area 0` → `network`, `ip pool` + `gateway-list` (список), `dhcp select relay` + `dhcp relay server-ip`.
+- **Juniper Junos** — `user@R1>` / `configure`, правки в кандидате (`set` / `delete`), `show | compare`, `commit` (с проверкой: интерфейс в двух областях OSPF не закоммитится), `commit check`, `commit confirmed`, `rollback`, `run`. OSPF включается на интерфейсе по имени (`protocols ospf area … interface ge-0/0/1.0`).
+
+Модель сети общая: имена интерфейсов в модели — в стиле IOS (`Gi0/1`), диалект переводит их в `GigabitEthernet0/0/1` / `XGigabitEthernet0/0/1` (VRP; `XGE` — аплинки коммутаторов) и `ge-0/0/1` / `xe-0/1/1` (Junos).
+
+Чтобы сценарий был доступен в диалекте, добавьте ему в `scenarios.js` (блок `DX`) запись `vrp: {hints, solution, story?, lesson?, note?}` и/или `junos: {...}`. `note` дописывается к «что запомнить» как вендорская особенность. Сценарии без записи доступны только на IOS и в списке помечены. Автотест: эталонное `solution` диалекта должно решать сценарий так же, как IOS-решение.
+
+На странице «Инструменты» шпаргалка `commands` хранит колонки `ios`, `junos`, `vrp`, `linux`; `config_translate` — перевод типовых настроек между вендорами, `vendor_notes` — карточки с ключевыми отличиями.
