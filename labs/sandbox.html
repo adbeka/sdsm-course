@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>БЗПД · Сетевая песочница</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap">
+<style>
+:root{
+  --bg:#0E1622; --panel:#131D2B; --raise:#1A2638; --line:#26354A; --ink:#E6ECF3; --muted:#93A2B5; --drop:#66758A;
+  --accent:#6FA8FF; --signal:#F2A541; --ok:#4FD08E; --bad:#FF7A6B; --violet:#B48CFF;
+  --sans:'IBM Plex Sans','Helvetica Neue',Arial,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+p,h1,h2,h3{margin:0}
+code{font-family:var(--mono);color:var(--signal);font-size:.92em}
+
+.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:20}
+.back{font-family:var(--mono);font-size:12.5px;text-decoration:none;color:var(--ink);background:var(--raise);border:1px solid var(--line);border-radius:7px;padding:7px 12px}
+.back:hover{border-color:var(--muted)}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:28px;height:28px;background:var(--ok);clip-path:polygon(25% 4%,75% 4%,100% 50%,75% 96%,25% 96%,0 50%)}
+.brand b{display:block;font-size:18px}
+.brand small{color:var(--muted);font-size:12px}
+.spacer{flex:1}
+.pill{font-family:var(--mono);font-size:12px;color:var(--ok);background:rgba(79,208,142,.12);border:1px solid rgba(79,208,142,.35);border-radius:20px;padding:4px 12px}
+.btn{background:var(--signal);color:#1A1206;border:none;border-radius:7px;padding:8px 14px;font-weight:600;cursor:pointer;white-space:nowrap}
+.btn.ghost{background:var(--raise);color:var(--ink);border:1px solid var(--line);font-weight:500}
+.btn.ghost:hover{border-color:var(--muted)}
+.btn:disabled{opacity:.45;cursor:default}
+
+.main{display:grid;grid-template-columns:270px minmax(0,1fr);gap:14px;padding:14px 16px 24px;max-width:1500px;margin:0 auto}
+.list{display:flex;flex-direction:column;gap:6px;align-self:start;position:sticky;top:70px}
+.list-h{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--drop);margin:2px 2px 4px}
+.sc{display:flex;gap:10px;align-items:flex-start;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:10px 12px;cursor:pointer;width:100%}
+.sc:hover{border-color:var(--muted)}
+.sc.on{border-color:var(--signal);background:var(--raise)}
+.sc-n{font-family:var(--mono);font-size:12px;color:var(--drop);width:18px;flex:none;padding-top:1px}
+.sc-b{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.sc-t{font-weight:600;font-size:13.5px;line-height:1.3}
+.sc-m{display:flex;gap:8px;align-items:center;font-size:11.5px;color:var(--muted)}
+.dots{letter-spacing:1px;color:var(--signal);font-size:10px}
+.sc-ok{flex:none;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line);margin-top:1px}
+.sc-ok.done{background:var(--ok);border-color:var(--ok);position:relative}
+.sc-ok.done::after{content:'';position:absolute;left:5px;top:2px;width:4px;height:8px;border:solid #0E1622;border-width:0 2px 2px 0;transform:rotate(45deg)}
+
+.work{display:flex;flex-direction:column;gap:14px;min-width:0}
+.task{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:18px}
+.task-top{display:flex;gap:8px;align-items:center;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em;margin-bottom:8px}
+.tag{font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:5px;background:var(--raise);color:var(--accent)}
+.task h2{font-size:19px;line-height:1.25;margin-bottom:8px}
+.task .story{font-size:13.5px;line-height:1.55;color:#C9D3E0}
+.goals{display:flex;flex-direction:column;gap:6px}
+.goals-h{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--drop)}
+.goal{display:flex;gap:9px;align-items:center;font-size:13px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 10px}
+.goal i{width:10px;height:10px;border-radius:50%;flex:none;background:var(--bad);box-shadow:0 0 0 3px rgba(255,122,107,.18)}
+.goal.ok i{background:var(--ok);box-shadow:0 0 0 3px rgba(79,208,142,.18)}
+.hint-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.hints{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.hint{font-size:13px;line-height:1.5;background:rgba(180,140,255,.1);border:1px solid rgba(180,140,255,.35);border-radius:8px;padding:8px 11px}
+.hint b{color:var(--violet);font-family:var(--mono);font-size:11px;margin-right:6px}
+.sol{font-family:var(--mono);font-size:12px;white-space:pre;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;color:var(--ok);overflow-x:auto}
+
+.stage{display:flex;flex-direction:column;gap:14px;min-height:0}
+.map{position:relative;background:radial-gradient(ellipse at 50% 30%,#162337,#0F1826 70%);border:1px solid var(--line);border-radius:12px;overflow:hidden;height:clamp(260px,40vh,400px)}
+.map svg{width:100%;height:100%;display:block}
+.map-legend{position:absolute;left:12px;bottom:10px;display:flex;gap:14px;font-size:11.5px;color:var(--muted)}
+.map-legend i{display:inline-block;width:18px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.map-tip{position:absolute;right:12px;bottom:10px;font-size:11.5px;color:var(--drop)}
+.dev{cursor:pointer}
+.storm{animation:storm .35s linear infinite}
+@keyframes storm{to{stroke-dashoffset:-34}}
+@media (prefers-reduced-motion: reduce){.storm{animation:none}}
+.dev:hover .dev-shape{filter:brightness(1.2)}
+.drop-note{position:absolute;left:50%;top:12px;transform:translateX(-50%);background:rgba(255,122,107,.14);border:1px solid var(--bad);color:var(--bad);font-size:12.5px;border-radius:8px;padding:5px 12px;white-space:nowrap}
+.ok-note{border-color:var(--ok);color:var(--ok);background:rgba(79,208,142,.12)}
+
+.term{background:#0A1019;border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;min-height:0;height:480px}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);padding:0 8px;overflow-x:auto;flex:none}
+.tabs button{background:none;border:none;border-bottom:2px solid transparent;padding:10px 10px;color:var(--muted);cursor:pointer;font-family:var(--mono);font-size:12.5px;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ok)}
+.tabs button .k{font-size:10px;color:var(--drop);margin-left:4px}
+.out{flex:1;overflow:auto;padding:10px 12px;font-family:var(--mono);font-size:12.5px;line-height:1.55;white-space:pre;color:#C7F5D9;min-height:0}
+.out .cmd{color:var(--ink)}
+.out .sys{color:var(--drop)}
+.out .ev{color:var(--signal)}
+.out .err{color:var(--bad)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;padding:8px 10px 0;border-top:1px solid var(--line);flex:none}
+.chip{font-family:var(--mono);font-size:11.5px;background:var(--raise);border:1px solid var(--line);color:var(--muted);border-radius:6px;padding:3px 8px;cursor:pointer}
+.chip:hover{color:var(--ink);border-color:var(--muted)}
+.inrow{display:flex;align-items:center;gap:8px;padding:8px 12px 10px;font-family:var(--mono);font-size:13px;flex:none}
+.prompt{color:var(--ok);white-space:nowrap}
+.inrow input{flex:1;min-width:0;background:transparent;border:none;outline:none;font-family:var(--mono);font-size:13px;color:var(--ink);caret-color:var(--ok)}
+
+.win{position:fixed;inset:0;background:rgba(5,10,18,.72);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.win-card{width:min(560px,100%);background:var(--panel);border:1px solid var(--ok);border-radius:14px;padding:22px 24px;display:flex;flex-direction:column;gap:12px;box-shadow:0 30px 60px -20px rgba(0,0,0,.8)}
+.win-k{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--ok)}
+.win-card h3{font-size:21px}
+.win-l{font-size:14px;line-height:1.6;color:#C9D3E0;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.win-l b{color:var(--ink)}
+.win-btns{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+
+@media (max-width:640px){ .map-tip{display:none} .map-legend{gap:8px;flex-wrap:wrap;right:12px} .term{height:440px} .top{gap:10px} .brand small{display:none} }
+@media (max-width:860px){ .main{grid-template-columns:minmax(0,1fr)} .list{position:static;flex-direction:row;overflow-x:auto;padding-bottom:4px} .list-h{display:none} .sc{min-width:220px} .task{grid-template-columns:1fr} }
+@media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto;transition:none!important} }
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="back" href="../index.html" title="На главную учебного портала">← БЗПД</a>
+  <div class="brand"><span class="logo"></span><div><b>Сетевая песочница</b><small>найди поломку и почини сеть через CLI</small></div></div>
+  <span class="spacer"></span>
+  <span class="pill" id="progress">Решено 0/0</span>
+  <button type="button" class="btn ghost" id="resetBtn">↺ Сбросить сценарий</button>
+</header>
+
+<div class="main">
+  <nav class="list" id="list" aria-label="Сценарии"></nav>
+  <div class="work">
+    <section class="task">
+      <div>
+        <div class="task-top"><span class="tag" id="tTopic"></span><span id="tDiff"></span></div>
+        <h2 id="tTitle"></h2>
+        <p class="story" id="tStory"></p>
+        <div class="hint-row">
+          <button type="button" class="btn ghost" id="hintBtn">Подсказка</button>
+          <button type="button" class="btn ghost" id="solBtn">Показать решение</button>
+        </div>
+        <div class="hints" id="hints"></div>
+      </div>
+      <div class="goals" id="goals"></div>
+    </section>
+    <div class="stage">
+      <div class="map" id="map">
+        <svg id="svg" viewBox="0 0 900 420" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Схема сети сценария">
+          <g id="gLinks"></g><g id="gDevs"></g><g id="gPkt"></g>
+        </svg>
+        <div class="map-tip">нажмите на устройство, чтобы открыть его консоль</div>
+        <div class="map-legend"><span><i style="background:#4FD08E"></i>линк up</span><span><i style="background:#FF7A6B"></i>линк down</span><span><i style="background:#F2A541"></i>запрос</span><span><i style="background:#6FA8FF"></i>ответ</span><span><i style="background:#F2A541;height:5px"></i>шторм / BLK</span></div>
+      </div>
+      <section class="term" aria-label="Консоль устройств">
+        <div class="tabs" id="tabs" role="tablist"></div>
+        <div class="out" id="out" aria-live="polite"></div>
+        <div class="chips" id="chips"></div>
+        <label class="inrow"><span class="prompt" id="prompt"></span><input id="cmd" autocomplete="off" spellcheck="false" aria-label="Команда"></label>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div class="win" id="win" hidden>
+  <div class="win-card" role="dialog" aria-modal="true" aria-labelledby="winTitle">
+    <p class="win-k">СЕТЬ ПОЧИНЕНА</p>
+    <h3 id="winTitle"></h3>
+    <div class="win-l" id="winLesson"></div>
+    <div class="win-btns"><button type="button" class="btn ghost" id="winStay">Остаться здесь</button><button type="button" class="btn" id="winNext">Следующий сценарий →</button></div>
+  </div>
+</div>
+
+<script src="sandbox/engine.js"></script>
+<script src="sandbox/scenarios.js"></script>
+<script src="sandbox/ui.js"></script>
+</body>
+</html>

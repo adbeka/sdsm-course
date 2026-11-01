@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>БЗПД · STP: защита от петель</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=569809b9e8">
+<link rel="stylesheet" href="../assets/style.css?v=7f304ad80f">
 </head>
 <body data-depth="../">
 <nav class="topnav">
@@ -35,6 +35,7 @@
       <div class="nav-group-menu"><a class="nav-group-item" href="../modules/mplsbase.html" data-progress-id="mplsbase">Базовый MPLS<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/l3vpn.html" data-progress-id="l3vpn">MPLS L3VPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/l2vpn.html" data-progress-id="l2vpn">MPLS L2VPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/evpn.html" data-progress-id="evpn">EVPN<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/evpnmh.html" data-progress-id="evpnmh">EVPN Multihoming<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/mplste.html" data-progress-id="mplste">MPLS Traffic Engineering<span class="tab-check"></span></a><a class="nav-group-item" href="../modules/qos.html" data-progress-id="qos">QoS: приоритизация трафика<span class="tab-check"></span></a></div>
     </div></div>
     <a class="nav-glossary-link" href="../glossary.html">Глоссарий</a>
+    <a class="nav-glossary-link nav-tools-link" href="../tools.html">Инструменты</a>
     <a class="nav-glossary-link nav-wiki-link" href="https://github.com/adbeka/sdsm-course/wiki" target="_blank" rel="noopener">Вики <span class="wiki-badge">правьте сами</span></a>
     <button type="button" class="search-trigger" aria-label="Поиск по сайту">
       <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
@@ -168,6 +169,14 @@ SW1# show spanning-tree vlan 10</code></pre>
       </details>
     </div>
   </section>
+  <section id="interactive">
+    <div class="section-head">
+      <div class="section-num">— ИНТЕРАКТИВ</div>
+      <div class="section-title">Посмотреть вживую</div>
+      <p class="section-desc">Пошаговая симуляция по теме модуля: кадры, метки и конфиги на каждом участке.</p>
+    </div>
+    <a class="lab-card" href="../labs/sandbox.html#stploop"><div class="lab-card-badge">ИНТЕРАКТИВНАЯ ЛАБА</div><div class="lab-card-title">Сетевая песочница: найди поломку и почини</div><div class="lab-card-desc">14 сломанных сетей и свободный стенд. Заходите в консоль ПК, коммутаторов и роутеров, вводите настоящие команды Cisco IOS (show, ping, traceroute, configure), смотрите, где теряется пакет, и чините: VLAN, транк, err-disabled, петля STP и шторм, DHCP и relay, шлюз, обратный маршрут, маска, OSPF, ACL, NAT/PAT и статический NAT. Подсказки в три шага и разбор «что запомнить» после каждой победы.</div><div class="lab-card-foot"><div class="lab-card-tags"><span class="lab-card-tag">CLI</span><span class="lab-card-tag">траблшутинг</span><span class="lab-card-tag">VLAN</span><span class="lab-card-tag">STP</span><span class="lab-card-tag">DHCP</span><span class="lab-card-tag">NAT</span><span class="lab-card-tag">OSPF</span><span class="lab-card-tag">ACL</span></div><span class="lab-card-cta">Открыть лабу →</span></div></a>
+  </section>
   <section id="glossary">
     <div class="section-head">
       <div class="section-num">03 — ГЛОССАРИЙ</div>
@@ -207,6 +216,6 @@ SW1# show spanning-tree vlan 10</code></pre>
     </div>
   </div>
 </div>
-<script src="../assets/app.js?v=569809b9e8"></script>
+<script src="../assets/app.js?v=7f304ad80f"></script>
 </body>
 </html>

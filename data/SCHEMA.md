@@ -87,3 +87,36 @@ Groups (top-nav dropdown sections, in this order):
 `order` (0-23) drives the linear course sequence (chapter numbering, prev/next footer nav) independently of `group` (dropdown categorization) — the two don't have to line up perfectly; e.g. VPN/BGP/Multicast sit in `l3` despite being conceptually "overlay" topics, and Packet Life sits in `l2` despite being a hardware topic, because that's where they read best in the nav.
 
 All body text is Russian: precise, no fluff, short sentences, `<code>` for protocol terms/attributes. To add video/images to a module, just add the `media` key to its JSON and rebuild (`python3 build.py`) — no template changes needed.
+
+## Инструменты инженера (`data/toolkit.json` → `tools.html`)
+
+Отдельная страница-практикум, не входит в линейный порядок модулей и прогресс. `build.py` рендерит её из `data/toolkit.json`, а калькуляторы (подсети, суммаризация, MTU/MSS, время передачи/BDP, MAC/EUI-64) живут в `assets/app.js` (`initTools()`) и работают целиком в браузере.
+
+Что редактируется в JSON без правки кода:
+- `habits` — карточки «Привычки, которые спасают»: `{title, body_html}`
+- `ad_table`, `ports_table`, `proto_table`, `mcast_table`, `ethertype_table`, `ranges_table` — справочные таблицы: `{columns: [...], rows: [[...]], note?}` (ячейки — HTML)
+- `commands` — шпаргалка `{task, ios, linux}` (plain text, многострочный через `\n`; `—` если аналога нет)
+- `checklist` — чек-лист траблшутинга `[{layer, items: [...]}]`; отметки хранятся в `localStorage` (`sdsm_checklist`) по позиции пункта
+- `templates` — копируемые шаблоны `{id, label, note, code}`
+
+Таблица масок /8–/32 генерируется в `build.py`, список туннельных накладных расходов для MTU-калькулятора — `MTU_OVERHEADS` в `build.py`. Всё попадает в поиск по сайту с типом «Инструмент».
+
+## Интерактивные лаборатории (`labs/`)
+
+Самостоятельные HTML-страницы в `labs/` копируются в `dist/labs/` как есть. Библиотеки лежат локально в `labs/vendor/` (three.js r128, anime.js 3.2.2, MIT), чтобы лабы работали без CDN — в том числе во внутренней сети. Без WebGL лаба сама переключается на 2D-схему.
+
+Чтобы лаба появилась на сайте, добавьте её в `labs` в `data/toolkit.json`:
+`{id, title, url: "labs/<file>.html", desc, tags: [...], modules: ["l2vpn", ...]}` — карточка покажется на главной, на странице «Инструменты» и в разделе «Посмотреть вживую» у каждого модуля из `modules`, а также в поиске.
+
+Репозиторий публичный: перед добавлением лабы замените реальные имена устройств, адреса, клиентов, ID каналов и AS на учебные (192.0.2.0/24, AS 65000 и т. п.).
+
+### Сетевая песочница (`labs/sandbox.html`)
+
+Симулятор с CLI в стиле Cisco IOS — без зависимостей, всё в браузере:
+- `labs/sandbox/engine.js` — модель сети и CLI: L2 (VLAN, транки 802.1Q, err-disabled, STP по VLAN с выбором корня и BLK-портами; петля без STP = широковещательный шторм), L3-пересылка с ARP, connected/static/OSPF (соседство: подсеть, area, hello, MTU, passive), extended и standard ACL, NAT (PAT с трансляцией портов и статический), DHCP (пулы, excluded, relay через `ip helper-address`, APIPA), ping/traceroute/telnet с проверкой обратного пути. Без DOM — можно тестировать в Node.
+- `labs/sandbox/scenarios.js` — сценарии. Новый сценарий: `{id, title, topic, diff (1-3, 0 = свободный), story, goals: [{from, to, label, proto?, port?, expect?: 'deny'} | {label, check: net => bool}], build() → {devices, links}, hints: [3 строки], solution: [{dev, cmds}], lesson}`. Устройства собираются через `PC()`, `SW()`, `RT()` из движка.
+- `labs/sandbox/ui.js` — интерфейс. Прогресс хранится в `localStorage` (`sdsm_sandbox_solved`), сценарий открывается по ссылке `sandbox.html#<id>`.
+
+`module_links` в записи лабы в `toolkit.json` задаёт, какой сценарий открывать из конкретного модуля (`{"vlan": "#vlan"}`).
+
+Проверка после правок сценариев: эталонное `solution` должно переводить все `goals` из «не выполнено» в «выполнено» (до решения хотя бы одна цель должна проваливаться).

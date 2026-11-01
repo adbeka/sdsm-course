@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>БЗПД · Инструменты инженера</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css?v=7f304ad80f">
+</head>
+<body data-depth="">
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a class="topnav-brand" href="index.html">БЗПД · <b>учебный портал</b>
+      <span class="topnav-progress-pill"><span class="val">0/24</span></span>
+    </a>
+    <div class="nav-groups"><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Основы
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="modules/planning.html" data-progress-id="planning">Планирование сети<span class="tab-check"></span></a><a class="nav-group-item" href="modules/ciscoconn.html" data-progress-id="ciscoconn">Подключение к оборудованию<span class="tab-check"></span></a><a class="nav-group-item" href="modules/portup.html" data-progress-id="portup">Поднятие порта<span class="tab-check"></span></a><a class="nav-group-item" href="modules/dhcpdns.html" data-progress-id="dhcpdns">DHCP и DNS<span class="tab-check"></span></a><a class="nav-group-item" href="modules/troubleshooting.html" data-progress-id="troubleshooting">Методология траблшутинга<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">L2 layer
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="modules/vlan.html" data-progress-id="vlan">VLAN и коммутация<span class="tab-check"></span></a><a class="nav-group-item" href="modules/lag.html" data-progress-id="lag">LAG / EtherChannel<span class="tab-check"></span></a><a class="nav-group-item" href="modules/aaa8021x.html" data-progress-id="aaa8021x">AAA и 802.1X<span class="tab-check"></span></a><a class="nav-group-item" href="modules/stp.html" data-progress-id="stp">STP: защита от петель<span class="tab-check"></span></a><a class="nav-group-item" href="modules/packetlife.html" data-progress-id="packetlife">Путь пакета<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">L3 layer
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="modules/staticroute.html" data-progress-id="staticroute">Статическая маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="modules/nat.html" data-progress-id="nat">ACL и NAT<span class="tab-check"></span></a><a class="nav-group-item" href="modules/ospf.html" data-progress-id="ospf">OSPF: динамическая маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="modules/ipv6.html" data-progress-id="ipv6">IPv6<span class="tab-check"></span></a><a class="nav-group-item" href="modules/vpn.html" data-progress-id="vpn">VPN-туннели<span class="tab-check"></span></a><a class="nav-group-item" href="modules/bgp.html" data-progress-id="bgp">BGP: междоменная маршрутизация<span class="tab-check"></span></a><a class="nav-group-item" href="modules/multicast.html" data-progress-id="multicast">Multicast-рассылка<span class="tab-check"></span></a></div>
+    </div><div class="nav-group">
+      <button type="button" class="nav-group-trigger">Провайдерские сервисы
+        <svg class="nav-group-chevron" width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-group-menu"><a class="nav-group-item" href="modules/mplsbase.html" data-progress-id="mplsbase">Базовый MPLS<span class="tab-check"></span></a><a class="nav-group-item" href="modules/l3vpn.html" data-progress-id="l3vpn">MPLS L3VPN<span class="tab-check"></span></a><a class="nav-group-item" href="modules/l2vpn.html" data-progress-id="l2vpn">MPLS L2VPN<span class="tab-check"></span></a><a class="nav-group-item" href="modules/evpn.html" data-progress-id="evpn">EVPN<span class="tab-check"></span></a><a class="nav-group-item" href="modules/evpnmh.html" data-progress-id="evpnmh">EVPN Multihoming<span class="tab-check"></span></a><a class="nav-group-item" href="modules/mplste.html" data-progress-id="mplste">MPLS Traffic Engineering<span class="tab-check"></span></a><a class="nav-group-item" href="modules/qos.html" data-progress-id="qos">QoS: приоритизация трафика<span class="tab-check"></span></a></div>
+    </div></div>
+    <a class="nav-glossary-link" href="glossary.html">Глоссарий</a>
+    <a class="nav-glossary-link nav-tools-link" href="tools.html">Инструменты</a>
+    <a class="nav-glossary-link nav-wiki-link" href="https://github.com/adbeka/sdsm-course/wiki" target="_blank" rel="noopener">Вики <span class="wiki-badge">правьте сами</span></a>
+    <button type="button" class="search-trigger" aria-label="Поиск по сайту">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    </button>
+    
+  </div>
+</nav>
+<div class="search-overlay">
+  <div class="search-panel">
+    <div class="search-input-row">
+      <svg width="16" height="16" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <input type="text" class="search-input" placeholder="Искать тему или термин…" autocomplete="off">
+      <button type="button" class="search-close" aria-label="Закрыть">Esc</button>
+    </div>
+    <div class="search-results"></div>
+  </div>
+</div>
+<div class="wrap tools-page">
+  <div class="breadcrumb"><a href="index.html">Главная</a><span class="sep">/</span><span class="current">Инструменты инженера</span></div>
+  <section class="hero" style="padding-bottom:16px;">
+    <div class="eyebrow">Практикум · всё считается прямо в браузере, данные никуда не отправляются</div>
+    <h1>Инструменты <span>инженера</span></h1>
+    <p class="hero-sub">То, что нужно под рукой на смене: калькуляторы, справочные таблицы, шпаргалка команд, чек-лист траблшутинга и готовые шаблоны документов.</p>
+    <div class="tools-toc"><a class="tools-toc-chip" href="#labs">Интерактивные лабы</a><a class="tools-toc-chip" href="#calc-subnet">Подсети</a><a class="tools-toc-chip" href="#calc-summary">Суммаризация</a><a class="tools-toc-chip" href="#calc-mtu">MTU / MSS</a><a class="tools-toc-chip" href="#calc-speed">Скорость и BDP</a><a class="tools-toc-chip" href="#calc-mac">MAC / EUI-64</a><a class="tools-toc-chip" href="#ref-masks">Маски</a><a class="tools-toc-chip" href="#refs">Справочники</a><a class="tools-toc-chip" href="#commands">IOS ↔ Linux</a><a class="tools-toc-chip" href="#checklist">Чек-лист</a><a class="tools-toc-chip" href="#templates">Шаблоны</a><a class="tools-toc-chip" href="#habits">Привычки</a></div>
+  </section>
+
+  <section id="labs">
+    <div class="section-head"><div class="section-num">00 — ИНТЕРАКТИВ</div><div class="section-title">Интерактивные лаборатории</div><p class="section-desc">Симуляции, в которых видно каждый кадр, метку и строку конфига. Открываются на весь экран.</p></div>
+    <a class="lab-card" href="labs/sandbox.html"><div class="lab-card-badge">ИНТЕРАКТИВНАЯ ЛАБА</div><div class="lab-card-title">Сетевая песочница: найди поломку и почини</div><div class="lab-card-desc">14 сломанных сетей и свободный стенд. Заходите в консоль ПК, коммутаторов и роутеров, вводите настоящие команды Cisco IOS (show, ping, traceroute, configure), смотрите, где теряется пакет, и чините: VLAN, транк, err-disabled, петля STP и шторм, DHCP и relay, шлюз, обратный маршрут, маска, OSPF, ACL, NAT/PAT и статический NAT. Подсказки в три шага и разбор «что запомнить» после каждой победы.</div><div class="lab-card-foot"><div class="lab-card-tags"><span class="lab-card-tag">CLI</span><span class="lab-card-tag">траблшутинг</span><span class="lab-card-tag">VLAN</span><span class="lab-card-tag">STP</span><span class="lab-card-tag">DHCP</span><span class="lab-card-tag">NAT</span><span class="lab-card-tag">OSPF</span><span class="lab-card-tag">ACL</span></div><span class="lab-card-cta">Открыть лабу →</span></div></a><a class="lab-card" href="labs/l2-lab.html"><div class="lab-card-badge">ИНТЕРАКТИВНАЯ ЛАБА</div><div class="lab-card-title">L2 Lab: как кадр проходит L2-канал через MPLS</div><div class="lab-card-desc">Интерактивная 3D-лаборатория: l2circuit (LDP, Juniper ↔ Huawei VSI) и l2vpn (BGP через route reflector). Пошаговый ping с ARP, захват кадров как в Wireshark, слои и байты кадра на каждом участке, разбор конфигов по словам и связи «что должно совпасть с обеих сторон».</div><div class="lab-card-foot"><div class="lab-card-tags"><span class="lab-card-tag">l2circuit</span><span class="lab-card-tag">l2vpn</span><span class="lab-card-tag">LDP</span><span class="lab-card-tag">BGP</span><span class="lab-card-tag">pseudowire</span><span class="lab-card-tag">control word</span></div><span class="lab-card-cta">Открыть лабу →</span></div></a>
+  </section>
+
+  <section id="calc-subnet">
+    <div class="section-head"><div class="section-num">01 — КАЛЬКУЛЯТОР</div><div class="section-title">IPv4-подсети</div><p class="section-desc">Введите адрес с префиксом или маской: <code>192.168.10.37/27</code> или <code>10.1.2.3 255.255.255.0</code>.</p></div>
+    <div class="tool-panel">
+      <div class="tool-row">
+        <input type="text" class="tool-input wide" id="subnet-input" value="192.168.10.37/27" spellcheck="false" autocomplete="off">
+      </div>
+      <div class="tool-result" id="subnet-result"></div>
+      <div class="tool-sub">
+        <div class="tool-sub-title">Разбить на подсети</div>
+        <div class="tool-row">
+          <span class="tool-label">новый префикс /</span>
+          <input type="number" class="tool-input small" id="split-prefix" min="1" max="32" value="29">
+        </div>
+        <div id="split-result"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="calc-summary">
+    <div class="section-head"><div class="section-num">02 — КАЛЬКУЛЯТОР</div><div class="section-title">Суммаризация маршрутов</div><p class="section-desc">Список сетей — по одной в строке. Калькулятор найдёт наименьший общий префикс и предупредит, если он захватывает лишние адреса.</p></div>
+    <div class="tool-panel">
+      <textarea class="tool-input tool-textarea" id="summary-input" spellcheck="false">10.1.0.0/24
+10.1.1.0/24
+10.1.2.0/24
+10.1.3.0/24</textarea>
+      <div class="tool-result" id="summary-result"></div>
+    </div>
+  </section>
+
+  <section id="calc-mtu">
+    <div class="section-head"><div class="section-num">03 — КАЛЬКУЛЯТОР</div><div class="section-title">MTU и TCP MSS для туннелей</div><p class="section-desc">Отметьте всё, что добавляется поверх исходного пакета, — получите значения для <code>ip mtu</code> и <code>ip tcp adjust-mss</code>.</p></div>
+    <div class="tool-panel">
+      <div class="tool-row">
+        <span class="tool-label">MTU транспортного линка</span>
+        <input type="number" class="tool-input small" id="mtu-base" value="1500" min="576" max="9216">
+        <span class="tool-label">IP внутри</span>
+        <select class="tool-input small" id="mtu-ipver"><option value="4">IPv4</option><option value="6">IPv6</option></select>
+      </div>
+      <div class="mtu-opts"><label class="mtu-opt" title="PPP 2 + PPPoE 6 байт"><input type="checkbox" data-overhead="8" data-name="PPPoE"><span class="mtu-opt-name">PPPoE</span><span class="mtu-opt-bytes">−8 B</span></label><label class="mtu-opt" title="внешний IP 20 + GRE 4"><input type="checkbox" data-overhead="24" data-name="GRE (IPv4)"><span class="mtu-opt-name">GRE (IPv4)</span><span class="mtu-opt-bytes">−24 B</span></label><label class="mtu-opt" title="внешний IPv4-заголовок"><input type="checkbox" data-overhead="20" data-name="IP-in-IP / 6in4"><span class="mtu-opt-name">IP-in-IP / 6in4</span><span class="mtu-opt-bytes">−20 B</span></label><label class="mtu-opt" title="худший случай с учётом паддинга; точное значение зависит от шифра"><input type="checkbox" data-overhead="73" data-name="IPsec ESP tunnel (AES/SHA)"><span class="mtu-opt-name">IPsec ESP tunnel (AES/SHA)</span><span class="mtu-opt-bytes">−73 B</span></label><label class="mtu-opt" title="IP 20 + UDP 8 + WireGuard 32"><input type="checkbox" data-overhead="60" data-name="WireGuard (IPv4)"><span class="mtu-opt-name">WireGuard (IPv4)</span><span class="mtu-opt-bytes">−60 B</span></label><label class="mtu-opt" title="IP 20 + UDP 8 + VXLAN 8 + внутренний Ethernet 14"><input type="checkbox" data-overhead="50" data-name="VXLAN (IPv4)"><span class="mtu-opt-name">VXLAN (IPv4)</span><span class="mtu-opt-bytes">−50 B</span></label>
+        <label class="mtu-opt"><span class="mtu-opt-name">MPLS-метки</span>
+          <input type="number" class="tool-input tiny" id="mtu-labels" value="0" min="0" max="10"><span class="mtu-opt-bytes">× 4 B</span></label>
+      </div>
+      <div class="tool-result" id="mtu-result"></div>
+    </div>
+  </section>
+
+  <section id="calc-speed">
+    <div class="section-head"><div class="section-num">04 — КАЛЬКУЛЯТОР</div><div class="section-title">Время передачи и BDP</div><p class="section-desc">Сколько будет копироваться образ прошивки или бэкап — и почему одна TCP-сессия не забивает длинный канал.</p></div>
+    <div class="tool-panel">
+      <div class="tool-sub-title">Время передачи</div>
+      <div class="tool-row">
+        <span class="tool-label">объём</span>
+        <input type="number" class="tool-input small" id="speed-size" value="1.2" min="0" step="any">
+        <select class="tool-input small" id="speed-size-unit"><option value="1e6">МБ</option><option value="1e9" selected>ГБ</option><option value="1e12">ТБ</option><option value="1073741824">ГиБ</option></select>
+        <span class="tool-label">канал</span>
+        <input type="number" class="tool-input small" id="speed-rate" value="100" min="0" step="any">
+        <select class="tool-input small" id="speed-rate-unit"><option value="1e3">Кбит/с</option><option value="1e6" selected>Мбит/с</option><option value="1e9">Гбит/с</option></select>
+        <span class="tool-label">КПД, %</span>
+        <input type="number" class="tool-input tiny" id="speed-eff" value="90" min="1" max="100">
+      </div>
+      <div class="tool-result" id="speed-result"></div>
+      <div class="tool-sub">
+        <div class="tool-sub-title">Bandwidth-Delay Product</div>
+        <div class="tool-row">
+          <span class="tool-label">канал, Мбит/с</span>
+          <input type="number" class="tool-input small" id="bdp-rate" value="1000" min="0" step="any">
+          <span class="tool-label">RTT, мс</span>
+          <input type="number" class="tool-input small" id="bdp-rtt" value="40" min="0" step="any">
+          <span class="tool-label">окно TCP, КБ</span>
+          <input type="number" class="tool-input small" id="bdp-win" value="64" min="1" step="any">
+        </div>
+        <div class="tool-result" id="bdp-result"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="calc-mac">
+    <div class="section-head"><div class="section-num">05 — КОНВЕРТЕР</div><div class="section-title">MAC-адрес и EUI-64</div><p class="section-desc">Любой формат на входе: <code>00:1A:2B:3C:4D:5E</code>, <code>001a.2b3c.4d5e</code>, <code>00-1A-2B-3C-4D-5E</code>.</p></div>
+    <div class="tool-panel">
+      <div class="tool-row">
+        <input type="text" class="tool-input wide" id="mac-input" value="00:1A:2B:3C:4D:5E" spellcheck="false" autocomplete="off">
+      </div>
+      <div class="tool-result" id="mac-result"></div>
+    </div>
+  </section>
+
+  <section id="ref-masks">
+    <div class="section-head"><div class="section-num">06 — СПРАВОЧНИК</div><div class="section-title">Префиксы, маски, wildcard</div><p class="section-desc">Wildcard — инверсия маски: нужна в ACL и в <code>network</code> для OSPF/EIGRP.</p></div>
+    <div class="table-scroll"><table class="ref-table mono-table"><thead><tr><th>Префикс</th><th>Маска</th><th>Wildcard</th><th>Адресов</th><th>Хостов</th></tr></thead><tbody><tr><td>/8</td><td>255.0.0.0</td><td>0.255.255.255</td><td>16 777 216</td><td>16 777 214</td></tr><tr><td>/9</td><td>255.128.0.0</td><td>0.127.255.255</td><td>8 388 608</td><td>8 388 606</td></tr><tr><td>/10</td><td>255.192.0.0</td><td>0.63.255.255</td><td>4 194 304</td><td>4 194 302</td></tr><tr><td>/11</td><td>255.224.0.0</td><td>0.31.255.255</td><td>2 097 152</td><td>2 097 150</td></tr><tr><td>/12</td><td>255.240.0.0</td><td>0.15.255.255</td><td>1 048 576</td><td>1 048 574</td></tr><tr><td>/13</td><td>255.248.0.0</td><td>0.7.255.255</td><td>524 288</td><td>524 286</td></tr><tr><td>/14</td><td>255.252.0.0</td><td>0.3.255.255</td><td>262 144</td><td>262 142</td></tr><tr><td>/15</td><td>255.254.0.0</td><td>0.1.255.255</td><td>131 072</td><td>131 070</td></tr><tr><td>/16</td><td>255.255.0.0</td><td>0.0.255.255</td><td>65 536</td><td>65 534</td></tr><tr><td>/17</td><td>255.255.128.0</td><td>0.0.127.255</td><td>32 768</td><td>32 766</td></tr><tr><td>/18</td><td>255.255.192.0</td><td>0.0.63.255</td><td>16 384</td><td>16 382</td></tr><tr><td>/19</td><td>255.255.224.0</td><td>0.0.31.255</td><td>8 192</td><td>8 190</td></tr><tr><td>/20</td><td>255.255.240.0</td><td>0.0.15.255</td><td>4 096</td><td>4 094</td></tr><tr><td>/21</td><td>255.255.248.0</td><td>0.0.7.255</td><td>2 048</td><td>2 046</td></tr><tr><td>/22</td><td>255.255.252.0</td><td>0.0.3.255</td><td>1 024</td><td>1 022</td></tr><tr><td>/23</td><td>255.255.254.0</td><td>0.0.1.255</td><td>512</td><td>510</td></tr><tr><td>/24</td><td>255.255.255.0</td><td>0.0.0.255</td><td>256</td><td>254</td></tr><tr><td>/25</td><td>255.255.255.128</td><td>0.0.0.127</td><td>128</td><td>126</td></tr><tr><td>/26</td><td>255.255.255.192</td><td>0.0.0.63</td><td>64</td><td>62</td></tr><tr><td>/27</td><td>255.255.255.224</td><td>0.0.0.31</td><td>32</td><td>30</td></tr><tr><td>/28</td><td>255.255.255.240</td><td>0.0.0.15</td><td>16</td><td>14</td></tr><tr><td>/29</td><td>255.255.255.248</td><td>0.0.0.7</td><td>8</td><td>6</td></tr><tr><td>/30</td><td>255.255.255.252</td><td>0.0.0.3</td><td>4</td><td>2</td></tr><tr><td>/31</td><td>255.255.255.254</td><td>0.0.0.1</td><td>2</td><td>2</td></tr><tr><td>/32</td><td>255.255.255.255</td><td>0.0.0.0</td><td>1</td><td>1</td></tr></tbody></table></div><p class="ref-note">/31 — 2 адреса для point-to-point (RFC 3021), /32 — loopback и host-маршруты.</p>
+  </section>
+
+  <section id="refs">
+    <div class="section-head"><div class="section-num">07 — СПРАВОЧНИК</div><div class="section-title">Числа, которые нужно знать</div><p class="section-desc">Административные дистанции, порты, номера протоколов, служебные адреса.</p></div>
+    <div class="ref-grid">
+      <div class="ref-block" id="ref-ad"><div class="ref-title">Administrative Distance</div><div class="table-scroll"><table class="ref-table"><thead><tr><th>Источник маршрута</th><th>AD (Cisco)</th></tr></thead><tbody><tr><td>Connected</td><td>0</td></tr><tr><td>Static</td><td>1</td></tr><tr><td>EIGRP summary</td><td>5</td></tr><tr><td>eBGP</td><td>20</td></tr><tr><td>EIGRP internal</td><td>90</td></tr><tr><td>OSPF</td><td>110</td></tr><tr><td>IS-IS</td><td>115</td></tr><tr><td>RIP</td><td>120</td></tr><tr><td>EIGRP external</td><td>170</td></tr><tr><td>iBGP</td><td>200</td></tr><tr><td>Маршрут по DHCP (default)</td><td>254</td></tr><tr><td>Недоверенный — в RIB не попадёт</td><td>255</td></tr></tbody></table></div><p class="ref-note">Меньше — лучше. AD сравнивается только между разными источниками для одного и того же префикса; внутри протокола выбор идёт по метрике. Floating static: <code>ip route 0.0.0.0 0.0.0.0 10.0.0.2 250</code> — резервный маршрут, проигрывающий любому IGP.</p></div>
+      <div class="ref-block" id="ref-proto"><div class="ref-title">Номера IP-протоколов</div><div class="table-scroll"><table class="ref-table"><thead><tr><th>IP proto</th><th>Протокол</th><th>Где встречается</th></tr></thead><tbody><tr><td>1</td><td>ICMP</td><td>ping, traceroute, PMTUD</td></tr><tr><td>2</td><td>IGMP</td><td>подписка на multicast</td></tr><tr><td>6</td><td>TCP</td><td></td></tr><tr><td>17</td><td>UDP</td><td></td></tr><tr><td>47</td><td>GRE</td><td>туннели, DMVPN</td></tr><tr><td>50</td><td>ESP</td><td>IPsec шифрование</td></tr><tr><td>51</td><td>AH</td><td>IPsec только целостность</td></tr><tr><td>88</td><td>EIGRP</td><td></td></tr><tr><td>89</td><td>OSPF</td><td>не TCP/UDP — в ACL разрешайте <code>ospf</code></td></tr><tr><td>103</td><td>PIM</td><td>multicast-маршрутизация</td></tr><tr><td>112</td><td>VRRP</td><td></td></tr></tbody></table></div></div>
+    </div>
+    <div class="ref-block" id="ref-ports"><div class="ref-title">Порты TCP/UDP</div><div class="table-scroll"><table class="ref-table"><thead><tr><th>Порт</th><th>Транспорт</th><th>Сервис</th></tr></thead><tbody><tr><td>20/21</td><td>TCP</td><td>FTP (данные / управление)</td></tr><tr><td>22</td><td>TCP</td><td>SSH, SCP, SFTP</td></tr><tr><td>23</td><td>TCP</td><td>Telnet — только в лаборатории</td></tr><tr><td>25</td><td>TCP</td><td>SMTP</td></tr><tr><td>49</td><td>TCP</td><td>TACACS+</td></tr><tr><td>53</td><td>UDP/TCP</td><td>DNS (TCP — для больших ответов и AXFR)</td></tr><tr><td>67/68</td><td>UDP</td><td>DHCP (сервер / клиент)</td></tr><tr><td>69</td><td>UDP</td><td>TFTP</td></tr><tr><td>80 / 443</td><td>TCP</td><td>HTTP / HTTPS</td></tr><tr><td>123</td><td>UDP</td><td>NTP</td></tr><tr><td>161 / 162</td><td>UDP</td><td>SNMP запросы / трапы</td></tr><tr><td>179</td><td>TCP</td><td>BGP</td></tr><tr><td>389 / 636</td><td>TCP</td><td>LDAP / LDAPS</td></tr><tr><td>500 / 4500</td><td>UDP</td><td>IKE / IPsec NAT-T</td></tr><tr><td>514</td><td>UDP</td><td>Syslog</td></tr><tr><td>520</td><td>UDP</td><td>RIP</td></tr><tr><td>646</td><td>UDP/TCP</td><td>LDP (hello / сессия)</td></tr><tr><td>830</td><td>TCP</td><td>NETCONF over SSH</td></tr><tr><td>1812 / 1813</td><td>UDP</td><td>RADIUS аутентификация / аккаунтинг</td></tr><tr><td>3784 / 3785</td><td>UDP</td><td>BFD control / echo</td></tr><tr><td>3389</td><td>TCP</td><td>RDP</td></tr><tr><td>4789</td><td>UDP</td><td>VXLAN</td></tr><tr><td>6514</td><td>TCP</td><td>Syslog over TLS</td></tr></tbody></table></div></div>
+    <div class="ref-grid">
+      <div class="ref-block" id="ref-mcast"><div class="ref-title">Служебные multicast-адреса</div><div class="table-scroll"><table class="ref-table"><thead><tr><th>Адрес</th><th>Назначение</th></tr></thead><tbody><tr><td>224.0.0.1</td><td>Все хосты сегмента</td></tr><tr><td>224.0.0.2</td><td>Все маршрутизаторы; HSRPv1</td></tr><tr><td>224.0.0.5</td><td>OSPF — все OSPF-маршрутизаторы</td></tr><tr><td>224.0.0.6</td><td>OSPF — DR/BDR</td></tr><tr><td>224.0.0.9</td><td>RIPv2</td></tr><tr><td>224.0.0.10</td><td>EIGRP</td></tr><tr><td>224.0.0.13</td><td>PIM</td></tr><tr><td>224.0.0.18</td><td>VRRP</td></tr><tr><td>224.0.0.22</td><td>IGMPv3 reports</td></tr><tr><td>224.0.0.102</td><td>HSRPv2</td></tr><tr><td>ff02::1 / ff02::2</td><td>IPv6: все узлы / все маршрутизаторы</td></tr><tr><td>ff02::1:ffXX:XXXX</td><td>IPv6 solicited-node (замена ARP в NDP)</td></tr></tbody></table></div></div>
+      <div class="ref-block" id="ref-ethertype"><div class="ref-title">EtherType</div><div class="table-scroll"><table class="ref-table"><thead><tr><th>EtherType</th><th>Протокол</th></tr></thead><tbody><tr><td>0x0800</td><td>IPv4</td></tr><tr><td>0x0806</td><td>ARP</td></tr><tr><td>0x86DD</td><td>IPv6</td></tr><tr><td>0x8100</td><td>802.1Q VLAN tag</td></tr><tr><td>0x88A8</td><td>802.1ad (QinQ, S-tag)</td></tr><tr><td>0x8847</td><td>MPLS unicast</td></tr><tr><td>0x8848</td><td>MPLS multicast</td></tr><tr><td>0x8809</td><td>Slow protocols (LACP)</td></tr><tr><td>0x88CC</td><td>LLDP</td></tr><tr><td>0x888E</td><td>802.1X EAPOL</td></tr><tr><td>0x8863 / 0x8864</td><td>PPPoE discovery / session</td></tr></tbody></table></div></div>
+    </div>
+    <div class="ref-block" id="ref-ranges"><div class="ref-title">Специальные диапазоны адресов</div><div class="table-scroll"><table class="ref-table"><thead><tr><th>Диапазон</th><th>Назначение</th></tr></thead><tbody><tr><td>10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16</td><td>Частные (RFC 1918)</td></tr><tr><td>100.64.0.0/10</td><td>CGNAT, shared address space (RFC 6598)</td></tr><tr><td>127.0.0.0/8</td><td>Loopback</td></tr><tr><td>169.254.0.0/16</td><td>Link-local (APIPA) — признак, что DHCP не ответил</td></tr><tr><td>192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24</td><td>Документация и примеры (RFC 5737)</td></tr><tr><td>198.18.0.0/15</td><td>Тестирование производительности</td></tr><tr><td>224.0.0.0/4</td><td>Multicast</td></tr><tr><td>240.0.0.0/4</td><td>Зарезервировано</td></tr><tr><td>fe80::/10</td><td>IPv6 link-local</td></tr><tr><td>fc00::/7</td><td>IPv6 ULA — аналог RFC 1918</td></tr><tr><td>2001:db8::/32</td><td>IPv6 документация</td></tr></tbody></table></div></div>
+  </section>
+
+  <section id="commands">
+    <div class="section-head"><div class="section-num">08 — ШПАРГАЛКА</div><div class="section-title">Команды: Cisco IOS ↔ Linux</div><p class="section-desc">Одна задача — две команды. Linux-колонка пригодится на серверах, white-box и FRR.</p></div>
+    <input type="text" class="gloss-page-filter cmd-filter" placeholder="Фильтр: mac, mtu, bgp, ошибки…" autocomplete="off">
+    <div class="table-scroll"><table class="ref-table cmd-table"><thead><tr><th>Задача</th><th>Cisco IOS</th><th>Linux</th></tr></thead>
+    <tbody><tr class="cmd-row" data-search="сводка по интерфейсам и ip show ip interface brief ip -br addr"><td class="cmd-task">Сводка по интерфейсам и IP</td><td><pre class="cmd-code">show ip interface brief</pre></td><td><pre class="cmd-code">ip -br addr</pre></td></tr><tr class="cmd-row" data-search="ошибки, crc, дропы на порту show interfaces gi0/1 ip -s link show eth0"><td class="cmd-task">Ошибки, CRC, дропы на порту</td><td><pre class="cmd-code">show interfaces Gi0/1</pre></td><td><pre class="cmd-code">ip -s link show eth0</pre></td></tr><tr class="cmd-row" data-search="скорость / дуплекс / статус портов show interfaces status ethtool eth0"><td class="cmd-task">Скорость / дуплекс / статус портов</td><td><pre class="cmd-code">show interfaces status</pre></td><td><pre class="cmd-code">ethtool eth0</pre></td></tr><tr class="cmd-row" data-search="уровень сигнала оптики show interfaces transceiver detail ethtool -m eth0"><td class="cmd-task">Уровень сигнала оптики</td><td><pre class="cmd-code">show interfaces transceiver detail</pre></td><td><pre class="cmd-code">ethtool -m eth0</pre></td></tr><tr class="cmd-row" data-search="порты в err-disabled и причина show interfaces status err-disabled —"><td class="cmd-task">Порты в err-disabled и причина</td><td><pre class="cmd-code">show interfaces status err-disabled</pre></td><td><pre class="cmd-code">—</pre></td></tr><tr class="cmd-row" data-search="таблица mac-адресов show mac address-table bridge fdb show"><td class="cmd-task">Таблица MAC-адресов</td><td><pre class="cmd-code">show mac address-table</pre></td><td><pre class="cmd-code">bridge fdb show</pre></td></tr><tr class="cmd-row" data-search="найти, на каком порту mac show mac address-table address aaaa.bbbb.cccc bridge fdb show | grep aa:bb"><td class="cmd-task">Найти, на каком порту MAC</td><td><pre class="cmd-code">show mac address-table address aaaa.bbbb.cccc</pre></td><td><pre class="cmd-code">bridge fdb show | grep aa:bb</pre></td></tr><tr class="cmd-row" data-search="vlan и порты доступа show vlan brief bridge vlan show"><td class="cmd-task">VLAN и порты доступа</td><td><pre class="cmd-code">show vlan brief</pre></td><td><pre class="cmd-code">bridge vlan show</pre></td></tr><tr class="cmd-row" data-search="транки и разрешённые vlan show interfaces trunk bridge vlan show"><td class="cmd-task">Транки и разрешённые VLAN</td><td><pre class="cmd-code">show interfaces trunk</pre></td><td><pre class="cmd-code">bridge vlan show</pre></td></tr><tr class="cmd-row" data-search="состояние stp show spanning-tree vlan 10 bridge link show"><td class="cmd-task">Состояние STP</td><td><pre class="cmd-code">show spanning-tree vlan 10</pre></td><td><pre class="cmd-code">bridge link show</pre></td></tr><tr class="cmd-row" data-search="состояние lag / etherchannel show etherchannel summary cat /proc/net/bonding/bond0"><td class="cmd-task">Состояние LAG / EtherChannel</td><td><pre class="cmd-code">show etherchannel summary</pre></td><td><pre class="cmd-code">cat /proc/net/bonding/bond0</pre></td></tr><tr class="cmd-row" data-search="соседи по cdp / lldp show cdp neighbors detail
+show lldp neighbors lldpctl"><td class="cmd-task">Соседи по CDP / LLDP</td><td><pre class="cmd-code">show cdp neighbors detail
+show lldp neighbors</pre></td><td><pre class="cmd-code">lldpctl</pre></td></tr><tr class="cmd-row" data-search="arp / таблица соседей show ip arp ip neigh"><td class="cmd-task">ARP / таблица соседей</td><td><pre class="cmd-code">show ip arp</pre></td><td><pre class="cmd-code">ip neigh</pre></td></tr><tr class="cmd-row" data-search="таблица маршрутизации show ip route ip route"><td class="cmd-task">Таблица маршрутизации</td><td><pre class="cmd-code">show ip route</pre></td><td><pre class="cmd-code">ip route</pre></td></tr><tr class="cmd-row" data-search="каким маршрутом уйдёт пакет show ip route 8.8.8.8
+show ip cef 8.8.8.8 ip route get 8.8.8.8"><td class="cmd-task">Каким маршрутом уйдёт пакет</td><td><pre class="cmd-code">show ip route 8.8.8.8
+show ip cef 8.8.8.8</pre></td><td><pre class="cmd-code">ip route get 8.8.8.8</pre></td></tr><tr class="cmd-row" data-search="соседи ospf show ip ospf neighbor vtysh -c &#x27;show ip ospf neighbor&#x27;"><td class="cmd-task">Соседи OSPF</td><td><pre class="cmd-code">show ip ospf neighbor</pre></td><td><pre class="cmd-code">vtysh -c &#x27;show ip ospf neighbor&#x27;</pre></td></tr><tr class="cmd-row" data-search="сессии bgp show ip bgp summary vtysh -c &#x27;show bgp summary&#x27;"><td class="cmd-task">Сессии BGP</td><td><pre class="cmd-code">show ip bgp summary</pre></td><td><pre class="cmd-code">vtysh -c &#x27;show bgp summary&#x27;</pre></td></tr><tr class="cmd-row" data-search="проверка mtu без фрагментации ping 10.0.0.1 size 1500 df-bit ping -m do -s 1472 10.0.0.1"><td class="cmd-task">Проверка MTU без фрагментации</td><td><pre class="cmd-code">ping 10.0.0.1 size 1500 df-bit</pre></td><td><pre class="cmd-code">ping -M do -s 1472 10.0.0.1</pre></td></tr><tr class="cmd-row" data-search="путь до узла traceroute 10.0.0.1 mtr -n 10.0.0.1"><td class="cmd-task">Путь до узла</td><td><pre class="cmd-code">traceroute 10.0.0.1</pre></td><td><pre class="cmd-code">mtr -n 10.0.0.1</pre></td></tr><tr class="cmd-row" data-search="проверить tcp-порт telnet 10.0.0.1 443 nc -zv 10.0.0.1 443"><td class="cmd-task">Проверить TCP-порт</td><td><pre class="cmd-code">telnet 10.0.0.1 443</pre></td><td><pre class="cmd-code">nc -zv 10.0.0.1 443</pre></td></tr><tr class="cmd-row" data-search="захват трафика monitor capture cap interface gi0/1 both
+monitor capture cap match any
+monitor capture cap start tcpdump -i eth0 -nn host 10.0.0.1"><td class="cmd-task">Захват трафика</td><td><pre class="cmd-code">monitor capture CAP interface Gi0/1 both
+monitor capture CAP match any
+monitor capture CAP start</pre></td><td><pre class="cmd-code">tcpdump -i eth0 -nn host 10.0.0.1</pre></td></tr><tr class="cmd-row" data-search="логи show logging | include %link|%lineproto journalctl -k -f"><td class="cmd-task">Логи</td><td><pre class="cmd-code">show logging | include %LINK|%LINEPROTO</pre></td><td><pre class="cmd-code">journalctl -k -f</pre></td></tr><tr class="cmd-row" data-search="загрузка cpu по процессам show processes cpu sorted top"><td class="cmd-task">Загрузка CPU по процессам</td><td><pre class="cmd-code">show processes cpu sorted</pre></td><td><pre class="cmd-code">top</pre></td></tr><tr class="cmd-row" data-search="вывод debug в ssh-сессию terminal monitor —"><td class="cmd-task">Вывод debug в SSH-сессию</td><td><pre class="cmd-code">terminal monitor</pre></td><td><pre class="cmd-code">—</pre></td></tr><tr class="cmd-row" data-search="нужная часть конфига show running-config | section router ospf —"><td class="cmd-task">Нужная часть конфига</td><td><pre class="cmd-code">show running-config | section router ospf</pre></td><td><pre class="cmd-code">—</pre></td></tr><tr class="cmd-row" data-search="модель, прошивка, аптайм show version uname -a; uptime"><td class="cmd-task">Модель, прошивка, аптайм</td><td><pre class="cmd-code">show version</pre></td><td><pre class="cmd-code">uname -a; uptime</pre></td></tr><tr class="cmd-row" data-search="серийные номера модулей show inventory dmidecode -t system"><td class="cmd-task">Серийные номера модулей</td><td><pre class="cmd-code">show inventory</pre></td><td><pre class="cmd-code">dmidecode -t system</pre></td></tr><tr class="cmd-row" data-search="страховка перед рискованной правкой reload in 10
+! ...изменения...
+reload cancel —"><td class="cmd-task">Страховка перед рискованной правкой</td><td><pre class="cmd-code">reload in 10
+! ...изменения...
+reload cancel</pre></td><td><pre class="cmd-code">—</pre></td></tr><tr class="cmd-row" data-search="сохранить конфиг copy running-config startup-config —"><td class="cmd-task">Сохранить конфиг</td><td><pre class="cmd-code">copy running-config startup-config</pre></td><td><pre class="cmd-code">—</pre></td></tr><tr class="cmd-row" data-search="синхронизация времени show ntp associations chronyc sources"><td class="cmd-task">Синхронизация времени</td><td><pre class="cmd-code">show ntp associations</pre></td><td><pre class="cmd-code">chronyc sources</pre></td></tr></tbody></table></div>
+    <p class="gloss-page-empty cmd-empty" hidden>Ничего не найдено.</p>
+  </section>
+
+  <section id="checklist">
+    <div class="section-head"><div class="section-num">09 — ТРАБЛШУТИНГ</div><div class="section-title">Чек-лист «снизу вверх»</div><p class="section-desc">Идите по уровням OSI и не перескакивайте: большинство проблем находится на L1–L2. Отметки сохраняются в браузере.</p></div>
+    <div class="check-grid"><div class="check-layer"><div class="check-layer-title">L1 — физика</div><label class="check-item"><input type="checkbox" data-check-id="0-0"><span>Порт в состоянии up/up, а не administratively down</span></label><label class="check-item"><input type="checkbox" data-check-id="0-1"><span>Нет роста CRC, input errors, runts (кабель, патч-корд, трансивер)</span></label><label class="check-item"><input type="checkbox" data-check-id="0-2"><span>Скорость и дуплекс совпадают с обеих сторон</span></label><label class="check-item"><input type="checkbox" data-check-id="0-3"><span>Уровень сигнала оптики в норме (Rx/Tx в пределах порогов)</span></label></div><div class="check-layer"><div class="check-layer-title">L2 — канальный</div><label class="check-item"><input type="checkbox" data-check-id="1-0"><span>Порт не в err-disabled (port-security, BPDU guard, storm-control)</span></label><label class="check-item"><input type="checkbox" data-check-id="1-1"><span>Нужный VLAN есть на коммутаторе и разрешён на транке</span></label><label class="check-item"><input type="checkbox" data-check-id="1-2"><span>STP: порт в состоянии forwarding</span></label><label class="check-item"><input type="checkbox" data-check-id="1-3"><span>MAC-адрес хоста виден в таблице на ожидаемом порту</span></label></div><div class="check-layer"><div class="check-layer-title">L3 — сетевой</div><label class="check-item"><input type="checkbox" data-check-id="2-0"><span>Правильные IP-адрес, маска и шлюз на хосте</span></label><label class="check-item"><input type="checkbox" data-check-id="2-1"><span>ARP до шлюза разрешается</span></label><label class="check-item"><input type="checkbox" data-check-id="2-2"><span>Маршрут есть туда И обратно</span></label><label class="check-item"><input type="checkbox" data-check-id="2-3"><span>Не мешают ACL, NAT, uRPF</span></label></div><div class="check-layer"><div class="check-layer-title">L4+ — сервисы</div><label class="check-item"><input type="checkbox" data-check-id="3-0"><span>Нужный TCP/UDP-порт открыт (nc / telnet)</span></label><label class="check-item"><input type="checkbox" data-check-id="3-1"><span>MTU: ping с DF-битом полного размера проходит</span></label><label class="check-item"><input type="checkbox" data-check-id="3-2"><span>DNS-имя разрешается в ожидаемый адрес</span></label><label class="check-item"><input type="checkbox" data-check-id="3-3"><span>Время синхронизировано по NTP (сертификаты, логи, Kerberos)</span></label></div></div>
+    <div class="quiz-footer"><button type="button" class="btn secondary check-reset">Сбросить отметки</button><span class="quiz-score check-progress"></span></div>
+  </section>
+
+  <section id="templates">
+    <div class="section-head"><div class="section-num">10 — ШАБЛОНЫ</div><div class="section-title">Готовые документы и конфиги</div><p class="section-desc">Скопируйте, заполните угловые скобки — и документ готов к согласованию.</p></div>
+    <div class="tpl-block" id="tpl-mop"><div class="cli-panel"><div class="cli-header"><span class="cli-label">План работ (MOP) для окна изменений</span><button type="button" class="cli-copy" data-copy-target="tpl-code-mop">Копировать</button></div><pre class="cli-code" id="tpl-code-mop"><code>ПЛАН РАБОТ
+==========
+Задача:           &lt;что и зачем меняем, номер заявки&gt;
+Окно:             &lt;дата, время начала - конца, часовой пояс&gt;
+Исполнитель:      &lt;ФИО, телефон&gt;
+Эскалация:        &lt;ФИО, телефон&gt;
+
+Затрагиваемые устройства и сервисы:
+  - &lt;hostname / IP&gt;  — &lt;что на нём меняется&gt;
+Ожидаемое влияние: &lt;нет / кратковременный разрыв N сек / простой N мин&gt;
+
+1. ПРЕДПРОВЕРКИ (снять до начала)
+   [ ] Бэкап конфигурации каждого устройства
+   [ ] show ip interface brief / show ip route summary / соседи протоколов
+   [ ] Есть резервный доступ (консоль / OOB)
+
+2. ШАГИ
+   2.1 reload in 15   (если меняется доступ к устройству)
+   2.2 &lt;команды&gt;
+   2.3 &lt;команды&gt;
+
+3. ПРОВЕРКА РЕЗУЛЬТАТА
+   [ ] &lt;конкретная проверка и ожидаемый вывод&gt;
+   [ ] Сравнение с предпроверками: соседи, маршруты, интерфейсы
+   [ ] reload cancel, copy run start
+
+4. ОТКАТ (если проверка не прошла до &lt;время&gt;)
+   &lt;точные команды возврата к исходному состоянию&gt;
+
+5. ПОСЛЕ РАБОТ
+   [ ] Обновить схему / таблицу адресов / документацию
+   [ ] Закрыть заявку с итогом</code></pre></div><p class="cli-note">Заполняется до окна и согласуется заранее. Пункт «Откат» обязательный — без него работы не начинать.</p></div><div class="tpl-block" id="tpl-incident"><div class="cli-panel"><div class="cli-header"><span class="cli-label">Отчёт об инциденте (без поиска виноватых)</span><button type="button" class="cli-copy" data-copy-target="tpl-code-incident">Копировать</button></div><pre class="cli-code" id="tpl-code-incident"><code>ОТЧЁТ ОБ ИНЦИДЕНТЕ
+==================
+Кратко:        &lt;одно предложение: что сломалось и для кого&gt;
+Начало / конец: &lt;время&gt;  /  &lt;время&gt;   Длительность: &lt;мин&gt;
+Влияние:       &lt;какие сервисы, сколько пользователей/клиентов&gt;
+
+ТАЙМЛАЙН
+  HH:MM  первый признак (алерт / жалоба)
+  HH:MM  начата диагностика
+  HH:MM  найдена причина
+  HH:MM  сервис восстановлен
+
+ПРИЧИНА
+  Техническая: &lt;что именно произошло&gt;
+  Почему стало возможно: &lt;чего не хватило: мониторинга, проверки, документации&gt;
+
+ЧТО СРАБОТАЛО ХОРОШО
+  - 
+
+ЧТО УЛУЧШИТЬ (у каждого пункта — ответственный и срок)
+  [ ] &lt;действие&gt;  — &lt;кто&gt;  — &lt;когда&gt;</code></pre></div><p class="cli-note">Цель отчёта — чтобы проблема не повторилась, а не найти виноватого. Таймлайн пишите по логам, не по памяти.</p></div><div class="tpl-block" id="tpl-baseline"><div class="cli-panel"><div class="cli-header"><span class="cli-label">Базовая безопасная конфигурация Cisco IOS</span><button type="button" class="cli-copy" data-copy-target="tpl-code-baseline">Копировать</button></div><pre class="cli-code" id="tpl-code-baseline"><code>hostname SW-ACCESS-01
+ip domain name corp.local
+no ip domain-lookup
+service password-encryption
+service timestamps log datetime msec localtime
+!
+enable algorithm-type scrypt secret &lt;ENABLE_SECRET&gt;
+username admin privilege 15 algorithm-type scrypt secret &lt;ADMIN_SECRET&gt;
+!
+crypto key generate rsa modulus 2048
+ip ssh version 2
+ip ssh time-out 60
+ip ssh authentication-retries 3
+login block-for 120 attempts 5 within 60
+!
+no ip http server
+no ip http secure-server
+no cdp run            ! или точечно: no cdp enable на клиентских портах
+!
+ip access-list standard MGMT-ONLY
+ permit 10.0.100.0 0.0.0.255
+ deny   any log
+!
+line con 0
+ exec-timeout 10 0
+ logging synchronous
+ login local
+line vty 0 15
+ exec-timeout 10 0
+ transport input ssh
+ access-class MGMT-ONLY in
+ login local
+!
+ntp server 10.0.100.10
+clock timezone ALMT 5 0
+logging host 10.0.100.20
+logging trap informational
+!
+banner login ^
+Доступ только для авторизованного персонала. Действия журналируются.
+^
+!
+spanning-tree mode rapid-pvst
+spanning-tree portfast bpduguard default</code></pre></div><p class="cli-note">Стартовая точка для нового устройства. Имена, адреса и ключи замените на свои; пароли никогда не храните в шаблоне.</p></div>
+  </section>
+
+  <section id="habits">
+    <div class="section-head"><div class="section-num">11 — ОПЫТ</div><div class="section-title">Привычки, которые спасают</div><p class="section-desc">Не технологии, а дисциплина — именно она отличает спокойное окно работ от ночного инцидента.</p></div>
+    <div class="theory-grid"><div class="theory-card"><div class="theory-card-title">Бэкап до изменения</div><div class="theory-card-body">Перед любой правкой — <code>show running-config</code> в файл или <code>copy run tftp:</code>. Без исходного состояния откат превращается в угадывание.</div></div><div class="theory-card"><div class="theory-card-title">Страховка от потери доступа</div><div class="theory-card-body">Меняете ACL, маршрутизацию или интерфейс управления удалённо — сначала <code>reload in 10</code>. Всё прошло хорошо — <code>reload cancel</code>. Связь пропала — через 10 минут устройство вернётся к сохранённому конфигу.</div></div><div class="theory-card"><div class="theory-card-title">Одно изменение за раз</div><div class="theory-card-body">Поменяли три вещи и всё сломалось — непонятно, какая виновата. Меняйте по одной, проверяйте после каждой.</div></div><div class="theory-card"><div class="theory-card-title">Обратный путь</div><div class="theory-card-body">Ping не проходит — проверьте не только маршрут <b>туда</b>, но и маршрут <b>обратно</b>. Половина «загадочных» проблем — асимметрия или отсутствующий обратный маршрут.</div></div><div class="theory-card"><div class="theory-card-title">«Что менялось?»</div><div class="theory-card-body">Первый вопрос при любом инциденте. Работало вчера, не работает сегодня — ищите изменение: конфиг, прошивка, кабель, сосед, сертификат, время.</div></div><div class="theory-card"><div class="theory-card-title">Документируйте сразу</div><div class="theory-card-body"><code>description</code> на каждом интерфейсе, актуальная схема и таблица адресов. Через полгода вы сами не вспомните, куда ведёт <code>Gi0/17</code>.</div></div></div>
+  </section>
+  <div class="footer"></div>
+</div>
+<script src="assets/app.js?v=7f304ad80f"></script>
+</body>
+</html>
