@@ -219,6 +219,7 @@ def topnav_html(modules, active_id=None, depth="../", show_section_links=True, h
     </a>
     <div class="nav-groups">{"".join(dropdowns)}</div>
     <a class="nav-glossary-link" href="{depth}glossary.html">Глоссарий</a>
+    <a class="nav-glossary-link nav-tools-link" href="{depth}tools.html">Инструменты</a>
     <a class="nav-glossary-link nav-wiki-link" href="{WIKI_URL}" target="_blank" rel="noopener">Вики <span class="wiki-badge">правьте сами</span></a>
     <button type="button" class="search-trigger" aria-label="Поиск по сайту">
       <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
@@ -615,6 +616,14 @@ def render_home(modules):
     </div>
     <div class="wiki-callout-cta">Открыть вики →</div>
   </a>
+  <a class="wiki-callout tools-callout" href="tools.html">
+    <div class="wiki-callout-icon">🧰</div>
+    <div class="wiki-callout-body">
+      <div class="wiki-callout-title">Инструменты инженера</div>
+      <div class="wiki-callout-sub">Калькуляторы подсетей, MTU/MSS и скорости, конвертер MAC, справочники портов и AD, шпаргалка IOS ↔ Linux, чек-лист траблшутинга и шаблоны MOP / отчёта об инциденте.</div>
+    </div>
+    <div class="wiki-callout-cta">Открыть →</div>
+  </a>
   {"".join(group_blocks)}
 </div>'''
     return page_shell("БЗПД · Учебный портал", body, depth="")
@@ -661,6 +670,263 @@ def render_glossary_page(modules):
     return page_shell("БЗПД · Глоссарий", body, depth="")
 
 
+TOOLKIT_FILE = ROOT / "data" / "toolkit.json"
+
+TOOLS_TOC = [
+    ("calc-subnet", "Подсети"), ("calc-summary", "Суммаризация"), ("calc-mtu", "MTU / MSS"),
+    ("calc-speed", "Скорость и BDP"), ("calc-mac", "MAC / EUI-64"), ("ref-masks", "Маски"),
+    ("refs", "Справочники"), ("commands", "IOS ↔ Linux"), ("checklist", "Чек-лист"),
+    ("templates", "Шаблоны"), ("habits", "Привычки"),
+]
+
+# (name, bytes, hint) — bytes subtracted from the transport link MTU
+MTU_OVERHEADS = [
+    ("PPPoE", 8, "PPP 2 + PPPoE 6 байт"),
+    ("GRE (IPv4)", 24, "внешний IP 20 + GRE 4"),
+    ("IP-in-IP / 6in4", 20, "внешний IPv4-заголовок"),
+    ("IPsec ESP tunnel (AES/SHA)", 73, "худший случай с учётом паддинга; точное значение зависит от шифра"),
+    ("WireGuard (IPv4)", 60, "IP 20 + UDP 8 + WireGuard 32"),
+    ("VXLAN (IPv4)", 50, "IP 20 + UDP 8 + VXLAN 8 + внутренний Ethernet 14"),
+]
+
+
+def section_head(num, title, desc):
+    return (f'<div class="section-head"><div class="section-num">{num}</div>'
+            f'<div class="section-title">{title}</div><p class="section-desc">{desc}</p></div>')
+
+
+def ref_table_html(t, title, tid=None):
+    head = "".join(f"<th>{c}</th>" for c in t["columns"])
+    rows = "".join("<tr>" + "".join(f"<td>{c}</td>" for c in r) + "</tr>" for r in t["rows"])
+    note = f'<p class="ref-note">{t["note"]}</p>' if t.get("note") else ""
+    id_attr = f' id="{tid}"' if tid else ""
+    return (f'<div class="ref-block"{id_attr}><div class="ref-title">{title}</div>'
+            f'<div class="table-scroll"><table class="ref-table"><thead><tr>{head}</tr></thead>'
+            f'<tbody>{rows}</tbody></table></div>{note}</div>')
+
+
+def _dotted(n):
+    return ".".join(str((n >> s) & 255) for s in (24, 16, 8, 0))
+
+
+def mask_table_html():
+    rows = []
+    for p in range(8, 33):
+        mask = (0xFFFFFFFF << (32 - p)) & 0xFFFFFFFF
+        wc = mask ^ 0xFFFFFFFF
+        total = 2 ** (32 - p)
+        usable = 1 if p == 32 else (2 if p == 31 else total - 2)
+        rows.append(f"<tr><td>/{p}</td><td>{_dotted(mask)}</td><td>{_dotted(wc)}</td>"
+                    f"<td>{total:,}</td><td>{usable:,}</td></tr>".replace(",", " "))
+    return ('<div class="table-scroll"><table class="ref-table mono-table"><thead><tr><th>Префикс</th><th>Маска</th>'
+            '<th>Wildcard</th><th>Адресов</th><th>Хостов</th></tr></thead>'
+            f'<tbody>{"".join(rows)}</tbody></table></div>'
+            '<p class="ref-note">/31 — 2 адреса для point-to-point (RFC 3021), /32 — loopback и host-маршруты.</p>')
+
+
+def render_tools_page(modules, tk):
+    nav = topnav_html(modules, active_id=None, depth="", show_section_links=False)
+    toc = "".join(f'<a class="tools-toc-chip" href="#{a}">{t}</a>' for a, t in TOOLS_TOC)
+
+    mtu_rows = "".join(
+        f'<label class="mtu-opt" title="{html.escape(hint)}"><input type="checkbox" data-overhead="{b}" data-name="{html.escape(name)}">'
+        f'<span class="mtu-opt-name">{name}</span><span class="mtu-opt-bytes">−{b} B</span></label>'
+        for name, b, hint in MTU_OVERHEADS
+    )
+
+    commands = "".join(
+        f'<tr class="cmd-row" data-search="{html.escape((c["task"] + " " + c["ios"] + " " + c["linux"]).lower())}">'
+        f'<td class="cmd-task">{c["task"]}</td>'
+        f'<td><pre class="cmd-code">{html.escape(c["ios"])}</pre></td>'
+        f'<td><pre class="cmd-code">{html.escape(c["linux"])}</pre></td></tr>'
+        for c in tk["commands"]
+    )
+
+    checklist_cols = []
+    for li, layer in enumerate(tk["checklist"]):
+        items = "".join(
+            f'<label class="check-item"><input type="checkbox" data-check-id="{li}-{ii}"><span>{it}</span></label>'
+            for ii, it in enumerate(layer["items"])
+        )
+        checklist_cols.append(f'<div class="check-layer"><div class="check-layer-title">{layer["layer"]}</div>{items}</div>')
+
+    tpl_parts = []
+    for t in tk["templates"]:
+        tpl_parts.append(
+            f'<div class="tpl-block" id="tpl-{t["id"]}"><div class="cli-panel"><div class="cli-header">'
+            f'<span class="cli-label">{t["label"]}</span>'
+            f'<button type="button" class="cli-copy" data-copy-target="tpl-code-{t["id"]}">Копировать</button></div>'
+            f'<pre class="cli-code" id="tpl-code-{t["id"]}"><code>{html.escape(t["code"])}</code></pre></div>'
+            f'<p class="cli-note">{t["note"]}</p></div>'
+        )
+    templates = "".join(tpl_parts)
+
+    habits = "".join(
+        f'<div class="theory-card"><div class="theory-card-title">{h["title"]}</div>'
+        f'<div class="theory-card-body">{h["body_html"]}</div></div>'
+        for h in tk["habits"]
+    )
+
+    body = f"""{nav}
+<div class="wrap tools-page">
+  <div class="breadcrumb"><a href="index.html">Главная</a><span class="sep">/</span><span class="current">Инструменты инженера</span></div>
+  <section class="hero" style="padding-bottom:16px;">
+    <div class="eyebrow">Практикум · всё считается прямо в браузере, данные никуда не отправляются</div>
+    <h1>Инструменты <span>инженера</span></h1>
+    <p class="hero-sub">То, что нужно под рукой на смене: калькуляторы, справочные таблицы, шпаргалка команд, чек-лист траблшутинга и готовые шаблоны документов.</p>
+    <div class="tools-toc">{toc}</div>
+  </section>
+
+  <section id="calc-subnet">
+    {section_head("01 — КАЛЬКУЛЯТОР", "IPv4-подсети", "Введите адрес с префиксом или маской: <code>192.168.10.37/27</code> или <code>10.1.2.3 255.255.255.0</code>.")}
+    <div class="tool-panel">
+      <div class="tool-row">
+        <input type="text" class="tool-input wide" id="subnet-input" value="192.168.10.37/27" spellcheck="false" autocomplete="off">
+      </div>
+      <div class="tool-result" id="subnet-result"></div>
+      <div class="tool-sub">
+        <div class="tool-sub-title">Разбить на подсети</div>
+        <div class="tool-row">
+          <span class="tool-label">новый префикс /</span>
+          <input type="number" class="tool-input small" id="split-prefix" min="1" max="32" value="29">
+        </div>
+        <div id="split-result"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="calc-summary">
+    {section_head("02 — КАЛЬКУЛЯТОР", "Суммаризация маршрутов", "Список сетей — по одной в строке. Калькулятор найдёт наименьший общий префикс и предупредит, если он захватывает лишние адреса.")}
+    <div class="tool-panel">
+      <textarea class="tool-input tool-textarea" id="summary-input" spellcheck="false">10.1.0.0/24
+10.1.1.0/24
+10.1.2.0/24
+10.1.3.0/24</textarea>
+      <div class="tool-result" id="summary-result"></div>
+    </div>
+  </section>
+
+  <section id="calc-mtu">
+    {section_head("03 — КАЛЬКУЛЯТОР", "MTU и TCP MSS для туннелей", "Отметьте всё, что добавляется поверх исходного пакета, — получите значения для <code>ip mtu</code> и <code>ip tcp adjust-mss</code>.")}
+    <div class="tool-panel">
+      <div class="tool-row">
+        <span class="tool-label">MTU транспортного линка</span>
+        <input type="number" class="tool-input small" id="mtu-base" value="1500" min="576" max="9216">
+        <span class="tool-label">IP внутри</span>
+        <select class="tool-input small" id="mtu-ipver"><option value="4">IPv4</option><option value="6">IPv6</option></select>
+      </div>
+      <div class="mtu-opts">{mtu_rows}
+        <label class="mtu-opt"><span class="mtu-opt-name">MPLS-метки</span>
+          <input type="number" class="tool-input tiny" id="mtu-labels" value="0" min="0" max="10"><span class="mtu-opt-bytes">× 4 B</span></label>
+      </div>
+      <div class="tool-result" id="mtu-result"></div>
+    </div>
+  </section>
+
+  <section id="calc-speed">
+    {section_head("04 — КАЛЬКУЛЯТОР", "Время передачи и BDP", "Сколько будет копироваться образ прошивки или бэкап — и почему одна TCP-сессия не забивает длинный канал.")}
+    <div class="tool-panel">
+      <div class="tool-sub-title">Время передачи</div>
+      <div class="tool-row">
+        <span class="tool-label">объём</span>
+        <input type="number" class="tool-input small" id="speed-size" value="1.2" min="0" step="any">
+        <select class="tool-input small" id="speed-size-unit"><option value="1e6">МБ</option><option value="1e9" selected>ГБ</option><option value="1e12">ТБ</option><option value="1073741824">ГиБ</option></select>
+        <span class="tool-label">канал</span>
+        <input type="number" class="tool-input small" id="speed-rate" value="100" min="0" step="any">
+        <select class="tool-input small" id="speed-rate-unit"><option value="1e3">Кбит/с</option><option value="1e6" selected>Мбит/с</option><option value="1e9">Гбит/с</option></select>
+        <span class="tool-label">КПД, %</span>
+        <input type="number" class="tool-input tiny" id="speed-eff" value="90" min="1" max="100">
+      </div>
+      <div class="tool-result" id="speed-result"></div>
+      <div class="tool-sub">
+        <div class="tool-sub-title">Bandwidth-Delay Product</div>
+        <div class="tool-row">
+          <span class="tool-label">канал, Мбит/с</span>
+          <input type="number" class="tool-input small" id="bdp-rate" value="1000" min="0" step="any">
+          <span class="tool-label">RTT, мс</span>
+          <input type="number" class="tool-input small" id="bdp-rtt" value="40" min="0" step="any">
+          <span class="tool-label">окно TCP, КБ</span>
+          <input type="number" class="tool-input small" id="bdp-win" value="64" min="1" step="any">
+        </div>
+        <div class="tool-result" id="bdp-result"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="calc-mac">
+    {section_head("05 — КОНВЕРТЕР", "MAC-адрес и EUI-64", "Любой формат на входе: <code>00:1A:2B:3C:4D:5E</code>, <code>001a.2b3c.4d5e</code>, <code>00-1A-2B-3C-4D-5E</code>.")}
+    <div class="tool-panel">
+      <div class="tool-row">
+        <input type="text" class="tool-input wide" id="mac-input" value="00:1A:2B:3C:4D:5E" spellcheck="false" autocomplete="off">
+      </div>
+      <div class="tool-result" id="mac-result"></div>
+    </div>
+  </section>
+
+  <section id="ref-masks">
+    {section_head("06 — СПРАВОЧНИК", "Префиксы, маски, wildcard", "Wildcard — инверсия маски: нужна в ACL и в <code>network</code> для OSPF/EIGRP.")}
+    {mask_table_html()}
+  </section>
+
+  <section id="refs">
+    {section_head("07 — СПРАВОЧНИК", "Числа, которые нужно знать", "Административные дистанции, порты, номера протоколов, служебные адреса.")}
+    <div class="ref-grid">
+      {ref_table_html(tk["ad_table"], "Administrative Distance", "ref-ad")}
+      {ref_table_html(tk["proto_table"], "Номера IP-протоколов", "ref-proto")}
+    </div>
+    {ref_table_html(tk["ports_table"], "Порты TCP/UDP", "ref-ports")}
+    <div class="ref-grid">
+      {ref_table_html(tk["mcast_table"], "Служебные multicast-адреса", "ref-mcast")}
+      {ref_table_html(tk["ethertype_table"], "EtherType", "ref-ethertype")}
+    </div>
+    {ref_table_html(tk["ranges_table"], "Специальные диапазоны адресов", "ref-ranges")}
+  </section>
+
+  <section id="commands">
+    {section_head("08 — ШПАРГАЛКА", "Команды: Cisco IOS ↔ Linux", "Одна задача — две команды. Linux-колонка пригодится на серверах, white-box и FRR.")}
+    <input type="text" class="gloss-page-filter cmd-filter" placeholder="Фильтр: mac, mtu, bgp, ошибки…" autocomplete="off">
+    <div class="table-scroll"><table class="ref-table cmd-table"><thead><tr><th>Задача</th><th>Cisco IOS</th><th>Linux</th></tr></thead>
+    <tbody>{commands}</tbody></table></div>
+    <p class="gloss-page-empty cmd-empty" hidden>Ничего не найдено.</p>
+  </section>
+
+  <section id="checklist">
+    {section_head("09 — ТРАБЛШУТИНГ", "Чек-лист «снизу вверх»", "Идите по уровням OSI и не перескакивайте: большинство проблем находится на L1–L2. Отметки сохраняются в браузере.")}
+    <div class="check-grid">{"".join(checklist_cols)}</div>
+    <div class="quiz-footer"><button type="button" class="btn secondary check-reset">Сбросить отметки</button><span class="quiz-score check-progress"></span></div>
+  </section>
+
+  <section id="templates">
+    {section_head("10 — ШАБЛОНЫ", "Готовые документы и конфиги", "Скопируйте, заполните угловые скобки — и документ готов к согласованию.")}
+    {templates}
+  </section>
+
+  <section id="habits">
+    {section_head("11 — ОПЫТ", "Привычки, которые спасают", "Не технологии, а дисциплина — именно она отличает спокойное окно работ от ночного инцидента.")}
+    <div class="theory-grid">{habits}</div>
+  </section>
+  <div class="footer"></div>
+</div>"""
+    return page_shell("БЗПД · Инструменты инженера", body, depth="")
+
+
+def tools_search_entries(tk):
+    label = "Инструменты"
+    entries = [{"type": "tool", "title": t, "module": label, "snippet": "", "url": f"tools.html#{a}"}
+               for a, t in TOOLS_TOC]
+    extra = [("Калькулятор подсетей IPv4: маска, wildcard, broadcast", "calc-subnet"),
+             ("Калькулятор MTU/MSS: GRE, IPsec, VXLAN, MPLS", "calc-mtu"),
+             ("Administrative Distance (AD)", "ref-ad"), ("Порты TCP/UDP", "ref-ports"),
+             ("EtherType", "ref-ethertype"), ("Multicast-адреса протоколов", "ref-mcast")]
+    entries += [{"type": "tool", "title": t, "module": label, "snippet": "", "url": f"tools.html#{a}"}
+                for t, a in extra]
+    entries += [{"type": "tool", "title": c["task"], "module": label + " · команды",
+                 "snippet": c["ios"] + " " + c["linux"], "url": "tools.html#commands"} for c in tk["commands"]]
+    entries += [{"type": "tool", "title": t["label"], "module": label + " · шаблоны",
+                 "snippet": t["note"], "url": f'tools.html#tpl-{t["id"]}'} for t in tk["templates"]]
+    return entries
+
+
 def main():
     if DIST.exists():
         shutil.rmtree(DIST)
@@ -674,16 +940,18 @@ def main():
 
     (DIST / "index.html").write_text(render_home(modules), encoding="utf-8")
     (DIST / "glossary.html").write_text(render_glossary_page(modules), encoding="utf-8")
+    toolkit = json.loads(TOOLKIT_FILE.read_text(encoding="utf-8"))
+    (DIST / "tools.html").write_text(render_tools_page(modules, toolkit), encoding="utf-8")
     for m in modules:
         out = DIST / "modules" / f'{m["id"]}.html'
         out.write_text(render_module(m, modules), encoding="utf-8")
 
-    search_index = build_search_index(modules)
+    search_index = build_search_index(modules) + tools_search_entries(toolkit)
     (DIST / "assets" / "search-index.json").write_text(
         json.dumps(search_index, ensure_ascii=False), encoding="utf-8"
     )
 
-    print(f"Built {len(modules)} module pages + home page + glossary into {DIST}")
+    print(f"Built {len(modules)} module pages + home page + glossary + tools page into {DIST}")
     print(f"Search index: {len(search_index)} entries")
 
 

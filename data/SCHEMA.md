@@ -87,3 +87,16 @@ Groups (top-nav dropdown sections, in this order):
 `order` (0-23) drives the linear course sequence (chapter numbering, prev/next footer nav) independently of `group` (dropdown categorization) — the two don't have to line up perfectly; e.g. VPN/BGP/Multicast sit in `l3` despite being conceptually "overlay" topics, and Packet Life sits in `l2` despite being a hardware topic, because that's where they read best in the nav.
 
 All body text is Russian: precise, no fluff, short sentences, `<code>` for protocol terms/attributes. To add video/images to a module, just add the `media` key to its JSON and rebuild (`python3 build.py`) — no template changes needed.
+
+## Инструменты инженера (`data/toolkit.json` → `tools.html`)
+
+Отдельная страница-практикум, не входит в линейный порядок модулей и прогресс. `build.py` рендерит её из `data/toolkit.json`, а калькуляторы (подсети, суммаризация, MTU/MSS, время передачи/BDP, MAC/EUI-64) живут в `assets/app.js` (`initTools()`) и работают целиком в браузере.
+
+Что редактируется в JSON без правки кода:
+- `habits` — карточки «Привычки, которые спасают»: `{title, body_html}`
+- `ad_table`, `ports_table`, `proto_table`, `mcast_table`, `ethertype_table`, `ranges_table` — справочные таблицы: `{columns: [...], rows: [[...]], note?}` (ячейки — HTML)
+- `commands` — шпаргалка `{task, ios, linux}` (plain text, многострочный через `\n`; `—` если аналога нет)
+- `checklist` — чек-лист траблшутинга `[{layer, items: [...]}]`; отметки хранятся в `localStorage` (`sdsm_checklist`) по позиции пункта
+- `templates` — копируемые шаблоны `{id, label, note, code}`
+
+Таблица масок /8–/32 генерируется в `build.py`, список туннельных накладных расходов для MTU-калькулятора — `MTU_OVERHEADS` в `build.py`. Всё попадает в поиск по сайту с типом «Инструмент».

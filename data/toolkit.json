@@ -1,0 +1,199 @@
+{
+  "habits": [
+    {"title": "Бэкап до изменения", "body_html": "Перед любой правкой — <code>show running-config</code> в файл или <code>copy run tftp:</code>. Без исходного состояния откат превращается в угадывание."},
+    {"title": "Страховка от потери доступа", "body_html": "Меняете ACL, маршрутизацию или интерфейс управления удалённо — сначала <code>reload in 10</code>. Всё прошло хорошо — <code>reload cancel</code>. Связь пропала — через 10 минут устройство вернётся к сохранённому конфигу."},
+    {"title": "Одно изменение за раз", "body_html": "Поменяли три вещи и всё сломалось — непонятно, какая виновата. Меняйте по одной, проверяйте после каждой."},
+    {"title": "Обратный путь", "body_html": "Ping не проходит — проверьте не только маршрут <b>туда</b>, но и маршрут <b>обратно</b>. Половина «загадочных» проблем — асимметрия или отсутствующий обратный маршрут."},
+    {"title": "«Что менялось?»", "body_html": "Первый вопрос при любом инциденте. Работало вчера, не работает сегодня — ищите изменение: конфиг, прошивка, кабель, сосед, сертификат, время."},
+    {"title": "Документируйте сразу", "body_html": "<code>description</code> на каждом интерфейсе, актуальная схема и таблица адресов. Через полгода вы сами не вспомните, куда ведёт <code>Gi0/17</code>."}
+  ],
+  "ad_table": {
+    "columns": ["Источник маршрута", "AD (Cisco)"],
+    "rows": [
+      ["Connected", "0"],
+      ["Static", "1"],
+      ["EIGRP summary", "5"],
+      ["eBGP", "20"],
+      ["EIGRP internal", "90"],
+      ["OSPF", "110"],
+      ["IS-IS", "115"],
+      ["RIP", "120"],
+      ["EIGRP external", "170"],
+      ["iBGP", "200"],
+      ["Маршрут по DHCP (default)", "254"],
+      ["Недоверенный — в RIB не попадёт", "255"]
+    ],
+    "note": "Меньше — лучше. AD сравнивается только между разными источниками для одного и того же префикса; внутри протокола выбор идёт по метрике. Floating static: <code>ip route 0.0.0.0 0.0.0.0 10.0.0.2 250</code> — резервный маршрут, проигрывающий любому IGP."
+  },
+  "ports_table": {
+    "columns": ["Порт", "Транспорт", "Сервис"],
+    "rows": [
+      ["20/21", "TCP", "FTP (данные / управление)"],
+      ["22", "TCP", "SSH, SCP, SFTP"],
+      ["23", "TCP", "Telnet — только в лаборатории"],
+      ["25", "TCP", "SMTP"],
+      ["49", "TCP", "TACACS+"],
+      ["53", "UDP/TCP", "DNS (TCP — для больших ответов и AXFR)"],
+      ["67/68", "UDP", "DHCP (сервер / клиент)"],
+      ["69", "UDP", "TFTP"],
+      ["80 / 443", "TCP", "HTTP / HTTPS"],
+      ["123", "UDP", "NTP"],
+      ["161 / 162", "UDP", "SNMP запросы / трапы"],
+      ["179", "TCP", "BGP"],
+      ["389 / 636", "TCP", "LDAP / LDAPS"],
+      ["500 / 4500", "UDP", "IKE / IPsec NAT-T"],
+      ["514", "UDP", "Syslog"],
+      ["520", "UDP", "RIP"],
+      ["646", "UDP/TCP", "LDP (hello / сессия)"],
+      ["830", "TCP", "NETCONF over SSH"],
+      ["1812 / 1813", "UDP", "RADIUS аутентификация / аккаунтинг"],
+      ["3784 / 3785", "UDP", "BFD control / echo"],
+      ["3389", "TCP", "RDP"],
+      ["4789", "UDP", "VXLAN"],
+      ["6514", "TCP", "Syslog over TLS"]
+    ]
+  },
+  "proto_table": {
+    "columns": ["IP proto", "Протокол", "Где встречается"],
+    "rows": [
+      ["1", "ICMP", "ping, traceroute, PMTUD"],
+      ["2", "IGMP", "подписка на multicast"],
+      ["6", "TCP", ""],
+      ["17", "UDP", ""],
+      ["47", "GRE", "туннели, DMVPN"],
+      ["50", "ESP", "IPsec шифрование"],
+      ["51", "AH", "IPsec только целостность"],
+      ["88", "EIGRP", ""],
+      ["89", "OSPF", "не TCP/UDP — в ACL разрешайте <code>ospf</code>"],
+      ["103", "PIM", "multicast-маршрутизация"],
+      ["112", "VRRP", ""]
+    ]
+  },
+  "mcast_table": {
+    "columns": ["Адрес", "Назначение"],
+    "rows": [
+      ["224.0.0.1", "Все хосты сегмента"],
+      ["224.0.0.2", "Все маршрутизаторы; HSRPv1"],
+      ["224.0.0.5", "OSPF — все OSPF-маршрутизаторы"],
+      ["224.0.0.6", "OSPF — DR/BDR"],
+      ["224.0.0.9", "RIPv2"],
+      ["224.0.0.10", "EIGRP"],
+      ["224.0.0.13", "PIM"],
+      ["224.0.0.18", "VRRP"],
+      ["224.0.0.22", "IGMPv3 reports"],
+      ["224.0.0.102", "HSRPv2"],
+      ["ff02::1 / ff02::2", "IPv6: все узлы / все маршрутизаторы"],
+      ["ff02::1:ffXX:XXXX", "IPv6 solicited-node (замена ARP в NDP)"]
+    ]
+  },
+  "ethertype_table": {
+    "columns": ["EtherType", "Протокол"],
+    "rows": [
+      ["0x0800", "IPv4"],
+      ["0x0806", "ARP"],
+      ["0x86DD", "IPv6"],
+      ["0x8100", "802.1Q VLAN tag"],
+      ["0x88A8", "802.1ad (QinQ, S-tag)"],
+      ["0x8847", "MPLS unicast"],
+      ["0x8848", "MPLS multicast"],
+      ["0x8809", "Slow protocols (LACP)"],
+      ["0x88CC", "LLDP"],
+      ["0x888E", "802.1X EAPOL"],
+      ["0x8863 / 0x8864", "PPPoE discovery / session"]
+    ]
+  },
+  "ranges_table": {
+    "columns": ["Диапазон", "Назначение"],
+    "rows": [
+      ["10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16", "Частные (RFC 1918)"],
+      ["100.64.0.0/10", "CGNAT, shared address space (RFC 6598)"],
+      ["127.0.0.0/8", "Loopback"],
+      ["169.254.0.0/16", "Link-local (APIPA) — признак, что DHCP не ответил"],
+      ["192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24", "Документация и примеры (RFC 5737)"],
+      ["198.18.0.0/15", "Тестирование производительности"],
+      ["224.0.0.0/4", "Multicast"],
+      ["240.0.0.0/4", "Зарезервировано"],
+      ["fe80::/10", "IPv6 link-local"],
+      ["fc00::/7", "IPv6 ULA — аналог RFC 1918"],
+      ["2001:db8::/32", "IPv6 документация"]
+    ]
+  },
+  "commands": [
+    {"task": "Сводка по интерфейсам и IP", "ios": "show ip interface brief", "linux": "ip -br addr"},
+    {"task": "Ошибки, CRC, дропы на порту", "ios": "show interfaces Gi0/1", "linux": "ip -s link show eth0"},
+    {"task": "Скорость / дуплекс / статус портов", "ios": "show interfaces status", "linux": "ethtool eth0"},
+    {"task": "Уровень сигнала оптики", "ios": "show interfaces transceiver detail", "linux": "ethtool -m eth0"},
+    {"task": "Порты в err-disabled и причина", "ios": "show interfaces status err-disabled", "linux": "—"},
+    {"task": "Таблица MAC-адресов", "ios": "show mac address-table", "linux": "bridge fdb show"},
+    {"task": "Найти, на каком порту MAC", "ios": "show mac address-table address aaaa.bbbb.cccc", "linux": "bridge fdb show | grep aa:bb"},
+    {"task": "VLAN и порты доступа", "ios": "show vlan brief", "linux": "bridge vlan show"},
+    {"task": "Транки и разрешённые VLAN", "ios": "show interfaces trunk", "linux": "bridge vlan show"},
+    {"task": "Состояние STP", "ios": "show spanning-tree vlan 10", "linux": "bridge link show"},
+    {"task": "Состояние LAG / EtherChannel", "ios": "show etherchannel summary", "linux": "cat /proc/net/bonding/bond0"},
+    {"task": "Соседи по CDP / LLDP", "ios": "show cdp neighbors detail\nshow lldp neighbors", "linux": "lldpctl"},
+    {"task": "ARP / таблица соседей", "ios": "show ip arp", "linux": "ip neigh"},
+    {"task": "Таблица маршрутизации", "ios": "show ip route", "linux": "ip route"},
+    {"task": "Каким маршрутом уйдёт пакет", "ios": "show ip route 8.8.8.8\nshow ip cef 8.8.8.8", "linux": "ip route get 8.8.8.8"},
+    {"task": "Соседи OSPF", "ios": "show ip ospf neighbor", "linux": "vtysh -c 'show ip ospf neighbor'"},
+    {"task": "Сессии BGP", "ios": "show ip bgp summary", "linux": "vtysh -c 'show bgp summary'"},
+    {"task": "Проверка MTU без фрагментации", "ios": "ping 10.0.0.1 size 1500 df-bit", "linux": "ping -M do -s 1472 10.0.0.1"},
+    {"task": "Путь до узла", "ios": "traceroute 10.0.0.1", "linux": "mtr -n 10.0.0.1"},
+    {"task": "Проверить TCP-порт", "ios": "telnet 10.0.0.1 443", "linux": "nc -zv 10.0.0.1 443"},
+    {"task": "Захват трафика", "ios": "monitor capture CAP interface Gi0/1 both\nmonitor capture CAP match any\nmonitor capture CAP start", "linux": "tcpdump -i eth0 -nn host 10.0.0.1"},
+    {"task": "Логи", "ios": "show logging | include %LINK|%LINEPROTO", "linux": "journalctl -k -f"},
+    {"task": "Загрузка CPU по процессам", "ios": "show processes cpu sorted", "linux": "top"},
+    {"task": "Вывод debug в SSH-сессию", "ios": "terminal monitor", "linux": "—"},
+    {"task": "Нужная часть конфига", "ios": "show running-config | section router ospf", "linux": "—"},
+    {"task": "Модель, прошивка, аптайм", "ios": "show version", "linux": "uname -a; uptime"},
+    {"task": "Серийные номера модулей", "ios": "show inventory", "linux": "dmidecode -t system"},
+    {"task": "Страховка перед рискованной правкой", "ios": "reload in 10\n! ...изменения...\nreload cancel", "linux": "—"},
+    {"task": "Сохранить конфиг", "ios": "copy running-config startup-config", "linux": "—"},
+    {"task": "Синхронизация времени", "ios": "show ntp associations", "linux": "chronyc sources"}
+  ],
+  "checklist": [
+    {"layer": "L1 — физика", "items": [
+      "Порт в состоянии up/up, а не administratively down",
+      "Нет роста CRC, input errors, runts (кабель, патч-корд, трансивер)",
+      "Скорость и дуплекс совпадают с обеих сторон",
+      "Уровень сигнала оптики в норме (Rx/Tx в пределах порогов)"
+    ]},
+    {"layer": "L2 — канальный", "items": [
+      "Порт не в err-disabled (port-security, BPDU guard, storm-control)",
+      "Нужный VLAN есть на коммутаторе и разрешён на транке",
+      "STP: порт в состоянии forwarding",
+      "MAC-адрес хоста виден в таблице на ожидаемом порту"
+    ]},
+    {"layer": "L3 — сетевой", "items": [
+      "Правильные IP-адрес, маска и шлюз на хосте",
+      "ARP до шлюза разрешается",
+      "Маршрут есть туда И обратно",
+      "Не мешают ACL, NAT, uRPF"
+    ]},
+    {"layer": "L4+ — сервисы", "items": [
+      "Нужный TCP/UDP-порт открыт (nc / telnet)",
+      "MTU: ping с DF-битом полного размера проходит",
+      "DNS-имя разрешается в ожидаемый адрес",
+      "Время синхронизировано по NTP (сертификаты, логи, Kerberos)"
+    ]}
+  ],
+  "templates": [
+    {
+      "id": "mop",
+      "label": "План работ (MOP) для окна изменений",
+      "note": "Заполняется до окна и согласуется заранее. Пункт «Откат» обязательный — без него работы не начинать.",
+      "code": "ПЛАН РАБОТ\n==========\nЗадача:           <что и зачем меняем, номер заявки>\nОкно:             <дата, время начала - конца, часовой пояс>\nИсполнитель:      <ФИО, телефон>\nЭскалация:        <ФИО, телефон>\n\nЗатрагиваемые устройства и сервисы:\n  - <hostname / IP>  — <что на нём меняется>\nОжидаемое влияние: <нет / кратковременный разрыв N сек / простой N мин>\n\n1. ПРЕДПРОВЕРКИ (снять до начала)\n   [ ] Бэкап конфигурации каждого устройства\n   [ ] show ip interface brief / show ip route summary / соседи протоколов\n   [ ] Есть резервный доступ (консоль / OOB)\n\n2. ШАГИ\n   2.1 reload in 15   (если меняется доступ к устройству)\n   2.2 <команды>\n   2.3 <команды>\n\n3. ПРОВЕРКА РЕЗУЛЬТАТА\n   [ ] <конкретная проверка и ожидаемый вывод>\n   [ ] Сравнение с предпроверками: соседи, маршруты, интерфейсы\n   [ ] reload cancel, copy run start\n\n4. ОТКАТ (если проверка не прошла до <время>)\n   <точные команды возврата к исходному состоянию>\n\n5. ПОСЛЕ РАБОТ\n   [ ] Обновить схему / таблицу адресов / документацию\n   [ ] Закрыть заявку с итогом"
+    },
+    {
+      "id": "incident",
+      "label": "Отчёт об инциденте (без поиска виноватых)",
+      "note": "Цель отчёта — чтобы проблема не повторилась, а не найти виноватого. Таймлайн пишите по логам, не по памяти.",
+      "code": "ОТЧЁТ ОБ ИНЦИДЕНТЕ\n==================\nКратко:        <одно предложение: что сломалось и для кого>\nНачало / конец: <время>  /  <время>   Длительность: <мин>\nВлияние:       <какие сервисы, сколько пользователей/клиентов>\n\nТАЙМЛАЙН\n  HH:MM  первый признак (алерт / жалоба)\n  HH:MM  начата диагностика\n  HH:MM  найдена причина\n  HH:MM  сервис восстановлен\n\nПРИЧИНА\n  Техническая: <что именно произошло>\n  Почему стало возможно: <чего не хватило: мониторинга, проверки, документации>\n\nЧТО СРАБОТАЛО ХОРОШО\n  - \n\nЧТО УЛУЧШИТЬ (у каждого пункта — ответственный и срок)\n  [ ] <действие>  — <кто>  — <когда>"
+    },
+    {
+      "id": "baseline",
+      "label": "Базовая безопасная конфигурация Cisco IOS",
+      "note": "Стартовая точка для нового устройства. Имена, адреса и ключи замените на свои; пароли никогда не храните в шаблоне.",
+      "code": "hostname SW-ACCESS-01\nip domain name corp.local\nno ip domain-lookup\nservice password-encryption\nservice timestamps log datetime msec localtime\n!\nenable algorithm-type scrypt secret <ENABLE_SECRET>\nusername admin privilege 15 algorithm-type scrypt secret <ADMIN_SECRET>\n!\ncrypto key generate rsa modulus 2048\nip ssh version 2\nip ssh time-out 60\nip ssh authentication-retries 3\nlogin block-for 120 attempts 5 within 60\n!\nno ip http server\nno ip http secure-server\nno cdp run            ! или точечно: no cdp enable на клиентских портах\n!\nip access-list standard MGMT-ONLY\n permit 10.0.100.0 0.0.0.255\n deny   any log\n!\nline con 0\n exec-timeout 10 0\n logging synchronous\n login local\nline vty 0 15\n exec-timeout 10 0\n transport input ssh\n access-class MGMT-ONLY in\n login local\n!\nntp server 10.0.100.10\nclock timezone ALMT 5 0\nlogging host 10.0.100.20\nlogging trap informational\n!\nbanner login ^\nДоступ только для авторизованного персонала. Действия журналируются.\n^\n!\nspanning-tree mode rapid-pvst\nspanning-tree portfast bpduguard default"
+    }
+  ]
+}
