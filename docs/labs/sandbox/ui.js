@@ -13,9 +13,9 @@
   function svg(tag, attrs, parent) { const e = document.createElementNS(SVG, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
 
   const CHIPS = {
-    pc: ['ipconfig', 'ping ', 'tracert ', 'telnet '],
-    sw: ['show vlan brief', 'show interfaces status', 'show interfaces trunk', 'show logging', 'show running-config', 'configure terminal'],
-    rt: ['show ip interface brief', 'show ip route', 'show ip ospf neighbor', 'show ip ospf interface brief', 'show access-lists', 'show running-config', 'ping ', 'configure terminal'],
+    pc: ['ipconfig', 'ipconfig /renew', 'ping ', 'tracert ', 'telnet '],
+    sw: ['show vlan brief', 'show interfaces status', 'show interfaces trunk', 'show spanning-tree', 'show processes cpu', 'show logging', 'show running-config', 'configure terminal'],
+    rt: ['show ip interface brief', 'show ip route', 'show ip ospf neighbor', 'show ip nat translations', 'show ip dhcp pool', 'show access-lists', 'show running-config', 'ping ', 'configure terminal'],
   };
 
   const S = { sc: null, net: null, sess: {}, buf: {}, cur: null, hints: 0, sol: false, solved: load(), won: false, hist: {}, hpos: 0, anim: 0 };
@@ -63,6 +63,7 @@
   /* ---------- цели ---------- */
   function goalState() {
     return S.sc.goals.map(g => {
+      if (g.check) return !!g.check(S.net);
       const r = S.net.ping(g.from, N.ip2n(g.to), g.proto ? { proto: g.proto, dport: g.port } : {});
       return g.expect === 'deny' ? !r.ok : r.ok;
     });
@@ -105,24 +106,39 @@
   const gL = () => $('#gLinks'), gD = () => $('#gDevs'), gPkt = () => $('#gPkt');
   function renderMap() {
     const n = S.net; gL().innerHTML = ''; gD().innerHTML = '';
+    const l2 = n.l2view();
     // подгоняем viewBox под топологию, чтобы схема занимала всё окно
     const xs = Object.values(n.dev).map(d => d.x), ys = Object.values(n.dev).map(d => d.y);
-    const x0 = Math.min(...xs) - 80, x1 = Math.max(...xs) + 80, y0 = Math.min(...ys) - 70, y1 = Math.max(...ys) + 100;
-    $('#svg').setAttribute('viewBox', `${x0} ${y0} ${x1 - x0} ${Math.max(y1 - y0, 200)}`);
-    n.links.forEach(l => {
-      const A = n.dev[l.a[0]], B = n.dev[l.b[0]], up = n.linkUp(l);
-      svg('line', { x1: A.x, y1: A.y, x2: B.x, y2: B.y, stroke: up ? '#4FD08E' : '#FF7A6B', 'stroke-width': 3, 'stroke-dasharray': up ? '' : '7 6', opacity: up ? 0.85 : 0.9 }, gL());
+    const x0 = Math.min(...xs) - 80, x1 = Math.max(...xs) + 80, y0 = Math.min(...ys) - 95, y1 = Math.max(...ys) + 100;
+    const w = Math.max(x1 - x0, 900), h = Math.max(y1 - y0, 240);
+    $('#svg').setAttribute('viewBox', `${x0 - (w - (x1 - x0)) / 2} ${y0 - (h - (y1 - y0)) / 2} ${w} ${h}`);
+    n.links.forEach((l, idx) => {
+      const A = n.dev[l.a[0]], B = n.dev[l.b[0]], up = n.linkUp(l), storm = l2.storm.has(idx);
+      svg('line', { x1: A.x, y1: A.y, x2: B.x, y2: B.y, stroke: storm ? '#F2A541' : up ? '#4FD08E' : '#FF7A6B', 'stroke-width': storm ? 5 : 3,
+        'stroke-dasharray': storm ? '10 7' : up ? '' : '7 6', opacity: up ? 0.85 : 0.9, class: storm ? 'storm' : '' }, gL());
       [[A, B, l.a[1], n.portUp(l.a[0], l.a[1])], [B, A, l.b[1], n.portUp(l.b[0], l.b[1])]].forEach(([P, Q, name, pu]) => {
         if (name === 'eth0') return;
         const x = P.x + (Q.x - P.x) * 0.26, y = P.y + (Q.y - P.y) * 0.26 - 8;
-        const t = svg('text', { x, y, 'text-anchor': 'middle', fill: pu ? '#93A2B5' : '#FF7A6B', 'font-family': 'JetBrains Mono, monospace', 'font-size': 11 }, gL());
-        t.textContent = name;
+        const blkV = l2.blocked.get(P.id + '|' + name) || [];
+        const blk = blkV.length > 0, allV = blk && blkV.length === n.portVlans(P.id, name).length;
+        const t = svg('text', { x, y, 'text-anchor': 'middle', fill: blk ? '#F2A541' : pu ? '#93A2B5' : '#FF7A6B', 'font-family': 'JetBrains Mono, monospace', 'font-size': 11, 'font-weight': blk ? 700 : 400 }, gL());
+        t.textContent = blk ? name + (allV ? ' BLK' : ' BLK (VLAN ' + blkV.join(',') + ')') : name;
+        if (blk) {
+          const bx = P.x + (Q.x - P.x) * 0.16, by = P.y + (Q.y - P.y) * 0.16;
+          svg('rect', { x: bx - 7, y: by - 7, width: 14, height: 14, rx: 3, fill: '#F2A541', stroke: '#0E1622', 'stroke-width': 2 }, gL());
+        }
       });
     });
     for (const [id, D] of Object.entries(n.dev)) {
       const g = svg('g', { class: 'dev', tabindex: 0, role: 'button', 'aria-label': 'Консоль ' + D.name }, gD());
       if (S.cur === id) svg('circle', { cx: D.x, cy: D.y, r: 38, fill: 'none', stroke: '#F2A541', 'stroke-width': 2, 'stroke-dasharray': '4 4' }, g);
-      if (D.type === 'rt') {
+      if (D.icon === 'server') {
+        svg('rect', { x: D.x - 18, y: D.y - 26, width: 36, height: 50, rx: 4, fill: '#3A4A62', stroke: '#93A2B5', 'stroke-width': 1.5, class: 'dev-shape' }, g);
+        [-14, -2, 10].forEach(dy => {
+          svg('rect', { x: D.x - 12, y: D.y + dy, width: 24, height: 7, rx: 1.5, fill: '#1A2638' }, g);
+          svg('circle', { cx: D.x + 7, cy: D.y + dy + 3.5, r: 1.8, fill: '#4FD08E' }, g);
+        });
+      } else if (D.type === 'rt') {
         svg('circle', { cx: D.x, cy: D.y, r: 26, fill: '#2F6FE0', stroke: '#9CC4FF', 'stroke-width': 1.5, class: 'dev-shape' }, g);
         svg('path', { d: `M${D.x - 12} ${D.y - 5}h18l-5 -5M${D.x + 12} ${D.y + 5}h-18l5 5`, stroke: '#F7F9FC', 'stroke-width': 2.2, fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, g);
       } else if (D.type === 'sw') {
@@ -133,11 +149,15 @@
         svg('rect', { x: D.x - 17, y: D.y - 13, width: 34, height: 19, rx: 2, fill: '#2F6FE0' }, g);
         svg('rect', { x: D.x - 10, y: D.y + 13, width: 20, height: 4, rx: 2, fill: '#C9D3E0' }, g);
       }
-      const name = svg('text', { x: D.x, y: D.y + (D.type === 'pc' ? 36 : 44), 'text-anchor': 'middle', fill: '#E6ECF3', 'font-family': 'IBM Plex Sans, sans-serif', 'font-size': 14, 'font-weight': 600 }, g);
+      const name = svg('text', { x: D.x, y: D.y + (D.icon === 'server' ? 42 : D.type === 'pc' ? 36 : 44), 'text-anchor': 'middle', fill: '#E6ECF3', 'font-family': 'IBM Plex Sans, sans-serif', 'font-size': 14, 'font-weight': 600 }, g);
       name.textContent = D.name;
       if (D.type === 'pc' && D.ifaces.eth0.ip !== null) {
-        const ip = svg('text', { x: D.x, y: D.y + 52, 'text-anchor': 'middle', fill: '#93A2B5', 'font-family': 'JetBrains Mono, monospace', 'font-size': 11 }, g);
+        const ip = svg('text', { x: D.x, y: D.y + (D.icon === 'server' ? 58 : 52), 'text-anchor': 'middle', fill: '#93A2B5', 'font-family': 'JetBrains Mono, monospace', 'font-size': 11 }, g);
         ip.textContent = N.n2ip(D.ifaces.eth0.ip) + '/' + D.ifaces.eth0.pfx;
+      }
+      if (l2.stormSw.has(id)) {
+        const w = svg('text', { x: D.x, y: D.y - 30, 'text-anchor': 'middle', fill: '#F2A541', 'font-family': 'JetBrains Mono, monospace', 'font-size': 11, 'font-weight': 700 }, g);
+        w.textContent = 'CPU 99%';
       }
       g.addEventListener('click', () => openDev(id));
       g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDev(id); } });
@@ -210,13 +230,15 @@
     $('#prompt').textContent = S.sess[S.cur].prompt();
   }
   function exec(line) {
-    const s = S.sess[S.cur], buf = S.buf[S.cur];
+    const s = S.sess[S.cur], buf = S.buf[S.cur], animBefore = S.anim;
     buf.push({ c: 'cmd', t: s.prompt() + ' ' + line });
     if (line.trim()) { S.hist[S.cur].push(line); S.hpos = S.hist[S.cur].length; }
     for (const out of s.run(line)) {
       for (const part of String(out).split('\n')) buf.push({ c: /^%(LINK|LINEPROTO|OSPF|SPANTREE|PM)/.test(part) ? 'ev' : /^%/.test(part) ? 'err' : '', t: part });
     }
     if (buf.length > 600) buf.splice(0, buf.length - 600);
+    // старый маркер «пакет потерян» неактуален после любой правки конфигурации
+    if (S.anim === animBefore && !/^\s*(sh|show|do\s+sh|ipconfig\s*$|\?|help)/i.test(line)) { gPkt().innerHTML = ''; clearNote(); }
     renderOut();
   }
   function onChange() { renderMap(); renderGoals(false); }

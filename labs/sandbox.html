@@ -75,6 +75,9 @@ code{font-family:var(--mono);color:var(--signal);font-size:.92em}
 .map-legend i{display:inline-block;width:18px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
 .map-tip{position:absolute;right:12px;bottom:10px;font-size:11.5px;color:var(--drop)}
 .dev{cursor:pointer}
+.storm{animation:storm .35s linear infinite}
+@keyframes storm{to{stroke-dashoffset:-34}}
+@media (prefers-reduced-motion: reduce){.storm{animation:none}}
 .dev:hover .dev-shape{filter:brightness(1.2)}
 .drop-note{position:absolute;left:50%;top:12px;transform:translateX(-50%);background:rgba(255,122,107,.14);border:1px solid var(--bad);color:var(--bad);font-size:12.5px;border-radius:8px;padding:5px 12px;white-space:nowrap}
 .ok-note{border-color:var(--ok);color:var(--ok);background:rgba(79,208,142,.12)}
@@ -140,7 +143,7 @@ code{font-family:var(--mono);color:var(--signal);font-size:.92em}
           <g id="gLinks"></g><g id="gDevs"></g><g id="gPkt"></g>
         </svg>
         <div class="map-tip">нажмите на устройство, чтобы открыть его консоль</div>
-        <div class="map-legend"><span><i style="background:#4FD08E"></i>линк up</span><span><i style="background:#FF7A6B"></i>линк down</span><span><i style="background:#F2A541"></i>запрос</span><span><i style="background:#6FA8FF"></i>ответ</span></div>
+        <div class="map-legend"><span><i style="background:#4FD08E"></i>линк up</span><span><i style="background:#FF7A6B"></i>линк down</span><span><i style="background:#F2A541"></i>запрос</span><span><i style="background:#6FA8FF"></i>ответ</span><span><i style="background:#F2A541;height:5px"></i>шторм / BLK</span></div>
       </div>
       <section class="term" aria-label="Консоль устройств">
         <div class="tabs" id="tabs" role="tablist"></div>

@@ -4,14 +4,16 @@
       "id": "sandbox",
       "title": "Сетевая песочница: найди поломку и почини",
       "url": "labs/sandbox.html",
-      "desc": "9 сломанных сетей и свободный стенд. Заходите в консоль ПК, коммутаторов и роутеров, вводите настоящие команды Cisco IOS (show, ping, traceroute, configure), смотрите, где теряется пакет, и чините: VLAN, транк, err-disabled, шлюз, обратный маршрут, маска, OSPF area и MTU, ACL. Подсказки в три шага и разбор «что запомнить» после каждой победы.",
+      "desc": "14 сломанных сетей и свободный стенд. Заходите в консоль ПК, коммутаторов и роутеров, вводите настоящие команды Cisco IOS (show, ping, traceroute, configure), смотрите, где теряется пакет, и чините: VLAN, транк, err-disabled, петля STP и шторм, DHCP и relay, шлюз, обратный маршрут, маска, OSPF, ACL, NAT/PAT и статический NAT. Подсказки в три шага и разбор «что запомнить» после каждой победы.",
       "tags": [
         "CLI",
         "траблшутинг",
         "VLAN",
+        "STP",
+        "DHCP",
+        "NAT",
         "OSPF",
-        "ACL",
-        "static"
+        "ACL"
       ],
       "modules": [
         "vlan",
@@ -23,19 +25,23 @@
         "ospf",
         "troubleshooting",
         "aaa8021x",
-        "mplsbase"
+        "mplsbase",
+        "nat",
+        "dhcpdns"
       ],
       "module_links": {
         "vlan": "#vlan",
         "lag": "#trunk",
-        "stp": "#errdisable",
+        "stp": "#stploop",
         "portup": "#errdisable",
         "staticroute": "#returnpath",
         "planning": "#mask",
         "ospf": "#ospfarea",
         "troubleshooting": "#returnpath",
         "aaa8021x": "#acl",
-        "mplsbase": "#ospfmtu"
+        "mplsbase": "#ospfmtu",
+        "nat": "#natpat",
+        "dhcpdns": "#dhcprelay"
       }
     },
     {

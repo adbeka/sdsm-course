@@ -113,8 +113,8 @@ All body text is Russian: precise, no fluff, short sentences, `<code>` for proto
 ### Сетевая песочница (`labs/sandbox.html`)
 
 Симулятор с CLI в стиле Cisco IOS — без зависимостей, всё в браузере:
-- `labs/sandbox/engine.js` — модель сети и CLI: L2 (VLAN, транки 802.1Q, err-disabled), L3-пересылка с ARP, connected/static/OSPF (соседство: подсеть, area, hello, MTU, passive), extended ACL с номерами строк, ping/traceroute/telnet с проверкой обратного пути. Без DOM — можно тестировать в Node.
-- `labs/sandbox/scenarios.js` — сценарии. Новый сценарий: `{id, title, topic, diff (1-3, 0 = свободный), story, goals: [{from, to, label, proto?, port?, expect?: 'deny'}], build() → {devices, links}, hints: [3 строки], solution: [{dev, cmds}], lesson}`. Устройства собираются через `PC()`, `SW()`, `RT()` из движка.
+- `labs/sandbox/engine.js` — модель сети и CLI: L2 (VLAN, транки 802.1Q, err-disabled, STP по VLAN с выбором корня и BLK-портами; петля без STP = широковещательный шторм), L3-пересылка с ARP, connected/static/OSPF (соседство: подсеть, area, hello, MTU, passive), extended и standard ACL, NAT (PAT с трансляцией портов и статический), DHCP (пулы, excluded, relay через `ip helper-address`, APIPA), ping/traceroute/telnet с проверкой обратного пути. Без DOM — можно тестировать в Node.
+- `labs/sandbox/scenarios.js` — сценарии. Новый сценарий: `{id, title, topic, diff (1-3, 0 = свободный), story, goals: [{from, to, label, proto?, port?, expect?: 'deny'} | {label, check: net => bool}], build() → {devices, links}, hints: [3 строки], solution: [{dev, cmds}], lesson}`. Устройства собираются через `PC()`, `SW()`, `RT()` из движка.
 - `labs/sandbox/ui.js` — интерфейс. Прогресс хранится в `localStorage` (`sdsm_sandbox_solved`), сценарий открывается по ссылке `sandbox.html#<id>`.
 
 `module_links` в записи лабы в `toolkit.json` задаёт, какой сценарий открывать из конкретного модуля (`{"vlan": "#vlan"}`).

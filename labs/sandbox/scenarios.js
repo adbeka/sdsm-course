@@ -4,7 +4,8 @@
 (function (root) {
   'use strict';
   const N = root.NetSim || (typeof require !== 'undefined' ? require('./engine.js') : null);
-  const { PC, SW, RT } = N;
+  const { PC, SW, RT, ip2n } = N;
+  const SRVICON = { icon: 'server' };
   const M24 = '255.255.255.0', M30 = '255.255.255.252';
 
   const SCENARIOS = [
@@ -79,6 +80,100 @@
       ],
       solution: [{ dev: 'SW1', cmds: ['configure terminal', 'interface fa0/2', 'shutdown', 'no shutdown', 'end'] }],
       lesson: '<b>err-disabled — защитное отключение порта</b> (BPDU Guard, port-security, storm-control, UDLD). Порт не поднимется сам, даже когда причины уже нет: сначала выясните причину (<code>show logging</code>, <code>show interfaces status err-disabled</code>), устраните её, затем <code>shutdown</code> / <code>no shutdown</code>. Просто <code>no shutdown</code> без <code>shutdown</code> не поможет.',
+    },
+    {
+      id: 'stploop', title: 'Утром легло всё', topic: 'STP / петля', diff: 2, modules: ['stp'],
+      story: 'Утром в офисе не работает ничего, лампочки на коммутаторах мигают синхронно. Ночью подрядчик проложил резервный кабель SW2–SW3 «для надёжности». А месяц назад кто-то выключил STP в VLAN 10, «чтобы порты быстрее поднимались». Резервный кабель должен остаться.',
+      goals: [
+        { from: 'PC1', to: '10.0.10.12', label: 'PC1 → PC2 (10.0.10.12)' },
+        { label: 'Корень STP в VLAN 10 — SW1 (ядро)', check: n => ['SW1', 'SW2', 'SW3'].every(sw => n.stpOn(sw, 10) && n.stp(10).rootFor[sw] === 'SW1') },
+        { label: 'Резервный линк SW2–SW3 подключён', check: n => n.linkUp(n.links.find(l => l.a[0] === 'SW2' && l.b[0] === 'SW3')) },
+      ],
+      build: () => {
+        const tr = desc => ({ mode: 'trunk', desc });
+        const sw1 = SW('SW1', 450, 90, { 'Gi0/1': tr('to-SW2'), 'Gi0/2': tr('to-SW3') }, { 10: 'USERS' }, { stpOff: [10], prio: { 10: 4096 } });
+        const sw2 = SW('SW2', 250, 270, { 'Fa0/1': { vlan: 10 }, 'Gi0/1': tr('to-SW1'), 'Gi0/2': tr('to-SW3 backup') }, { 10: 'USERS' }, { stpOff: [10] });
+        const sw3 = SW('SW3', 650, 270, { 'Fa0/1': { vlan: 10 }, 'Gi0/1': tr('to-SW1'), 'Gi0/2': tr('to-SW2 backup') }, { 10: 'USERS' }, { stpOff: [10] });
+        const flap = (a, b) => `%SW_MATM-4-MACFLAP_NOTIF: Host 0050.7966.6801 in vlan 10 is flapping between port ${a} and port ${b}`;
+        sw1.log.push(flap('Gi0/1', 'Gi0/2'), flap('Gi0/2', 'Gi0/1'));
+        sw2.log.push(flap('Gi0/1', 'Gi0/2'), flap('Gi0/2', 'Gi0/1'), flap('Gi0/1', 'Gi0/2'));
+        sw3.log.push(flap('Gi0/2', 'Gi0/1'), flap('Gi0/1', 'Gi0/2'));
+        return {
+          devices: { SW1: sw1, SW2: sw2, SW3: sw3, PC1: PC('PC1', 90, 360, '10.0.10.11', M24), PC2: PC('PC2', 810, 360, '10.0.10.12', M24) },
+          links: [['SW1', 'Gi0/1', 'SW2', 'Gi0/1'], ['SW1', 'Gi0/2', 'SW3', 'Gi0/1'], ['SW2', 'Gi0/2', 'SW3', 'Gi0/2'], ['PC1', 'eth0', 'SW2', 'Fa0/1'], ['PC2', 'eth0', 'SW3', 'Fa0/1']],
+        };
+      },
+      hints: [
+        'Легло всё и сразу, у всех. Зайдите на любой коммутатор: show processes cpu и show logging.',
+        'CPU 99% и MAC flapping — признаки широковещательного шторма: SW1–SW2–SW3 образуют кольцо, и кадры бегают по нему бесконечно. Кто должен разрывать кольцо? show spanning-tree vlan 10.',
+        'Включите STP в VLAN 10 на всех трёх коммутаторах: configure terminal → spanning-tree vlan 10. Корнем станет SW1 (priority 4096), а один порт на линке SW2–SW3 перейдёт в BLK.',
+      ],
+      solution: ['SW1', 'SW2', 'SW3'].map(dev => ({ dev, cmds: ['configure terminal', 'spanning-tree vlan 10', 'end'] })),
+      lesson: '<b>L2-петля без STP — это широковещательный шторм.</b> У Ethernet-кадра нет TTL: broadcast кружит по кольцу бесконечно и размножается на каждом коммутаторе. CPU 100%, MAC flapping в логах, лежит весь сегмент. STP выбирает корень и переводит лишний порт в BLK, а резервный линк остаётся на случай аварии. Не выключайте STP «для скорости»: для пользовательских портов есть <code>portfast</code> + <code>bpduguard</code>. Корень назначайте явно (<code>spanning-tree vlan N priority</code>) — на ядре.',
+    },
+    {
+      id: 'dhcpgw', title: 'Адрес есть, интернета нет', topic: 'DHCP', diff: 1, modules: ['dhcpdns'],
+      story: 'Сеть пользователей перенесли на новый роутер R1, раздачу адресов настроили на нём же. Компьютеры получают адреса, но до сервера 10.0.2.10 не достучаться. Статикой на ПК лечить нельзя: завтра их будет 200.',
+      goals: [
+        { from: 'PC1', to: '10.0.2.10', label: 'PC1 → сервер 10.0.2.10' },
+        { from: 'PC2', to: '10.0.2.10', label: 'PC2 → сервер 10.0.2.10' },
+        { label: 'Оба ПК настроены по DHCP (без статики)', check: n => n.dev.PC1.dhcp && n.dev.PC2.dhcp },
+      ],
+      build: () => {
+        const r1 = RT('R1', 470, 220, { 'Gi0/0': { ip: '10.0.10.1', mask: M24, desc: 'USERS' }, 'Gi0/1': { ip: '10.0.2.1', mask: M24, desc: 'SERVERS' } },
+          { dhcp: { excluded: [['10.0.10.1', '10.0.10.10']], pools: { USERS: { net: '10.0.10.0', mask: M24, gw: '10.0.10.254', dns: '10.0.2.10' } } } });
+        r1.dhcp.bindings = { PC2: ip2n('10.0.10.11'), PC1: ip2n('10.0.10.12') };
+        return {
+          devices: {
+            PC1: PC('PC1', 90, 110, '10.0.10.12', M24, '10.0.10.254', { dhcp: true }),
+            PC2: PC('PC2', 90, 330, '10.0.10.11', M24, '10.0.10.254', { dhcp: true }),
+            SW1: SW('SW1', 260, 220, { 'Fa0/1': {}, 'Fa0/2': {}, 'Gi0/1': { desc: 'to-R1' } }),
+            R1: r1,
+            SRV: PC('SRV', 760, 220, '10.0.2.10', M24, '10.0.2.1', SRVICON),
+          },
+          links: [['PC1', 'eth0', 'SW1', 'Fa0/1'], ['PC2', 'eth0', 'SW1', 'Fa0/2'], ['SW1', 'Gi0/1', 'R1', 'Gi0/0'], ['SRV', 'eth0', 'R1', 'Gi0/1']],
+        };
+      },
+      hints: [
+        'Адрес получен — значит, DHCP работает. Посмотрите, какие ещё параметры пришли на PC1: ipconfig.',
+        'Шлюз 10.0.10.254, а у R1 в этой сети адрес 10.0.10.1. Откуда клиент взял шлюз? На R1: show ip dhcp pool.',
+        'На R1: ip dhcp pool USERS → default-router 10.0.10.1. Затем на каждом ПК ipconfig /renew: клиент узнает о новых настройках только при продлении аренды.',
+      ],
+      solution: [
+        { dev: 'R1', cmds: ['configure terminal', 'ip dhcp pool USERS', 'default-router 10.0.10.1', 'end'] },
+        { dev: 'PC1', cmds: ['ipconfig /renew'] }, { dev: 'PC2', cmds: ['ipconfig /renew'] },
+      ],
+      lesson: '<b>DHCP выдаёт не только адрес</b>, но и маску, шлюз (option 3), DNS (option 6) и другие параметры. Ошибка в пуле тиражируется на всех клиентов сразу. После правки пула клиенты получат новые параметры только при продлении аренды: <code>ipconfig /renew</code> или автоматически по истечении половины срока. Адреса шлюза и серверов исключайте из пула: <code>ip dhcp excluded-address</code>.',
+    },
+    {
+      id: 'dhcprelay', title: 'Новый отдел получает 169.254', topic: 'DHCP relay', diff: 2, modules: ['dhcpdns'],
+      story: 'Для нового отдела сделали подсеть 10.0.20.0/24 на R1. Пул для неё на центральном DHCP-сервере 10.0.1.5 уже создан, но компьютеры отдела получают адрес 169.254.x.x и никуда не ходят.',
+      goals: [
+        { label: 'PC1 получил по DHCP адрес из 10.0.20.0/24', check: n => { const e = n.dev.PC1.ifaces.eth0; return n.dev.PC1.dhcp && e.ip !== null && (e.ip >>> 8) === (ip2n('10.0.20.0') >>> 8); } },
+        { from: 'PC1', to: '10.0.1.5', label: 'PC1 → DHCP-сервер 10.0.1.5' },
+      ],
+      build: () => ({
+        devices: {
+          PC1: PC('PC1', 90, 220, '169.254.87.12', '255.255.0.0', null, { dhcp: true }),
+          SW1: SW('SW1', 260, 220, { 'Fa0/1': {}, 'Gi0/1': { desc: 'to-R1' } }),
+          R1: RT('R1', 470, 220, { 'Gi0/0': { ip: '10.0.20.1', mask: M24, desc: 'DEPT-NEW' }, 'Gi0/1': { ip: '10.0.1.1', mask: M24, desc: 'SERVERS' } }),
+          DHCP: RT('DHCP', 740, 220, { 'Gi0/0': { ip: '10.0.1.5', mask: M24 } }, {
+            icon: 'server', routes: [['0.0.0.0', '0.0.0.0', '10.0.1.1']],
+            dhcp: { excluded: [['10.0.20.1', '10.0.20.10']], pools: { DEPT20: { net: '10.0.20.0', mask: M24, gw: '10.0.20.1', dns: '10.0.1.5' } } },
+          }),
+        },
+        links: [['PC1', 'eth0', 'SW1', 'Fa0/1'], ['SW1', 'Gi0/1', 'R1', 'Gi0/0'], ['R1', 'Gi0/1', 'DHCP', 'Gi0/0']],
+      }),
+      hints: [
+        '169.254.x.x (APIPA) — ПК не дождался ответа от DHCP. А DHCP Discover — широковещательный: он не выходит за пределы своей подсети.',
+        'Сервер в другой подсети, значит, роутер должен переслать запрос (DHCP relay). Посмотрите интерфейс R1, смотрящий в сеть ПК: show running-config.',
+        'На R1: interface gi0/0 → ip helper-address 10.0.1.5. Затем на PC1: ipconfig /renew.',
+      ],
+      solution: [
+        { dev: 'R1', cmds: ['configure terminal', 'interface gi0/0', 'ip helper-address 10.0.1.5', 'end'] },
+        { dev: 'PC1', cmds: ['ipconfig /renew'] },
+      ],
+      lesson: '<b>DHCP Discover — broadcast, а роутер broadcast не пропускает.</b> Если сервер в другой подсети, на интерфейсе-шлюзе клиентов нужен relay: <code>ip helper-address</code>. Роутер пересылает запрос unicast\'ом и вписывает свой адрес (giaddr) — по нему сервер выбирает пул. Поэтому пул должен совпадать с подсетью клиентов, а у сервера должен быть маршрут обратно. Адрес 169.254.x.x на клиенте означает «DHCP не ответил».',
     },
     {
       id: 'gateway', title: 'В свою сеть — да, дальше — нет', topic: 'Шлюз', diff: 1, modules: ['staticroute', 'planning'],
@@ -211,6 +306,61 @@
       ],
       solution: [{ dev: 'R1', cmds: ['configure terminal', 'ip access-list extended FROM-LAN2', 'no 10', '10 deny tcp 10.0.2.0 0.0.0.255 host 10.0.1.10 eq telnet', 'end'] }],
       lesson: '<b>ACL — первое совпадение побеждает, в конце неявный deny any.</b> Пишите правила максимально узко (протокол, хост, порт) и вставляйте строки по номерам последовательности, а не пересоздавайте весь список. И помните про обратный трафик: ACL на входе LAN2 режет и <i>ответы</i> сервера, если они идут из этой сети.',
+    },
+    {
+      id: 'natpat', title: 'Офис не выходит в интернет', topic: 'NAT / PAT', diff: 2, modules: ['nat'],
+      story: 'Офис подключили к провайдеру: внутри сеть 10.0.1.0/24, снаружи один адрес 203.0.113.2. NAT «настроили по инструкции», но сайт 198.51.100.10 не открывается ни у кого.',
+      goals: [
+        { from: 'PC1', to: '198.51.100.10', label: 'PC1 → сайт 198.51.100.10' },
+        { from: 'PC2', to: '198.51.100.10', label: 'PC2 → сайт 198.51.100.10' },
+      ],
+      build: () => ({
+        devices: {
+          PC1: PC('PC1', 80, 120, '10.0.1.10', M24, '10.0.1.1'),
+          PC2: PC('PC2', 80, 320, '10.0.1.11', M24, '10.0.1.1'),
+          SW1: SW('SW1', 240, 220, { 'Fa0/1': {}, 'Fa0/2': {}, 'Gi0/1': { desc: 'to-R1' } }),
+          R1: RT('R1', 430, 220, { 'Gi0/0': { ip: '10.0.1.1', mask: M24, desc: 'LAN' }, 'Gi0/1': { ip: '203.0.113.2', mask: M30, desc: 'ISP', nat: 'outside' } },
+            { routes: [['0.0.0.0', '0.0.0.0', '203.0.113.1']], stdAcls: { 1: ['permit 10.0.1.0 0.0.0.255'] }, nat: { dyn: [['1', 'Gi0/1']] } }),
+          ISP: RT('ISP', 630, 220, { 'Gi0/1': { ip: '203.0.113.1', mask: M30, desc: 'client-office' }, 'Gi0/0': { ip: '198.51.100.1', mask: M24, desc: 'internet' } }),
+          WEB: PC('WEB', 820, 220, '198.51.100.10', M24, '198.51.100.1', SRVICON),
+        },
+        links: [['PC1', 'eth0', 'SW1', 'Fa0/1'], ['PC2', 'eth0', 'SW1', 'Fa0/2'], ['SW1', 'Gi0/1', 'R1', 'Gi0/0'], ['R1', 'Gi0/1', 'ISP', 'Gi0/1'], ['WEB', 'eth0', 'ISP', 'Gi0/0']],
+      }),
+      hints: [
+        'Внутри частные адреса (10.0.0.0/8), а в интернете маршрутов в частные сети нет: ответу просто некуда вернуться. Сделайте ping с PC1 и посмотрите, где теряется ответ; затем show ip route на ISP.',
+        'Значит, на R1 адрес отправителя должен подменяться. show ip nat translations после ping пустая? Посмотрите show ip nat statistics: какие интерфейсы inside, а какие outside.',
+        'Gi0/0 (в сторону LAN) не помечен как inside. На R1: interface gi0/0 → ip nat inside.',
+      ],
+      solution: [{ dev: 'R1', cmds: ['configure terminal', 'interface gi0/0', 'ip nat inside', 'end'] }],
+      lesson: '<b>NAT срабатывает только на переходе inside → outside.</b> Нужны три части: роли интерфейсов (<code>ip nat inside</code> / <code>outside</code>), ACL «кого транслировать» и само правило <code>ip nat inside source list … overload</code>. Забыли любую — пакеты уходят к провайдеру с частным адресом, и ответ теряется у него. Проверка: ping, затем <code>show ip nat translations</code> и <code>show ip nat statistics</code>.',
+    },
+    {
+      id: 'natstatic', title: 'Сайт компании не виден снаружи', topic: 'Static NAT', diff: 3, modules: ['nat'],
+      story: 'Сервер компании SRV (10.0.1.20) должен быть доступен из интернета по адресу 203.0.113.5 — провайдер маршрутизирует его к нам. Сотрудники в интернет ходят, а клиенты сайт не видят. PAT для сотрудников не сломайте.',
+      goals: [
+        { from: 'CLIENT', to: '203.0.113.5', label: 'Клиент из интернета → 203.0.113.5 (сайт)' },
+        { from: 'PC1', to: '198.51.100.10', label: 'PC1 → интернет (PAT не сломать)' },
+      ],
+      build: () => ({
+        devices: {
+          PC1: PC('PC1', 80, 120, '10.0.1.10', M24, '10.0.1.1'),
+          SRV: PC('SRV', 80, 320, '10.0.1.20', M24, '10.0.1.1', SRVICON),
+          SW1: SW('SW1', 240, 220, { 'Fa0/1': {}, 'Fa0/2': {}, 'Gi0/1': { desc: 'to-R1' } }),
+          R1: RT('R1', 430, 220, { 'Gi0/0': { ip: '10.0.1.1', mask: M24, desc: 'LAN', nat: 'inside' }, 'Gi0/1': { ip: '203.0.113.2', mask: M30, desc: 'ISP', nat: 'outside' } },
+            { routes: [['0.0.0.0', '0.0.0.0', '203.0.113.1']], stdAcls: { 1: ['permit 10.0.1.0 0.0.0.255'] }, nat: { dyn: [['1', 'Gi0/1']], stat: [['10.0.1.21', '203.0.113.5']] } }),
+          ISP: RT('ISP', 630, 220, { 'Gi0/1': { ip: '203.0.113.1', mask: M30, desc: 'client-office' }, 'Gi0/0': { ip: '198.51.100.1', mask: M24, desc: 'internet' } },
+            { routes: [['203.0.113.4', M30, '203.0.113.2']] }),
+          CLIENT: PC('CLIENT', 820, 220, '198.51.100.10', M24, '198.51.100.1'),
+        },
+        links: [['PC1', 'eth0', 'SW1', 'Fa0/1'], ['SRV', 'eth0', 'SW1', 'Fa0/2'], ['SW1', 'Gi0/1', 'R1', 'Gi0/0'], ['R1', 'Gi0/1', 'ISP', 'Gi0/1'], ['CLIENT', 'eth0', 'ISP', 'Gi0/0']],
+      }),
+      hints: [
+        'Запрос клиента приходит на R1 на адрес 203.0.113.5, и R1 должен подменить адрес назначения на внутренний. Сделайте ping с CLIENT: где теряется пакет?',
+        'На R1: show ip nat translations — на какой внутренний адрес смотрит 203.0.113.5? Сравните с адресом SRV (ipconfig на SRV).',
+        'Статика указывает на 10.0.1.21, а сервер — 10.0.1.20. На R1: no ip nat inside source static 10.0.1.21 203.0.113.5, затем ip nat inside source static 10.0.1.20 203.0.113.5.',
+      ],
+      solution: [{ dev: 'R1', cmds: ['configure terminal', 'no ip nat inside source static 10.0.1.21 203.0.113.5', 'ip nat inside source static 10.0.1.20 203.0.113.5', 'end'] }],
+      lesson: '<b>Статический NAT — постоянная пара «внутренний ↔ внешний адрес»</b>: по ней сервер доступен снаружи. Входящий пакет транслируется <i>до</i> маршрутизации, поэтому опечатка в одной цифре выглядит как «ARP без ответа» уже внутри LAN. Статика имеет приоритет над PAT. Внешний адрес должен маршрутизироваться к вам у провайдера, иначе запрос до вас просто не дойдёт.',
     },
     {
       id: 'free', title: 'Свободный стенд: сломай и почини', topic: 'OSPF · эксперименты', diff: 0, modules: ['ospf', 'troubleshooting'],
