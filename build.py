@@ -512,9 +512,9 @@ def page_shell(title, body, depth="../"):
 </html>'''
 
 
-def lab_card_html(lab, depth=""):
+def lab_card_html(lab, depth="", hash_=""):
     tags = "".join(f'<span class="lab-card-tag">{t}</span>' for t in lab.get("tags", []))
-    return (f'<a class="lab-card" href="{depth}{lab["url"]}">'
+    return (f'<a class="lab-card" href="{depth}{lab["url"]}{hash_}">'
             f'<div class="lab-card-badge">ИНТЕРАКТИВНАЯ ЛАБА</div>'
             f'<div class="lab-card-title">{lab["title"]}</div>'
             f'<div class="lab-card-desc">{lab["desc"]}</div>'
@@ -526,7 +526,7 @@ def interactive_section(m, labs):
     items = [lab for lab in labs if m["id"] in lab.get("modules", [])]
     if not items:
         return ""
-    cards = "".join(lab_card_html(lab, depth="../") for lab in items)
+    cards = "".join(lab_card_html(lab, depth="../", hash_=lab.get("module_links", {}).get(m["id"], "")) for lab in items)
     return f'''<section id="interactive">
     <div class="section-head">
       <div class="section-num">— ИНТЕРАКТИВ</div>

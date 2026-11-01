@@ -109,3 +109,14 @@ All body text is Russian: precise, no fluff, short sentences, `<code>` for proto
 `{id, title, url: "labs/<file>.html", desc, tags: [...], modules: ["l2vpn", ...]}` — карточка покажется на главной, на странице «Инструменты» и в разделе «Посмотреть вживую» у каждого модуля из `modules`, а также в поиске.
 
 Репозиторий публичный: перед добавлением лабы замените реальные имена устройств, адреса, клиентов, ID каналов и AS на учебные (192.0.2.0/24, AS 65000 и т. п.).
+
+### Сетевая песочница (`labs/sandbox.html`)
+
+Симулятор с CLI в стиле Cisco IOS — без зависимостей, всё в браузере:
+- `labs/sandbox/engine.js` — модель сети и CLI: L2 (VLAN, транки 802.1Q, err-disabled), L3-пересылка с ARP, connected/static/OSPF (соседство: подсеть, area, hello, MTU, passive), extended ACL с номерами строк, ping/traceroute/telnet с проверкой обратного пути. Без DOM — можно тестировать в Node.
+- `labs/sandbox/scenarios.js` — сценарии. Новый сценарий: `{id, title, topic, diff (1-3, 0 = свободный), story, goals: [{from, to, label, proto?, port?, expect?: 'deny'}], build() → {devices, links}, hints: [3 строки], solution: [{dev, cmds}], lesson}`. Устройства собираются через `PC()`, `SW()`, `RT()` из движка.
+- `labs/sandbox/ui.js` — интерфейс. Прогресс хранится в `localStorage` (`sdsm_sandbox_solved`), сценарий открывается по ссылке `sandbox.html#<id>`.
+
+`module_links` в записи лабы в `toolkit.json` задаёт, какой сценарий открывать из конкретного модуля (`{"vlan": "#vlan"}`).
+
+Проверка после правок сценариев: эталонное `solution` должно переводить все `goals` из «не выполнено» в «выполнено» (до решения хотя бы одна цель должна проваливаться).
