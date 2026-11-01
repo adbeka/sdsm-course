@@ -590,3 +590,22 @@ select.tool-input{cursor:pointer;}
 
 .tpl-block + .tpl-block{margin-top:26px;}
 .tpl-block .cli-code{color:#D7DEEC;}
+
+/* ---------------- interactive lab card ---------------- */
+.lab-card{
+  display:block; margin-top:16px; text-decoration:none; position:relative; overflow:hidden;
+  background:#0E1622; border:1px solid #26354A; border-radius:16px; padding:22px 26px;
+  transition:border-color .15s ease, transform .15s ease;
+}
+.lab-card::after{
+  content:''; position:absolute; right:-40px; top:-40px; width:180px; height:180px; border-radius:50%;
+  background:radial-gradient(circle, rgba(242,165,65,.22), transparent 70%); pointer-events:none;
+}
+.lab-card:hover{border-color:#F2A541; transform:translateY(-1px);}
+.lab-card-badge{font-family:var(--mono); font-size:10.5px; font-weight:600; letter-spacing:.12em; color:#F2A541;}
+.lab-card-title{font-family:var(--mono); font-weight:700; font-size:17px; color:#E6ECF3; margin-top:8px;}
+.lab-card-desc{font-size:13.5px; color:#93A2B5; margin-top:8px; line-height:1.55; max-width:70ch;}
+.lab-card-foot{display:flex; align-items:center; gap:14px; margin-top:16px; flex-wrap:wrap;}
+.lab-card-tags{display:flex; gap:6px; flex-wrap:wrap; flex:1;}
+.lab-card-tag{font-family:var(--mono); font-size:11px; color:#6FA8FF; background:rgba(111,168,255,.12); border-radius:5px; padding:2px 8px;}
+.lab-card-cta{font-family:var(--mono); font-size:12.5px; font-weight:600; color:#F2A541; white-space:nowrap;}

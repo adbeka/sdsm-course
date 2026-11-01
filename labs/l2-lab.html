@@ -1,0 +1,1167 @@
+<!doctype html><html lang="ru"><head><meta charset=utf8><title>БЗПД · L2 Lab</title><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: lab console — map with zones top-left, device panel right, capture / layers / bytes along the bottom. One dark look. */
+:root{
+  --bg:#0E1622; --panel:#131D2B; --raise:#1A2638; --line:#26354A; --ink:#E6ECF3; --muted:#93A2B5; --drop:#66758A;
+  --accent:#6FA8FF; --accent-deep:#2F6FE0; --on-deep:#F7F9FC; --signal:#F2A541; --on-signal:#1A1206;
+  --ok:#4FD08E; --bad:#FF7A6B; --violet:#B48CFF; --hl:rgba(111,168,255,.16);
+  --water:#58C2E4; --water-line:#7BD3EF;
+  --sans:'IBM Plex Sans','Helvetica Neue',Arial,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;overflow:hidden}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+p,h1,h2,h3{margin:0}
+.app{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) minmax(0,min(280px,34vh));padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:0 12px;gap:12px}
+
+/* Top bar */
+.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-block:12px 0}
+.brand{display:flex;align-items:center;gap:10px;margin-right:6px}
+.logo{width:30px;height:30px;background:var(--signal);clip-path:polygon(25% 4%,75% 4%,100% 50%,75% 96%,25% 96%,0 50%)}
+.brand b{display:block;font-size:19px;letter-spacing:-.01em}
+.brand small{color:var(--muted);font-size:12px}
+.seg{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px;gap:2px}
+.seg button{background:none;border:none;padding:6px 12px;border-radius:6px;color:var(--muted);cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--raise);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.fld{display:flex;flex-direction:column;gap:3px}
+.fld label{font-size:11px;color:var(--muted);letter-spacing:.04em}
+.fld select{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+.chk{display:flex;align-items:center;gap:6px;color:var(--ink);cursor:pointer;white-space:nowrap}
+.chk input{accent-color:var(--signal);width:16px;height:16px}
+.btn{background:var(--signal);color:var(--on-signal);border:none;border-radius:7px;padding:9px 16px;font-weight:600;cursor:pointer;white-space:nowrap}
+.btn.ghost{background:var(--panel);color:var(--ink);border:1px solid var(--line);font-weight:500}
+.btn.violet{background:var(--violet);color:#160F26}
+.spacer{flex:1}
+.portal-back{text-decoration:none;font-family:var(--mono);font-size:12.5px;padding:7px 12px}
+
+/* Middle */
+.mid{display:grid;grid-template-columns:minmax(0,1fr) 400px;gap:12px;min-height:0}
+.map{position:relative;border-radius:12px;overflow:hidden;background:var(--water);min-height:0}
+.map svg{position:absolute;inset:0;width:100%;height:100%}
+.card{position:absolute;left:14px;top:14px;max-width:400px;background:rgba(14,22,34,.94);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;box-shadow:0 10px 30px -12px rgba(0,0,0,.6)}
+.card-top{display:flex;justify-content:space-between;align-items:center;gap:12px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.12em}
+.tag{font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:5px;background:var(--raise);color:var(--accent);letter-spacing:.06em;white-space:nowrap}
+.tag.mpls{color:var(--signal)} .tag.ctl{color:var(--violet)}
+.card h2{font-size:17px;line-height:1.25;text-wrap:balance}
+.card p{font-size:13px;line-height:1.5;color:#C9D3E0}
+.play{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;background:rgba(14,22,34,.94);border:1px solid var(--line);border-radius:10px;padding:8px 12px;max-width:calc(100% - 28px)}
+.play button.ic{width:34px;height:30px;border-radius:6px;background:var(--raise);border:1px solid var(--line);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.play svg{position:static;width:14px;height:14px}
+.dots{display:flex;gap:4px;align-items:center;overflow-x:auto;max-width:420px;padding:4px 2px}
+.dots button{width:10px;height:10px;border-radius:50%;border:none;background:#34465F;cursor:pointer;flex:none;padding:0}
+.dots button.done{background:#4E6A90}
+.dots button.cur{background:var(--signal);box-shadow:0 0 0 3px rgba(242,165,65,.3)}
+.speed{display:flex;gap:2px;font-family:var(--mono);font-size:12px}
+.speed button{background:none;border:none;color:var(--muted);padding:4px 6px;border-radius:5px;cursor:pointer}
+.speed button[aria-pressed="true"]{background:var(--raise);color:var(--ink)}
+.legend{position:absolute;right:14px;bottom:14px;background:rgba(14,22,34,.9);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+.legend i{display:inline-block;width:18px;height:4px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.dev{cursor:pointer}
+.dev:hover .dev-body{filter:brightness(1.15)}
+
+/* Side */
+.side{background:var(--panel);border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;min-height:0}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);padding:0 10px}
+.tabs button{background:none;border:none;border-bottom:2px solid transparent;padding:11px 10px;color:var(--muted);cursor:pointer}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--signal)}
+.pane{overflow:auto;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:0;flex:1}
+.hint{color:var(--muted);font-size:13px;line-height:1.5}
+.dlist{display:flex;flex-direction:column;gap:6px}
+.ditem{display:flex;align-items:center;gap:10px;background:var(--raise);border:1px solid var(--line);border-radius:8px;padding:9px 12px;cursor:pointer;text-align:left;width:100%}
+.ditem:hover{border-color:var(--muted)}
+.badge{font-family:var(--mono);font-size:11px;font-weight:600;width:30px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex:none}
+.b-cl{background:#F5F7FA;color:#1A2638} .b-pe{background:var(--accent-deep);color:var(--on-deep)} .b-p{background:#3A4A62;color:var(--ink)} .b-rr{background:var(--violet);color:#160F26}
+.ditem .nm{font-weight:600}
+.ditem .sub{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--muted);text-align:right}
+.dhead{display:flex;align-items:center;gap:10px}
+.dhead h3{font-size:17px}
+.dhead .sub{font-size:12px;color:var(--muted)}
+.back{background:none;border:none;color:var(--accent);cursor:pointer;padding:0;font-size:13px;align-self:flex-start}
+.note{font-size:12px;color:var(--signal)}
+.kv{width:100%;border-collapse:collapse;font-size:12.5px}
+.kv th,.kv td{text-align:left;padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+.kv th{color:var(--muted);font-weight:500}
+.kv td{font-family:var(--mono);font-size:12px}
+.kv tr.hit td,.kv tr.hit th{background:rgba(242,165,65,.16)}
+.sec{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--drop);margin-top:4px}
+.code{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 0;font-family:var(--mono);font-size:12px;line-height:1.6;overflow-x:auto}
+.ln{white-space:pre;padding:0 12px;border-left:3px solid transparent;cursor:pointer;display:flex;gap:8px;align-items:baseline}
+.ln:hover{background:var(--raise)}
+.ln.hl{background:var(--hl);border-left-color:var(--accent)}
+.ln.cm{color:var(--drop)}
+.ln .rel{font-family:var(--sans);font-size:10.5px;color:#160F26;background:var(--violet);border-radius:4px;padding:0 5px;flex:none}
+.xp{background:var(--raise);border:1px solid var(--accent);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.xp-s{font-size:13.5px;line-height:1.5}
+.xp-parts{display:flex;flex-direction:column;gap:8px}
+.xpt{display:flex;flex-direction:column;gap:3px}
+.xpt b{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:600;overflow-wrap:anywhere}
+.xpt span{font-size:12.5px;color:var(--muted);line-height:1.4}
+.xrel{border-top:1px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:6px}
+.relbtn{background:var(--bg);border:1px solid var(--violet);border-radius:7px;padding:8px 10px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:3px}
+.relbtn b{font-size:12.5px;color:var(--violet)}
+.relbtn code{font-family:var(--mono);font-size:11.5px;color:var(--ink);overflow-wrap:anywhere}
+.rcard{background:var(--raise);border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;cursor:pointer;text-align:left;width:100%}
+.rcard:hover,.rcard.on{border-color:var(--violet)}
+.rcard .rt{display:flex;justify-content:space-between;gap:8px;font-weight:600}
+.rcard .ok{color:var(--ok);font-size:12px;font-weight:500;white-space:nowrap}
+.rpair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rpair div{background:var(--bg);border-radius:6px;padding:6px 8px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.rpair small{color:var(--muted);font-size:11px}
+.rpair code{font-family:var(--mono);font-size:11.5px;overflow-wrap:anywhere}
+.rcard p{font-size:12.5px;color:var(--muted);line-height:1.45}
+
+/* Bottom */
+.bottom{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr) minmax(0,.85fr);gap:12px;min-height:0}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.box-h{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line)}
+.box-h b{font-size:13px}
+.box-h input{flex:1;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:5px 8px;font-size:12.5px}
+.box-h .cnt{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
+.scroll{overflow:auto;min-height:0;flex:1}
+.cap{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:11.5px;font-variant-numeric:tabular-nums}
+.cap th{position:sticky;top:0;background:var(--panel);text-align:left;font-weight:400;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+.cap td{padding:5px 8px;border-bottom:1px solid rgba(38,53,74,.6);white-space:nowrap;cursor:pointer}
+.cap tr:hover td{background:var(--raise)}
+.cap tr.cur td{background:rgba(242,165,65,.18)}
+.cap tr.future td{color:var(--drop)}
+.pdot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px}
+.layers{padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.layers .lt{font-size:13px;font-weight:600}
+.layers .ls{font-size:12px;color:var(--muted);line-height:1.45}
+details.ly{border:1px solid var(--line);border-radius:7px;background:var(--bg)}
+details.ly summary{cursor:pointer;padding:6px 10px;display:flex;justify-content:space-between;gap:8px;font-size:12.5px;list-style:none}
+details.ly summary::-webkit-details-marker{display:none}
+details.ly summary .lsz{font-family:var(--mono);font-size:11px;color:var(--muted)}
+details.ly summary i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:8px}
+details.ly .fl{width:100%;border-collapse:collapse;font-size:12px}
+details.ly .fl td{padding:3px 10px;vertical-align:top}
+details.ly .fl td:first-child{color:var(--muted);white-space:nowrap}
+details.ly .fl td:nth-child(2){font-family:var(--mono)}
+details.ly .fl td:nth-child(3){color:var(--drop)}
+details.ly:hover{border-color:var(--muted)}
+.hex{padding:10px 12px;font-family:var(--mono);font-size:11.5px;line-height:1.7;display:flex;flex-direction:column;gap:0}
+.hrow{display:flex;gap:12px;white-space:nowrap}
+.hrow .off{color:var(--drop)}
+.hrow span.b{padding:0 1px;border-radius:2px}
+.hrow span.b.lit{background:rgba(255,255,255,.18)}
+.hleg{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;font-family:var(--sans);font-size:11.5px;color:var(--muted)}
+.hleg i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px}
+
+
+/* 3D map */
+.gl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y;cursor:grab}
+.lbls{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.lbl{position:absolute;left:0;top:0;background:rgba(14,22,34,.92);border:1px solid var(--line);border-radius:7px;padding:5px 10px 6px;pointer-events:auto;cursor:pointer;white-space:nowrap;display:flex;flex-direction:column;gap:1px;box-shadow:0 6px 16px -8px rgba(0,0,0,.6)}
+.lbl:hover{border-color:var(--signal)}
+.lbl b{font-size:12.5px;display:flex;align-items:center;gap:6px}
+.lbl b i{width:7px;height:7px;border-radius:50%;display:inline-block}
+.lbl span{font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+.lbls.compact .lbl span{display:none}
+.lbls.compact .lbl{padding:3px 8px}
+.zl{position:absolute;left:0;top:0;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.12em;color:rgba(14,22,34,.78);white-space:nowrap}
+.zl.dark{color:rgba(230,236,243,.85)}
+.zl.tl{color:#2A1A4A;background:rgba(228,214,255,.85);padding:2px 8px;border-radius:5px;letter-spacing:.02em}
+.lbls.compact .zl{font-size:9.5px}
+.plbl{position:absolute;left:0;top:0;font-family:var(--mono);font-size:11px;font-weight:700;color:#101828;padding:2px 8px;border-radius:6px;border:1px solid rgba(0,0,0,.4)}
+.rlbl{position:absolute;left:0;top:0;background:var(--violet);color:#160F26;font-size:12.5px;font-weight:600;padding:4px 10px;border-radius:7px;white-space:nowrap}
+.lg-tip{color:var(--drop);font-size:11px}
+.ctl-ping{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+#tourBtn{display:flex;align-items:center;gap:8px}
+#tourBtn .q{width:20px;height:20px;border-radius:50%;background:var(--signal);color:var(--on-signal);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center}
+/* Tour */
+.tour{position:fixed;inset:0;z-index:50}
+.tour-hole{position:fixed;border-radius:12px;box-shadow:0 0 0 9999px rgba(5,10,18,.74);border:2px solid var(--signal);transition:left .35s ease,top .35s ease,width .35s ease,height .35s ease;pointer-events:none}
+.tour-card{position:fixed;width:min(380px, calc(100vw - 32px));background:var(--panel);border:1px solid var(--signal);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;box-shadow:0 20px 50px -15px rgba(0,0,0,.8);transition:left .35s ease,top .35s ease}
+.tour-n{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--signal)}
+.tour-card h3{font-size:17px}
+#tourText{font-size:14px;line-height:1.55;color:#C9D3E0}
+.tour-btns{display:flex;gap:8px;align-items:center}
+.tour-btns .btn{padding:7px 14px}
+.tour-btns .btn:disabled{opacity:.4;cursor:default}
+@media (prefers-reduced-motion: reduce){ .tour-hole,.tour-card{transition:none} }
+
+@media (max-width:1100px){
+  .legend{display:none}
+  body{overflow:auto}
+  .app{height:auto;grid-template-rows:auto auto auto}
+  .mid{grid-template-columns:1fr}
+  .map{aspect-ratio:16/10;max-width:100%}
+  .side{max-height:560px}
+  .bottom{grid-template-columns:1fr}
+  .box{max-height:340px}
+}
+@media (max-width:640px){
+  .map{aspect-ratio:4/5}
+  .card{right:14px;max-width:none}
+  .card p{font-size:13px}
+  .legend{display:none}
+  .dots{max-width:140px}
+}
+@media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto} }
+</style>
+
+<div class="app">
+  <header class="top">
+    <a class="btn ghost portal-back" href="../index.html" title="На главную учебного портала">← БЗПД</a>
+    <div class="brand"><span class="logo"></span><div><b>L2 Lab</b><small>как кадры проходят L2-канал</small></div></div>
+    <div class="seg" role="group" aria-label="Вид канала">
+      <button type="button" data-sc="l2c" aria-pressed="true">l2circuit · CH-0001</button>
+      <button type="button" data-sc="l2v" aria-pressed="false">l2vpn · L2VPN_DEMO</button>
+    </div>
+    <div class="ctl-ping"><div class="fld"><label for="from">ОТКУДА</label><select id="from"><option value="A">Клиент A · 10.10.10.1</option><option value="B">Клиент B · 10.10.10.2</option></select></div>
+    <label class="chk" for="optArp"><input type="checkbox" id="optArp" checked>ARP</label>
+    <label class="chk" for="optReply"><input type="checkbox" id="optReply" checked>Ответ</label>
+    <button type="button" class="btn" id="pingBtn">Ping</button></div>
+    <button type="button" class="btn violet" id="sigBtn">Сигнализация</button>
+    <span class="spacer"></span>
+    <button type="button" class="btn ghost" id="tourBtn"><span class="q">?</span>Как читать экран</button>
+    <button type="button" class="btn ghost" id="clrBtn">Очистить кэши</button>
+  </header>
+
+  <div class="mid">
+    <div class="map" id="map">
+      <svg id="svg" viewBox="0 0 1200 560" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Схема L2-канала: клиенты, PE и P-маршрутизаторы">
+        <g id="gTiles"></g><g id="gLinks"></g><g id="gRel"></g><g id="gDevs"></g><g id="gPkt"></g>
+      </svg>
+      <div class="card" id="stepCard" aria-live="polite">
+        <div class="card-top"><span id="stepNo"></span><span class="tag" id="stepTag"></span></div>
+        <h2 id="stepTitle"></h2>
+        <p id="stepText"></p>
+      </div>
+      <div class="legend" aria-hidden="true">
+        <span><i style="background:#F2A541"></i>стык с клиентом (AC)</span>
+        <span><i style="background:#EEF2F7"></i>MPLS-ядро</span>
+        <span><i style="background:#B48CFF"></i>сигнализация / связь</span>
+        <span class="lg-tip">перетащите карту, чтобы повернуть</span>
+      </div>
+      <div class="play">
+        <button type="button" class="ic" id="prevBtn" aria-label="Предыдущий шаг"><svg viewBox="0 0 14 14"><path d="M10 2 4 7l6 5z" fill="#E6ECF3"/></svg></button>
+        <button type="button" class="ic" id="playBtn" aria-label="Воспроизвести"><svg viewBox="0 0 14 14" id="playIc"><path d="M4 2l8 5-8 5z" fill="#E6ECF3"/></svg></button>
+        <button type="button" class="ic" id="nextBtn" aria-label="Следующий шаг"><svg viewBox="0 0 14 14"><path d="M4 2l6 5-6 5z" fill="#E6ECF3"/></svg></button>
+        <div class="dots" id="dots"></div>
+        <div class="speed" role="group" aria-label="Скорость">
+          <button type="button" data-sp="0.5" aria-pressed="false">0.5×</button>
+          <button type="button" data-sp="1" aria-pressed="true">1×</button>
+          <button type="button" data-sp="2" aria-pressed="false">2×</button>
+          <button type="button" data-sp="4" aria-pressed="false">4×</button>
+        </div>
+      </div>
+    </div>
+
+    <aside class="side">
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" data-tab="dev" aria-selected="true">Устройства</button>
+        <button type="button" role="tab" data-tab="rel" aria-selected="false">Связи</button>
+        <button type="button" role="tab" data-tab="tbl" aria-selected="false">Таблицы</button>
+      </div>
+      <div class="pane" id="pane"></div>
+    </aside>
+  </div>
+
+  <div class="bottom">
+    <section class="box">
+      <div class="box-h"><b>Захват трафика</b><input id="filter" type="search" placeholder="Фильтр: MAC, IP, метка, устройство"><span class="cnt" id="capCnt"></span></div>
+      <div class="scroll"><table class="cap"><thead><tr><th>№</th><th>Время, мкс</th><th>Участок</th><th>Источник</th><th>Получатель</th><th>Прот.</th><th>Длина</th><th>Инфо</th></tr></thead><tbody id="capBody"></tbody></table></div>
+    </section>
+    <section class="box">
+      <div class="box-h"><b id="lyTitle">Кадр на участке</b></div>
+      <div class="scroll"><div class="layers" id="layers"></div></div>
+    </section>
+    <section class="box">
+      <div class="box-h"><b>Байты кадра</b><span class="cnt" id="hexCnt"></span></div>
+      <div class="scroll"><div class="hex" id="hex"></div></div>
+    </section>
+  </div>
+</div>
+
+<div class="tour" id="tour" hidden>
+  <div class="tour-hole" id="tourHole"></div>
+  <div class="tour-card" id="tourCard" role="dialog" aria-modal="true" aria-labelledby="tourTitle">
+    <p class="tour-n" id="tourN"></p>
+    <h3 id="tourTitle"></h3>
+    <p id="tourText"></p>
+    <div class="tour-btns"><button type="button" class="btn ghost" id="tourClose">Закрыть</button><span class="spacer"></span><button type="button" class="btn ghost" id="tourPrev">Назад</button><button type="button" class="btn" id="tourNext">Далее</button></div>
+  </div>
+</div>
+
+<script src="vendor/three-r128.min.js"></script>
+<script src="vendor/anime-3.2.2.min.js"></script>
+<script>
+(function(){
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const HAS_ANIME = typeof anime === 'function';
+const $ = s => document.querySelector(s);
+const NS = 'http://www.w3.org/2000/svg';
+function svgEl(tag, attrs, parent){ const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+function el(tag, cls, text){ const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+/* ================= Data ================= */
+const MAC = {A:'00:1b:21:3a:5c:01', B:'00:1b:21:3a:5c:02', pe1:'28:8a:1c:10:00:01', p1a:'28:8a:1c:20:00:01', p1b:'28:8a:1c:20:00:02', p2a:'28:8a:1c:30:00:01', p2b:'28:8a:1c:30:00:02', pe2:'28:8a:1c:40:00:01'};
+const IP = {A:'10.10.10.1', B:'10.10.10.2'};
+
+const POS = {A:[105,330], PE1:[300,285], P1:[505,330], P2:[695,285], PE2:[900,285], B:[1095,330], RR:[600,120]};
+
+const SC = {
+  l2c:{
+    key:'l2c', name:'l2circuit · CH-0001', vlan:2331, sig:'LDP', cw:true, mtu:9192, id:'23312331',
+    vcAB:24017, vcBA:299776, tAB:[300,412], tBA:[510,633],
+    dev:{
+      A:{kind:'cl', name:'Клиент A', sub:'10.10.10.1 · VLAN 2331', vendor:'Оборудование клиента · условно', note:'Устройство клиента и его адрес условные: в канале их не видно.'},
+      PE1:{kind:'pe', name:'pe1-juniper', sub:'lo 192.0.2.1 · ae10.2331', vendor:'Juniper MX · PE-1'},
+      P1:{kind:'p', name:'P1', sub:'транзит MPLS', vendor:'P-маршрутизатор · условно', note:'Имена P, интерфейсы и номера меток условные.'},
+      P2:{kind:'p', name:'P2', sub:'транзит MPLS', vendor:'P-маршрутизатор · условно', note:'Имена P, интерфейсы и номера меток условные.'},
+      PE2:{kind:'pe', name:'pe2-huawei', sub:'lo 192.0.2.2 · Gi0/2/21.2331', vendor:'Huawei · PE-2 · VSI a2331', note:'Канал на Huawei собран через VSI с одним PW. VSI работает как маленький коммутатор: изучает MAC-адреса и отправляет кадры по MAC-таблице. С одним стыком и одним PW результат тот же, что у точки-точки.'},
+      B:{kind:'cl', name:'Клиент B', sub:'10.10.10.2 · VLAN 2331', vendor:'Оборудование клиента · условно', note:'Устройство клиента и его адрес условные.'}
+    },
+    cfg:{
+      A:[['ca1','interface GigabitEthernet0/1.2331'],['ca2',' encapsulation dot1Q 2331'],['ca3',' ip address 10.10.10.1 255.255.255.0']],
+      B:[['cb1','interface GigabitEthernet0/1.2331'],['cb2',' encapsulation dot1Q 2331'],['cb3',' ip address 10.10.10.2 255.255.255.0']],
+      PE1:[['lo1','# lo0.0: 192.0.2.1/32 — loopback (LSR-ID)'],
+        ['j1','set interfaces ae10 unit 2331 description L2VPN/CLIENT-X/VPN100/CH-0001/'],
+        ['j2','set interfaces ae10 unit 2331 encapsulation vlan-ccc'],
+        ['j3','set interfaces ae10 unit 2331 vlan-id 2331'],
+        ['j4','set interfaces ae10 unit 2331 family ccc filter input p-100m-l2-tp-5-ae'],
+        ['j5','set class-of-service interfaces ae10 unit 2331 output-traffic-control-profile q-40m-tp-5'],
+        ['j6','set protocols l2circuit neighbor 192.0.2.2 interface ae10.2331 virtual-circuit-id 23312331'],
+        ['j7','set protocols l2circuit neighbor 192.0.2.2 interface ae10.2331 control-word'],
+        ['j8','set protocols l2circuit neighbor 192.0.2.2 interface ae10.2331 mtu 9192'],
+        ['j9','set protocols l2circuit neighbor 192.0.2.2 interface ae10.2331 encapsulation-type ethernet-vlan'],
+        ['j10','set protocols l2circuit neighbor 192.0.2.2 interface ae10.2331 pseudowire-status-tlv']],
+      PE2:[['lo2','# LSR-ID / loopback: 192.0.2.2'],
+        ['h1','VSI Name             a2331'],['h2','Description          /L2VPN/CLIENT-X/CH-0001/'],
+        ['h3','Encapsulation Type   VLAN'],['h4','VPLS MTU             9192'],['h5','Ignore AC Status     true'],
+        ['h6','LDP VSI · Enable LDP Signaling Mode'],['h7','VPLS LDP VSI ID      23312331'],['h8','Control Word         Enabled'],
+        ['h9','VPLS PW · Peer IP     192.0.2.1'],['h10','PW ID                23312331'],['h11','VCCV Capability      true'],
+        ['h13','VPLS AC · Interface  GigabitEthernet0/2/21.2331 (VLAN 2331)']],
+      P1:[['pm','set protocols mpls interface all'],['pl','set protocols ldp interface all']],
+      P2:[['pm','set protocols mpls interface all'],['pl','set protocols ldp interface all']]
+    },
+    rel:[
+      {id:'vc', t:'ID канала', why:'По этому номеру PE находят пару в LDP. Не совпал — PW не поднимется.', a:['PE1','j6','virtual-circuit-id 23312331'], b:['PE2','h7','VPLS LDP VSI ID 23312331']},
+      {id:'n1', t:'neighbor = loopback PE-2', why:'PE-1 поднимает tLDP-сессию на этот адрес. Указан IP управления вместо loopback — сессии нет.', a:['PE1','j6','neighbor 192.0.2.2'], b:['PE2','lo2','LSR-ID 192.0.2.2']},
+      {id:'n2', t:'Peer IP = loopback PE-1', why:'Встречная сторона указывает loopback PE-1. Каждая сторона смотрит на противоположную.', a:['PE2','h9','Peer IP 192.0.2.1'], b:['PE1','lo1','lo0 192.0.2.1']},
+      {id:'enc', t:'Инкапсуляция', why:'Тип канала должен совпасть, иначе статус EM.', a:['PE1','j9','encapsulation-type ethernet-vlan'], b:['PE2','h3','Encapsulation Type VLAN']},
+      {id:'mtu', t:'MTU', why:'MTU сообщается в Label Mapping. Расхождение — статус MM.', a:['PE1','j8','mtu 9192'], b:['PE2','h4','VPLS MTU 9192']},
+      {id:'cw', t:'Control word', why:'Бит C в сигнализации. Только с одной стороны — статус CM.', a:['PE1','j7','control-word'], b:['PE2','h8','Control Word Enabled']},
+      {id:'va', t:'VLAN стыка A', why:'Клиент отправляет кадры с тегом 2331, PE-1 принимает в юнит с vlan-id 2331.', a:['A','ca2','encapsulation dot1Q 2331'], b:['PE1','j3','vlan-id 2331']},
+      {id:'vb', t:'VLAN стыка B', why:'Сабинтерфейс Huawei принимает тот же тег, что отправляет клиент B.', a:['B','cb2','encapsulation dot1Q 2331'], b:['PE2','h13','Gi0/2/21.2331 (VLAN 2331)']},
+      {id:'net', t:'Одна подсеть у клиентов', why:'Клиенты в разных городах, но в одной IP-подсети: между ними нет маршрутизаторов, только L2-канал.', a:['A','ca3','10.10.10.1/24'], b:['B','cb3','10.10.10.2/24']}
+    ]
+  },
+  l2v:{
+    key:'l2v', name:'l2vpn · L2VPN_DEMO', vlan:2952, sig:'BGP', cw:true, mtu:null, id:'site 1 ↔ site 2',
+    vcAB:800000, vcBA:262146, tAB:[300,412], tBA:[510,633], baseA:262145, baseB:800000,
+    dev:{
+      A:{kind:'cl', name:'Клиент A', sub:'10.10.10.1 · VLAN 2952', vendor:'Оборудование клиента · условно', note:'Устройство клиента и его адрес условные.'},
+      PE1:{kind:'pe', name:'PE-1 · site 1', sub:'SITE-A · xe-7/1/2.2952', vendor:'Juniper · L2VPN_DEMO · site 1'},
+      P1:{kind:'p', name:'P1', sub:'транзит MPLS', vendor:'P-маршрутизатор · условно', note:'Имена P, интерфейсы и номера меток условные.'},
+      P2:{kind:'p', name:'P2', sub:'транзит MPLS', vendor:'P-маршрутизатор · условно', note:'Имена P, интерфейсы и номера меток условные.'},
+      PE2:{kind:'pe', name:'PE-2 · site 2', sub:'xe-0/0/0.2952 · условно', vendor:'Juniper · L2VPN_DEMO · site 2', note:'Вторая сторона собрана зеркально по типовому шаблону: имя site и интерфейс условные.'},
+      B:{kind:'cl', name:'Клиент B', sub:'10.10.10.2 · VLAN 2952', vendor:'Оборудование клиента · условно', note:'Устройство клиента и его адрес условные.'},
+      RR:{kind:'rr', name:'RR', sub:'route reflector', vendor:'BGP route reflector · условно', note:'Имя и группа BGP условные.'}
+    },
+    cfg:{
+      A:[['ca1','interface GigabitEthernet0/1.2952'],['ca2v',' encapsulation dot1Q 2952'],['ca3',' ip address 10.10.10.1 255.255.255.0']],
+      B:[['cb1','interface GigabitEthernet0/1.2952'],['cb2v',' encapsulation dot1Q 2952'],['cb3',' ip address 10.10.10.2 255.255.255.0']],
+      PE1:[['a1','set interfaces xe-7/1/2 unit 2952 description /L2VPN/L2VPN_DEMO'],
+        ['a2','set interfaces xe-7/1/2 unit 2952 encapsulation vlan-ccc'],
+        ['a3','set interfaces xe-7/1/2 unit 2952 vlan-id 2952'],
+        ['a4','set interfaces xe-7/1/2 unit 2952 family ccc filter input p-1m-l2-tp-1'],
+        ['a5','set class-of-service interfaces xe-7/1/2 unit 2952 output-traffic-control-profile q-512k-tp-1'],
+        ['a6','set class-of-service interfaces xe-7/1/2 unit 2952 classifiers ieee-802.1 access-tp-1'],
+        ['a7','set class-of-service interfaces xe-7/1/2 unit 2952 classifiers ieee-802.1 vlan-tag inner'],
+        ['r1','set routing-instances L2VPN_DEMO apply-groups-except path-attributes'],
+        ['r2','set routing-instances L2VPN_DEMO instance-type l2vpn'],
+        ['r3','set routing-instances L2VPN_DEMO interface xe-7/1/2.2952'],
+        ['r4','set routing-instances L2VPN_DEMO route-distinguisher 65000:100'],
+        ['r5','set routing-instances L2VPN_DEMO vrf-target target:65000:100'],
+        ['r6','set routing-instances L2VPN_DEMO protocols l2vpn encapsulation-type ethernet-vlan'],
+        ['r7','set routing-instances L2VPN_DEMO protocols l2vpn control-word'],
+        ['r8','set routing-instances L2VPN_DEMO protocols l2vpn site SITE-A site-identifier 1'],
+        ['r9','set routing-instances L2VPN_DEMO protocols l2vpn site SITE-A interface xe-7/1/2.2952 remote-site-id 2'],
+        ['bg1','# один раз на PE: set protocols bgp group RR family l2vpn signaling']],
+      PE2:[['s1','set interfaces xe-0/0/0 unit 2952 encapsulation vlan-ccc'],
+        ['s2','set interfaces xe-0/0/0 unit 2952 vlan-id 2952'],
+        ['s3','set routing-instances L2VPN_DEMO instance-type l2vpn'],
+        ['s4','set routing-instances L2VPN_DEMO interface xe-0/0/0.2952'],
+        ['s5','set routing-instances L2VPN_DEMO route-distinguisher 65000:100'],
+        ['s6','set routing-instances L2VPN_DEMO vrf-target target:65000:100'],
+        ['s7','set routing-instances L2VPN_DEMO protocols l2vpn encapsulation-type ethernet-vlan'],
+        ['s8','set routing-instances L2VPN_DEMO protocols l2vpn control-word'],
+        ['s9','set routing-instances L2VPN_DEMO protocols l2vpn site SITE-B site-identifier 2'],
+        ['s10','set routing-instances L2VPN_DEMO protocols l2vpn site SITE-B interface xe-0/0/0.2952 remote-site-id 1'],
+        ['bg2','# один раз на PE: set protocols bgp group RR family l2vpn signaling']],
+      P1:[['pm','set protocols mpls interface all'],['pl','set protocols ldp interface all']],
+      P2:[['pm','set protocols mpls interface all'],['pl','set protocols ldp interface all']],
+      RR:[['rr1','set protocols bgp group CLIENTS cluster <router-id>'],['rr2','set protocols bgp group CLIENTS family l2vpn signaling']]
+    },
+    rel:[
+      {id:'rt', t:'Route-target', why:'По RT PE понимают, что анонс относится к их каналу, и находят друг друга без neighbor.', a:['PE1','r5','target:65000:100'], b:['PE2','s6','target:65000:100']},
+      {id:'s1', t:'site 1 ↔ remote-site-id 1', why:'PE-2 отправляет кадры стороне 1, которую PE-1 объявил своим site-identifier.', a:['PE1','r8','site-identifier 1'], b:['PE2','s10','remote-site-id 1']},
+      {id:'s2', t:'remote-site-id 2 ↔ site 2', why:'PE-1 ждёт на другой стороне site 2. Номера сторон не должны повторяться.', a:['PE1','r9','remote-site-id 2'], b:['PE2','s9','site-identifier 2']},
+      {id:'enc', t:'Инкапсуляция', why:'Тип канала должен совпасть с обеих сторон.', a:['PE1','r6','encapsulation-type ethernet-vlan'], b:['PE2','s7','encapsulation-type ethernet-vlan']},
+      {id:'cw', t:'Control word', why:'Включается с обеих сторон.', a:['PE1','r7','control-word'], b:['PE2','s8','control-word']},
+      {id:'bg1', t:'BGP l2vpn: PE-1 ↔ RR', why:'Без family l2vpn signaling анонсы канала не уйдут на RR.', a:['PE1','bg1','family l2vpn signaling'], b:['RR','rr2','family l2vpn signaling']},
+      {id:'bg2', t:'BGP l2vpn: PE-2 ↔ RR', why:'То же для второй стороны.', a:['PE2','bg2','family l2vpn signaling'], b:['RR','rr2','family l2vpn signaling']},
+      {id:'va', t:'VLAN стыка A', why:'Клиент отправляет кадры с тегом 2952, PE-1 принимает в юнит с vlan-id 2952.', a:['A','ca2v','encapsulation dot1Q 2952'], b:['PE1','a3','vlan-id 2952']},
+      {id:'vb', t:'VLAN стыка B', why:'То же на второй стороне.', a:['B','cb2v','encapsulation dot1Q 2952'], b:['PE2','s2','vlan-id 2952']},
+      {id:'net', t:'Одна подсеть у клиентов', why:'Между клиентами нет маршрутизаторов, только L2-канал.', a:['A','ca3','10.10.10.1/24'], b:['B','cb3','10.10.10.2/24']}
+    ]
+  }
+};
+
+/* Line explanations: what the line does + word by word */
+const LX = {
+  ca1:{s:'Сабинтерфейс клиента для стыка с нами.', p:[['GigabitEthernet0/1.<VLAN>','порт клиента, сабинтерфейс с номером VLAN']]},
+  ca2:{s:'Клиент отправляет кадры с тегом VLAN 2331 — тем же, что ждёт наш PE.', p:[['encapsulation dot1Q','тег 802.1Q'],['2331','номер VLAN на стыке']]},
+  ca2v:{s:'Клиент отправляет кадры с тегом VLAN 2952.', p:[['encapsulation dot1Q','тег 802.1Q'],['2952','номер VLAN на стыке']]},
+  ca3:{s:'Адрес клиента. Подсеть та же, что у клиента B: для них это один сегмент.', p:[['10.10.10.1','адрес'],['255.255.255.0','маска /24']]},
+  cb1:{s:'Сабинтерфейс клиента B.', p:[['GigabitEthernet0/1.…','порт клиента, сабинтерфейс']]},
+  cb2:{s:'Тег VLAN 2331 на втором конце.', p:[['encapsulation dot1Q 2331','тег 802.1Q, VLAN 2331']]},
+  cb2v:{s:'Тег VLAN 2952 на втором конце.', p:[['encapsulation dot1Q 2952','тег 802.1Q, VLAN 2952']]},
+  cb3:{s:'Адрес клиента B в той же подсети.', p:[['10.10.10.2/24','адрес и маска']]},
+  lo1:{s:'Loopback PE-1. На этот адрес смотрит соседняя сторона (Peer IP на Huawei).', p:[['lo0.0','loopback-интерфейс'],['192.0.2.1/32','адрес, он же LSR-ID']]},
+  lo2:{s:'Loopback PE-2. Его указывает PE-1 в neighbor.', p:[['LSR-ID','идентификатор маршрутизатора в MPLS/LDP'],['192.0.2.2','loopback pe2-huawei']]},
+  j1:{s:'Подпись юнита: тип услуги, клиент, номер VPN и канала.', p:[['set interfaces ae10','агрегат (LAG) из нескольких портов'],['unit 2331','сабинтерфейс 2331'],['description …','L2VPN / CLIENT-X / VPN100 / CH-0001']]},
+  j2:{s:'Юнит становится стыком L2-канала, а не IP-интерфейсом: кадр с тегом уходит в канал целиком.', p:[['encapsulation','тип инкапсуляции юнита'],['vlan-ccc','VLAN + circuit cross-connect']]},
+  j3:{s:'В юнит попадают только кадры с тегом VLAN 2331.', p:[['vlan-id 2331','номер VLAN, как у клиента']]},
+  j4:{s:'Юнит без IP. На трафик от клиента — полисер 100 Мбит/с.', p:[['family ccc','только L2-канал'],['filter input p-100m-l2-tp-5-ae','полисер на вход']]},
+  j5:{s:'Шейпер 40 Мбит/с к клиенту: полоса асимметричная.', p:[['output-traffic-control-profile','профиль на выход'],['q-40m-tp-5','шейпер 40 Мбит/с']]},
+  j6:{s:'Сам L2-канал: ae10.2331 соединяется с соседом 192.0.2.2, ID канала 23312331.', p:[['set protocols l2circuit','каналы точка-точка по LDP'],['neighbor 192.0.2.2','loopback PE-2, адрес tLDP-сессии'],['interface ae10.2331','стык с клиентом'],['virtual-circuit-id 23312331','ID канала, как на PE-2']]},
+  j7:{s:'Control word — 4 байта перед кадром. С обеих сторон, иначе CM.', p:[['control-word','добавлять CW']]},
+  j8:{s:'MTU канала, сообщается соседу. Расхождение — MM.', p:[['mtu 9192','макс. размер кадра']]},
+  j9:{s:'Тип канала: Ethernet с тегом VLAN. Расхождение — EM.', p:[['encapsulation-type ethernet-vlan','тип PW']]},
+  j10:{s:'Передавать соседу статус стыка без разрыва LDP-сессии.', p:[['pseudowire-status-tlv','статус PW и AC в LDP']]},
+  h1:{s:'Имя VSI — экземпляра VPLS на Huawei. VSI работает как виртуальный коммутатор и изучает MAC-адреса; здесь у него один стык и один PW. Имя локальное: a + номер VLAN.', p:[['VSI','Virtual Switching Instance — виртуальный коммутатор'],['a2331','a + номер VLAN']]},
+  h2:{s:'Подпись VSI.', p:[['/L2VPN/CLIENT-X/CH-0001/','услуга / клиент / канал']]},
+  h3:{s:'Тип канала. Пара для encapsulation-type на Juniper.', p:[['Encapsulation Type VLAN','Ethernet с тегом']]},
+  h4:{s:'MTU канала. Пара для mtu 9192 на Juniper.', p:[['VPLS MTU 9192','как на Juniper']]},
+  h5:{s:'VSI остаётся Up даже при упавшем стыке. Удобно, но скрывает падение AC.', p:[['Ignore AC Status true','не учитывать состояние AC']]},
+  h6:{s:'Соседи и метки согласуются по LDP, как у l2circuit.', p:[['LDP Signaling Mode','сигнализация Martini']]},
+  h7:{s:'ID канала. Пара для virtual-circuit-id на Juniper.', p:[['VPLS LDP VSI ID 23312331','ID в LDP']]},
+  h8:{s:'Control word включён. Пара для control-word на Juniper.', p:[['Control Word Enabled','CW с этой стороны']]},
+  h9:{s:'Loopback соседа — pe1-juniper.', p:[['Peer IP 192.0.2.1','loopback PE-1']]},
+  h10:{s:'ID псевдопровода, совпадает с VSI ID.', p:[['PW ID 23312331','ID PW']]},
+  h11:{s:'Поддержка ping и traceroute прямо по PW.', p:[['VCCV','Virtual Circuit Connectivity Verification']]},
+  h13:{s:'Стык с клиентом: сабинтерфейс 2331 порта Gi0/2/21.', p:[['GigabitEthernet0/2/21.2331','порт.сабинтерфейс'],['VLAN 2331','тег на стыке']]},
+  pm:{s:'Включает MPLS на всех интерфейсах P-маршрутизатора.', p:[['protocols mpls','коммутация по меткам']]},
+  pl:{s:'LDP раздаёт транспортные метки до loopback всех PE. По ним P меняет метки.', p:[['protocols ldp','распределение меток']]},
+  a1:{s:'Подпись юнита совпадает с именем экземпляра L2VPN_DEMO.', p:[['xe-7/1/2','10G-порт: слот 7, PIC 1, порт 2'],['unit 2952','сабинтерфейс 2952']]},
+  a2:{s:'Как в l2circuit: юнит — стык L2-канала.', p:[['vlan-ccc','кадр уходит в канал как есть']]},
+  a3:{s:'В юнит попадают кадры с тегом VLAN 2952.', p:[['vlan-id 2952','номер VLAN, как у клиента']]},
+  a4:{s:'Юнит без IP. Полисер на вход, по имени — 1 Мбит/с.', p:[['family ccc','только L2-канал'],['p-1m-l2-tp-1','полисер 1 Мбит/с']]},
+  a5:{s:'Шейпер к клиенту, по имени — 512 кбит/с.', p:[['q-512k-tp-1','шейпер 512 кбит/с']]},
+  a6:{s:'Классификатор QoS по приоритету 802.1p в теге VLAN.', p:[['classifiers ieee-802.1 access-tp-1','классификатор']]},
+  a7:{s:'Приоритет брать из внутреннего тега (Q-in-Q).', p:[['vlan-tag inner','внутренний тег']]},
+  r1:{s:'Не применять к экземпляру группу настроек path-attributes.', p:[['apply-groups-except','исключить группу'],['path-attributes','имя группы']]},
+  r2:{s:'Экземпляр L2VPN — как VRF для L3VPN, но внутри L2-канал. Сигнализация BGP.', p:[['instance-type l2vpn','L2VPN по BGP (Kompella)']]},
+  r3:{s:'Подключает стык с клиентом к экземпляру.', p:[['interface xe-7/1/2.2952','стык']]},
+  r4:{s:'RD делает анонсы экземпляра уникальными в BGP.', p:[['65000','номер AS (частный, для примера)'],['100','номер услуги']]},
+  r5:{s:'Route-target — по нему PE находят друг друга через BGP. Одинаковый на обеих сторонах.', p:[['vrf-target target:65000:100','импорт и экспорт по RT']]},
+  r6:{s:'Тип канала, должен совпадать.', p:[['encapsulation-type ethernet-vlan','Ethernet с тегом']]},
+  r7:{s:'Control word, с обеих сторон.', p:[['control-word','4 байта перед кадром']]},
+  r8:{s:'Эта сторона — site 1 (SITE-A).', p:[['site-identifier 1','номер стороны']]},
+  r9:{s:'Кадры с xe-7/1/2.2952 уходят к site 2. Метка вычисляется из блока меток site 2.', p:[['remote-site-id 2','номер удалённой стороны']]},
+  bg1:{s:'BGP-группа с RR должна передавать семейство l2vpn. Настраивается один раз на PE, в шаблоне канала этой строки нет.', p:[['family l2vpn signaling','анонсы L2VPN в BGP']]},
+  bg2:{s:'То же на PE-2: один раз на PE.', p:[['family l2vpn signaling','анонсы L2VPN в BGP']]},
+  s1:{s:'Стык на второй стороне, как на PE-1. Интерфейс условный.', p:[['vlan-ccc','стык L2-канала']]},
+  s2:{s:'Тот же VLAN 2952.', p:[['vlan-id 2952','как у клиента B']]},
+  s3:{s:'Тот же экземпляр L2VPN_DEMO.', p:[['instance-type l2vpn','L2VPN по BGP']]},
+  s4:{s:'Подключает стык к экземпляру.', p:[['interface xe-0/0/0.2952','условный стык']]},
+  s5:{s:'RD по тому же шаблону.', p:[['65000:100','как на PE-1']]},
+  s6:{s:'Тот же route-target, что на PE-1 — поэтому PE видят друг друга.', p:[['target:65000:100','как на PE-1']]},
+  s7:{s:'Тип канала, как на PE-1.', p:[['ethernet-vlan','совпадает']]},
+  s8:{s:'Control word, как на PE-1.', p:[['control-word','совпадает']]},
+  s9:{s:'Эта сторона — site 2. Номер, который PE-1 указал в remote-site-id.', p:[['site-identifier 2','номер стороны']]},
+  s10:{s:'Кадры со стыка уходят к site 1.', p:[['remote-site-id 1','сторона PE-1']]},
+  rr1:{s:'RR отражает анонсы между клиентами-PE.', p:[['cluster','режим route reflector']]},
+  rr2:{s:'RR должен принимать и отражать семейство l2vpn.', p:[['family l2vpn signaling','анонсы L2VPN']]}
+};
+
+/* ================= Bytes ================= */
+const macB = m => m.split(':').map(h => parseInt(h, 16));
+const ipB = ip => ip.split('.').map(Number);
+const u16 = n => [(n >> 8) & 255, n & 255];
+function csum(a){ let s = 0; for (let i = 0; i < a.length; i += 2) s += (a[i] << 8) + (a[i+1] || 0); while (s >> 16) s = (s & 0xffff) + (s >> 16); return (~s) & 0xffff; }
+const hx = (n, w) => n.toString(16).padStart(w || 2, '0');
+const COL = {eth:'#6FA8FF', q:'#56C7D9', mpls:'#F2A541', vc:'#FFCF70', cw:'#FF8FA3', arp:'#4FD08E', ip:'#7EA6FF', icmp:'#4FD08E', data:'#B48CFF', pad:'#66758A', ctl:'#B48CFF'};
+
+function L(name, color, bytes, fields){ return {name, color, bytes, fields}; }
+function ethL(dst, src, type, title){ return L(title || 'Ethernet II', COL.eth, [...macB(dst), ...macB(src), ...(type != null ? u16(type) : [])],
+  [['Получатель (dst MAC)', dst, dst === 'ff:ff:ff:ff:ff:ff' ? 'broadcast — всем' : ''], ['Отправитель (src MAC)', src, ''], ...(type != null ? [['EtherType', '0x' + hx(type, 4), type === 0x8847 ? 'MPLS unicast' : '']] : [])]); }
+function qL(vlan, type){ return L('802.1Q · VLAN ' + vlan, COL.q, [0x81, 0x00, ...u16(vlan), ...u16(type)],
+  [['TPID', '0x8100', 'кадр с тегом'], ['PCP / DEI', '0 / 0', 'приоритет 802.1p'], ['VLAN ID', String(vlan), 'номер VLAN на стыке'], ['EtherType', '0x' + hx(type, 4), type === 0x0806 ? 'ARP' : 'IPv4']]); }
+function mplsL(label, s, ttl, title, note){ const v = (label << 12) | (s << 8) | ttl; return L(title + ' · ' + label, s ? COL.vc : COL.mpls, [(v >>> 24) & 255, (v >> 16) & 255, (v >> 8) & 255, v & 255],
+  [['Метка', String(label), note], ['TC (EXP)', '0', 'класс обслуживания'], ['S (дно стека)', String(s), s ? 'последняя метка' : 'дальше ещё метка'], ['TTL', String(ttl), '']]); }
+function cwL(){ return L('Control word', COL.cw, [0,0,0,0], [['Первый нибл', '0000', 'не 4 и не 6 — кадр не примут за IP'], ['Flags / FRG / Length', '0 / 0 / 0', ''], ['Sequence', '0', 'нумерация не используется']]); }
+function arpL(op, sm, si, tm, ti){ return L(op === 1 ? 'ARP · запрос' : 'ARP · ответ', COL.arp,
+  [0,1,8,0,6,4,0,op, ...macB(sm), ...ipB(si), ...macB(tm), ...ipB(ti)],
+  [['Операция', op === 1 ? '1 (request)' : '2 (reply)', op === 1 ? 'у кого этот IP?' : 'это я'], ['MAC отправителя', sm, ''], ['IP отправителя', si, ''], ['MAC получателя', tm, op === 1 ? 'пока неизвестен' : ''], ['IP получателя', ti, '']]); }
+function ipL(src, dst, id, totalLen){ const h = [0x45, 0, ...u16(totalLen), ...u16(id), 0, 0, 64, 1, 0, 0, ...ipB(src), ...ipB(dst)]; const c = csum(h); h[10] = c >> 8; h[11] = c & 255;
+  return L('IPv4', COL.ip, h, [['Версия / IHL', '4 / 20 байт', ''], ['Total length', String(totalLen), ''], ['Identification', '0x' + hx(id, 4), ''], ['TTL', '64', 'не меняется в L2-канале: маршрутизаторов по пути нет'], ['Protocol', '1 (ICMP)', ''], ['Header checksum', '0x' + hx(c, 4), 'верна'], ['Источник', src, ''], ['Получатель', dst, '']]); }
+const PAYLOAD = Array.from('abcdefghijklmnopqrstuvwabcdefghi').map(c => c.charCodeAt(0));
+function icmpL(type){ const h = [type, 0, 0, 0, 0, 1, 0, 1, ...PAYLOAD]; const c = csum(h); h[2] = c >> 8; h[3] = c & 255;
+  return [L(type === 8 ? 'ICMP · Echo Request' : 'ICMP · Echo Reply', COL.icmp, h.slice(0, 8), [['Type', String(type), type === 8 ? 'Echo Request' : 'Echo Reply'], ['Checksum', '0x' + hx(c, 4), 'верна'], ['id / seq', '1 / 1', '']]),
+          L('Данные', COL.data, PAYLOAD, [['Длина', '32 байта', ''], ['Содержимое', 'abcdefghijklmnopqrstuvwabcdefghi', 'как у ping в Windows']])]; }
+
+/* Frame the client sends, as it is on the AC links */
+function clientFrame(kind, src, dst, vlan){
+  let ly;
+  if (kind === 'arpq') ly = [ethL('ff:ff:ff:ff:ff:ff', MAC[src]), qL(vlan, 0x0806), arpL(1, MAC[src], IP[src], '00:00:00:00:00:00', IP[dst])];
+  else if (kind === 'arpr') ly = [ethL(MAC[dst], MAC[src]), qL(vlan, 0x0806), arpL(2, MAC[src], IP[src], MAC[dst], IP[dst])];
+  else ly = [ethL(MAC[dst], MAC[src]), qL(vlan, 0x0800), ipL(IP[src], IP[dst], kind === 'echoq' ? 0x1a2b : 0x5c3d, 60), ...icmpL(kind === 'echoq' ? 8 : 0)];
+  const n = ly.reduce((s, l) => s + l.bytes.length, 0);
+  if (n < 64) ly.push(L('Заполнение', COL.pad, new Array(64 - n).fill(0), [['Длина', (64 - n) + ' байт', 'добивка до минимального кадра']]));
+  return ly;
+}
+
+/* ================= Steps ================= */
+const LINK = {'PE1-P1':[MAC.pe1, MAC.p1a], 'P1-P2':[MAC.p1b, MAC.p2a], 'P2-PE2':[MAC.p2b, MAC.pe2]};
+function linkMacs(a, b){ const k = a + '-' + b; if (LINK[k]) return LINK[k]; const r = LINK[b + '-' + a]; return [r[1], r[0]]; }
+
+function dataHops(sc, kind, src){
+  const ab = src === 'A', dst = ab ? 'B' : 'A';
+  const path = ab ? ['A','PE1','P1','P2','PE2','B'] : ['B','PE2','P2','P1','PE1','A'];
+  const vc = ab ? sc.vcAB : sc.vcBA, t = ab ? sc.tAB : sc.tBA;
+  const D = sc.dev, inner = clientFrame(kind, src, dst, sc.vlan);
+  const pe1 = path[1], pe2 = path[4], peN = D[pe1].name, pe2N = D[pe2].name;
+  const ac1 = pe1 === 'PE1' ? (sc.key === 'l2c' ? 'ae10.2331' : 'xe-7/1/2.2952') : (sc.key === 'l2c' ? 'Gi0/2/21.2331' : 'xe-0/0/0.2952');
+  const ac2 = pe2 === 'PE1' ? (sc.key === 'l2c' ? 'ae10.2331' : 'xe-7/1/2.2952') : (sc.key === 'l2c' ? 'Gi0/2/21.2331' : 'xe-0/0/0.2952');
+  const what = {arpq:'ARP-запрос «у кого ' + IP[dst] + '?»', arpr:'ARP-ответ «' + IP[src] + ' — это я»', echoq:'Echo Request на ' + IP[dst], echor:'Echo Reply на ' + IP[dst]}[kind];
+  const proto = kind.startsWith('arp') ? 'ARP' : 'ICMP';
+  const via = sc.sig === 'LDP' ? 'в LDP' : 'в BGP';
+  const srcN = src === 'A' ? 'Клиент A' : 'Клиент B', dstN = dst === 'A' ? 'Клиент A' : 'Клиент B';
+  const hops = [];
+  const vsi = pe => sc.key === 'l2c' && pe === 'PE2';
+  const info = kind === 'arpq' ? 'Who has ' + IP[dst] + '? Tell ' + IP[src] : kind === 'arpr' ? IP[src] + ' is at ' + MAC[src] : (kind === 'echoq' ? 'Echo Request' : 'Echo Reply') + ' id=1 seq=1 ttl=64';
+  const sA = proto === 'ARP' ? MAC[src] : IP[src], dA = proto === 'ARP' ? (kind === 'arpq' ? 'broadcast' : MAC[dst]) : IP[dst];
+  const t0 = {arpq:0, arpr:0, echoq:0, echor:0}[kind];
+  // hop 0: client -> PE
+  hops.push({from:path[0], to:path[1], layer:'L2', tag:'L2 · ETHERNET', proto, ly:inner, label:proto, color:proto === 'ARP' ? '#4FD08E' : '#6FA8FF',
+    title:srcN + ': ' + what,
+    text:(kind === 'arpq' ? srcN + ' знает только IP соседа. Чтобы узнать его MAC, он спрашивает всех: кадр с MAC получателя ff:ff:ff:ff:ff:ff.' :
+          kind === 'arpr' ? srcN + ' отвечает лично: теперь у спрашивающего будет MAC для ' + IP[src] + '.' :
+          IP[dst] + ' в той же подсети 10.10.10.0/24, поэтому кадр идёт сразу на MAC получателя, без шлюза.') +
+         ' Кадр уходит в порт ' + peN + ' с тегом VLAN ' + sc.vlan + '.',
+    src:sA, dst:dA, info, dt:12, tbl:null});
+  // hop 1: PE -> P (push)
+  const [m1s, m1d] = linkMacs(path[1], path[2]);
+  const core1 = [ethL(m1d, m1s, 0x8847, 'Ethernet II · ядро'), mplsL(t[0], 0, 255, 'MPLS · транспортная', 'путь до ' + pe2N), mplsL(vc, 1, 255, 'MPLS · VC-метка', 'метку объявил ' + pe2N + ' ' + via), ...(sc.cw ? [cwL()] : []), ...inner];
+  hops.push({from:path[1], to:path[2], layer:'MPLS', tag:'MPLS', proto:'MPLS/' + proto, ly:core1, label:'MPLS', color:'#F2A541',
+    title:peN + ': кадр уходит в псевдопровод',
+    text:(vsi(pe1) ? peN + ' принимает кадр на ' + ac1 + ' в VSI a2331. VSI запоминает MAC ' + MAC[src] + ' за стыком и ищет получателя в MAC-таблице: ' + (kind === 'arpq' ? 'broadcast рассылается во все порты VSI, кроме входного, — здесь это только PW.' : 'MAC получателя изучен за PW, когда от другого клиента пришёл кадр. Если бы не был изучен, кадр разослался бы во все порты — здесь это тоже только PW.') :
+      peN + ' принимает кадр на ' + ac1 + ' и не смотрит на MAC-адреса: канал определяется по входному интерфейсу.' + (kind === 'arpq' ? ' Даже broadcast уходит как обычный кадр: в VPWS отправить его можно только на другую сторону.' : '')) + ' Добавляет CW, VC-метку ' + vc + ' и транспортную метку ' + t[0] + '.',
+    src:sA, dst:dA, info:'метки ' + t[0] + ' / ' + vc + ' · ' + info, dt:25, tbl:[{dev:pe1, key:'out'}].concat(vsi(pe1) ? [{dev:'VSI', key:'mac' + src}] : [])});
+  // hop 2: P -> P (swap)
+  const [m2s, m2d] = linkMacs(path[2], path[3]);
+  const core2 = [ethL(m2d, m2s, 0x8847, 'Ethernet II · ядро'), mplsL(t[1], 0, 254, 'MPLS · транспортная', 'заменена ' + t[0] + ' → ' + t[1]), mplsL(vc, 1, 255, 'MPLS · VC-метка', 'не меняется'), ...(sc.cw ? [cwL()] : []), ...inner];
+  hops.push({from:path[2], to:path[3], layer:'MPLS', tag:'MPLS', proto:'MPLS/' + proto, ly:core2, label:'MPLS', color:'#F2A541',
+    title:D[path[2]].name + ': меняет транспортную метку',
+    text:D[path[2]].name + ' смотрит только на верхнюю метку: по таблице меток меняет ' + t[0] + ' на ' + t[1] + ' и уменьшает её TTL. Внутрь кадра не заглядывает.',
+    src:sA, dst:dA, info:'метки ' + t[1] + ' / ' + vc + ' · ' + info, dt:2100, tbl:[{dev:path[2], key:t[0]}]});
+  // hop 3: P -> PE (PHP)
+  const [m3s, m3d] = linkMacs(path[3], path[4]);
+  const core3 = [ethL(m3d, m3s, 0x8847, 'Ethernet II · ядро'), mplsL(vc, 1, 255, 'MPLS · VC-метка', 'транспортная снята (PHP)'), ...(sc.cw ? [cwL()] : []), ...inner];
+  hops.push({from:path[3], to:path[4], layer:'MPLS', tag:'MPLS', proto:'MPLS/' + proto, ly:core3, label:'MPLS', color:'#F2A541',
+    title:D[path[3]].name + ': снимает транспортную метку',
+    text:D[path[3]].name + ' — предпоследний перед ' + pe2N + ', поэтому снимает транспортную метку (PHP). Остаётся VC-метка ' + vc + '.',
+    src:sA, dst:dA, info:'метка ' + vc + ' · ' + info, dt:1800, tbl:[{dev:path[3], key:t[1]}]});
+  // hop 4: PE -> client
+  hops.push({from:path[4], to:path[5], layer:'L2', tag:'L2 · ETHERNET', proto, ly:inner, label:proto, color:proto === 'ARP' ? '#4FD08E' : '#6FA8FF',
+    title:pe2N + ': отдаёт кадр клиенту',
+    text:(vsi(pe2) ? pe2N + ' по VC-метке ' + vc + ' находит VSI a2331 и снимает метку и CW. VSI запоминает MAC ' + MAC[src] + ' за PW и ' + (kind === 'arpq' ? 'рассылает broadcast во все порты, кроме PW, — это стык ' + ac2 + '.' : 'по MAC-таблице отправляет кадр в стык ' + ac2 + '.') :
+      pe2N + ' по VC-метке ' + vc + ' находит свой стык ' + ac2 + ', снимает метку и CW и отдаёт кадр как есть.') + (proto === 'ICMP' ? ' TTL в IP по-прежнему 64: для клиентов маршрутизаторов по пути не было.' : ' ' + dstN + ' получил кадр.'),
+    src:sA, dst:dA, info, dt:30, tbl:[{dev:pe2, key:'in'}].concat(vsi(pe2) ? [{dev:'VSI', key:'mac' + src}] : [])});
+  return hops;
+}
+
+function sigSteps(sc){
+  const D = sc.dev, st = [];
+  const ctl = (title, fields) => [L(title, COL.ctl, null, fields)];
+  if (sc.sig === 'LDP') {
+    st.push({from:'PE1', to:'PE2', path:['PE1','P1','P2','PE2'], layer:'CTL', tag:'LDP', proto:'LDP', label:'LDP', color:'#B48CFF',
+      title:'tLDP: pe1-juniper ищет соседа', text:'PE-1 отправляет targeted Hello на адрес из neighbor — 192.0.2.2. Пакет идёт через ядро как обычный IP.',
+      ly:ctl('LDP Targeted Hello', [['Источник', '192.0.2.1', 'loopback PE-1'], ['Получатель', '192.0.2.2', 'loopback PE-2 из neighbor'], ['Порт', 'UDP 646', ''], ['Hold time', '45 c', 'условно']]),
+      src:'192.0.2.1', dst:'192.0.2.2', info:'Targeted Hello', dt:40});
+    st.push({from:'PE2', to:'PE1', path:['PE2','P2','P1','PE1'], layer:'CTL', tag:'LDP', proto:'LDP', label:'LDP', color:'#B48CFF',
+      title:'tLDP-сессия установлена', text:'PE-2 отвечает, и между loopback поднимается TCP-сессия на порт 646. По ней PE обмениваются метками каналов.',
+      ly:ctl('LDP Initialization', [['Источник', '192.0.2.2', 'loopback PE-2'], ['Получатель', '192.0.2.1', 'Peer IP на Huawei'], ['Транспорт', 'TCP 646', ''], ['Состояние', 'Operational', '']]),
+      src:'192.0.2.2', dst:'192.0.2.1', info:'Initialization · TCP 646', dt:3900});
+    st.push({from:'PE1', to:'PE2', path:['PE1','P1','P2','PE2'], layer:'CTL', tag:'LDP', proto:'LDP', label:'LDP', color:'#B48CFF',
+      title:'Label Mapping от pe1-juniper', text:'PE-1 сообщает: канал 23312331, Ethernet VLAN, MTU 9192, control word включён, «присылай мне кадры с меткой ' + sc.vcBA + '».',
+      ly:ctl('LDP Label Mapping · FEC 128', [['PW ID', '23312331', 'virtual-circuit-id'], ['PW type', '0x0004 Ethernet VLAN', 'encapsulation-type ethernet-vlan'], ['C-bit', '1', 'control-word'], ['Interface MTU', '9192', 'mtu 9192'], ['Метка', String(sc.vcBA), 'по ней PE-1 узнает свой канал']]),
+      src:'192.0.2.1', dst:'192.0.2.2', info:'Label Mapping PW 23312331 label ' + sc.vcBA, dt:3900, tbl:[{dev:'PE1', key:'in'}]});
+    st.push({from:'PE2', to:'PE1', path:['PE2','P2','P1','PE1'], layer:'CTL', tag:'LDP', proto:'LDP', label:'LDP', color:'#B48CFF',
+      title:'Label Mapping от pe2-huawei', text:'PE-2 отвечает тем же со своей меткой ' + sc.vcAB + '. Параметры совпали — канал Up с обеих сторон.',
+      ly:ctl('LDP Label Mapping · FEC 128', [['PW ID', '23312331', 'VPLS LDP VSI ID'], ['PW type', '0x0004 Ethernet VLAN', 'Encapsulation Type VLAN'], ['C-bit', '1', 'Control Word Enabled'], ['Interface MTU', '9192', 'VPLS MTU'], ['Метка', String(sc.vcAB), 'с ней PE-1 отправляет кадры к PE-2']]),
+      src:'192.0.2.2', dst:'192.0.2.1', info:'Label Mapping PW 23312331 label ' + sc.vcAB, dt:3900, tbl:[{dev:'PE1', key:'out'}]});
+  } else {
+    const upd = (site, base, from) => [['RD', '65000:100', 'route-distinguisher'], ['Route-target', 'target:65000:100', 'vrf-target — по нему импортируют'], ['Site ID', String(site), 'site-identifier'], ['Label block', 'base ' + base + ', offset 1, size 8', 'метки для удалённых сторон'], ['Layer2 Info', 'Ethernet VLAN, control word', 'encapsulation-type, control-word'], ['Next hop', 'loopback ' + from, '']];
+    st.push({from:'PE1', to:'RR', path:['PE1','RR'], layer:'CTL', tag:'BGP', proto:'BGP', label:'BGP', color:'#B48CFF',
+      title:'PE-1 анонсирует site 1', text:'Соседа не указываем. PE-1 отправляет на route reflector BGP UPDATE: RD, route-target, site 1 и блок меток с base ' + sc.baseA + '.',
+      ly:ctl('BGP UPDATE · l2vpn signaling', upd(1, sc.baseA, 'PE-1')), src:'PE-1', dst:'RR', info:'UPDATE l2vpn site 1 block ' + sc.baseA, dt:40});
+    st.push({from:'RR', to:'PE2', path:['RR','PE2'], layer:'CTL', tag:'BGP', proto:'BGP', label:'BGP', color:'#B48CFF',
+      title:'RR отражает анонс на PE-2', text:'PE-2 принимает анонс, потому что route-target совпадает с его экземпляром L2VPN_DEMO — как в VRF. Метка для отправки в site 1: ' + sc.baseA + ' + (2 − 1) = ' + sc.vcBA + '.',
+      ly:ctl('BGP UPDATE · reflected', [...upd(1, sc.baseA, 'PE-1'), ['Originator ID', 'PE-1', 'добавил RR'], ['Расчёт метки', sc.baseA + ' + (2 − 1) = ' + sc.vcBA, 'base + (свой site − offset)']]), src:'RR', dst:'PE-2', info:'UPDATE reflected · RT 65000:100', dt:900, tbl:[{dev:'PE2', key:'out'}]});
+    st.push({from:'PE2', to:'RR', path:['PE2','RR'], layer:'CTL', tag:'BGP', proto:'BGP', label:'BGP', color:'#B48CFF',
+      title:'PE-2 анонсирует site 2', text:'PE-2 так же анонсирует свой site 2 и блок меток с base ' + sc.baseB + '.',
+      ly:ctl('BGP UPDATE · l2vpn signaling', upd(2, sc.baseB, 'PE-2')), src:'PE-2', dst:'RR', info:'UPDATE l2vpn site 2 block ' + sc.baseB, dt:900});
+    st.push({from:'RR', to:'PE1', path:['RR','PE1'], layer:'CTL', tag:'BGP', proto:'BGP', label:'BGP', color:'#B48CFF',
+      title:'RR отражает анонс на PE-1 — канал Up', text:'PE-1 вычисляет метку для отправки в site 2: ' + sc.baseB + ' + (1 − 1) = ' + sc.vcAB + '. Обе стороны знают метки — канал Up, дальше трафик ходит как в l2circuit.',
+      ly:ctl('BGP UPDATE · reflected', [...upd(2, sc.baseB, 'PE-2'), ['Originator ID', 'PE-2', 'добавил RR'], ['Расчёт метки', sc.baseB + ' + (1 − 1) = ' + sc.vcAB, 'base + (свой site − offset)']]), src:'RR', dst:'PE-1', info:'UPDATE reflected · RT 65000:100', dt:900, tbl:[{dev:'PE1', key:'out'}]});
+  }
+  return st;
+}
+
+/* Tables per device (after signalling) */
+function tables(sc){
+  const D = sc.dev, T = [];
+  T.push({dev:'PE1', title:D.PE1.name + ' · канал', cols:['Что','Значение'], rows:[
+    {key:'out', c:['Исх. VC-метка (к PE-2)', String(sc.vcAB)]}, {key:'in', c:['Вход. VC-метка (от PE-2)', String(sc.vcBA)]},
+    {key:'push', c:['Транспорт до PE-2', 'push ' + sc.tAB[0] + ' → P1']}, {key:'st', c:['Состояние', 'Up']}]});
+  T.push({dev:'P1', title:'P1 · таблица меток (LFIB)', cols:['Вход','Действие','Куда'], rows:[
+    {key:sc.tAB[0], c:[String(sc.tAB[0]), 'swap → ' + sc.tAB[1], 'P2']}, {key:sc.tBA[1], c:[String(sc.tBA[1]), 'pop (PHP)', 'PE-1']}]});
+  T.push({dev:'P2', title:'P2 · таблица меток (LFIB)', cols:['Вход','Действие','Куда'], rows:[
+    {key:sc.tAB[1], c:[String(sc.tAB[1]), 'pop (PHP)', 'PE-2']}, {key:sc.tBA[0], c:[String(sc.tBA[0]), 'swap → ' + sc.tBA[1], 'P1']}]});
+  T.push({dev:'PE2', title:D.PE2.name + ' · канал', cols:['Что','Значение'], rows:[
+    {key:'out', c:['Исх. VC-метка (к PE-1)', String(sc.vcBA)]}, {key:'in', c:['Вход. VC-метка (от PE-1)', String(sc.vcAB)]},
+    {key:'push', c:['Транспорт до PE-1', 'push ' + sc.tBA[0] + ' → P2']}, {key:'st', c:['Состояние', 'Up']}]});
+  if (sc.key === 'l2c') T.push({dev:'VSI', title:D.PE2.name + ' · MAC-таблица VSI a2331', cols:['MAC','Где изучен'], rows:[
+    {key:'macA', c:[MAC.A + ' (клиент A)', 'PW к 192.0.2.1']}, {key:'macB', c:[MAC.B + ' (клиент B)', 'Gi0/2/21.2331']}]});
+  return T;
+}
+
+/* ================= State ================= */
+const S = {sc:SC.l2c, steps:[], idx:0, run:0, playing:false, speed:1, arpCached:false, tab:'dev', dev:null, line:null, rel:null, runNo:0, kind:'ping'};
+
+/* ================= Map ================= */
+const svg = $('#svg'), gT = $('#gTiles'), gL = $('#gLinks'), gR = $('#gRel'), gD = $('#gDevs'), gP = $('#gPkt');
+function zoneOf(x, y, sc){
+  const inE = (cx, cy, rx, ry) => ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 <= 1;
+  if (inE(200, 320, 200, 150)) return 'A';
+  if (inE(1000, 320, 200, 150)) return 'B';
+  if (inE(600, 315, 225, 115)) return 'core';
+  if (sc.key === 'l2v' && inE(600, 125, 85, 60)) return 'core';
+  return 'water';
+}
+function fallback2D(){ if (!G3) return; G3.kill(); G3 = null; drawTiles(S.sc); drawLinks(S.sc); drawDevs(S.sc); if (S.steps[S.idx]) showStep(S.idx, false); }
+function drawTiles(sc){
+  if (G3) { try { G3.build(sc); return; } catch (e) { console.error(e); G3.kill(); G3 = null; } }
+  gT.innerHTML = '';
+  const R = 22, w = Math.sqrt(3) * R, h = 1.5 * R;
+  const pal = {A:['#F5C842','#F2BE2E','#F7D25E'], B:['#8BD46A','#7FCB5E','#97DB78'], core:['#2E3646','#363F51','#28303F'], water:['#5CC3E6','#58BFE2','#61C7E8']};
+  const side = {A:'#C9971A', B:'#5E9F45', core:'#1A202B'};
+  const pts = (cx, cy) => { let s = ''; for (let i = 0; i < 6; i++) { const a = Math.PI / 180 * (60 * i - 30); s += (cx + R * Math.cos(a)).toFixed(1) + ',' + (cy + R * Math.sin(a)).toFixed(1) + ' '; } return s; };
+  let seed = 7; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+  const land = [];
+  for (let r = -1; r < 560 / h + 1; r++) for (let c = -1; c < 1200 / w + 1; c++) {
+    const cx = c * w + (r % 2 ? w / 2 : 0), cy = r * h, z = zoneOf(cx, cy, sc), p = pal[z];
+    if (z === 'water') svgEl('polygon', {points:pts(cx, cy), fill:p[Math.floor(rnd() * 3)], stroke:'#7BD3EF', 'stroke-width':1}, gT);
+    else land.push([cx, cy, z, p[Math.floor(rnd() * 3)]]);
+  }
+  land.forEach(([cx, cy, z]) => svgEl('polygon', {points:pts(cx, cy + 7), fill:side[z]}, gT));
+  land.forEach(([cx, cy, z, f]) => svgEl('polygon', {points:pts(cx, cy), fill:f, stroke:z === 'core' ? '#3D475B' : 'rgba(255,255,255,.35)', 'stroke-width':1}, gT));
+  const lab = (x, y, t) => { const g = svgEl('g', {}, gT); svgEl('text', {x, y, 'text-anchor':'middle', fill:'rgba(14,22,34,.75)', 'font-family':'JetBrains Mono, monospace', 'font-size':13, 'font-weight':600, 'letter-spacing':1.5}, g).textContent = t; };
+  lab(200, 455, 'ПЛОЩАДКА A · VLAN ' + sc.vlan);
+  lab(1000, 455, 'ПЛОЩАДКА B · VLAN ' + sc.vlan);
+  const t = svgEl('text', {x:600, y:410, 'text-anchor':'middle', fill:'rgba(230,236,243,.7)', 'font-family':'JetBrains Mono, monospace', 'font-size':13, 'font-weight':600, 'letter-spacing':1.5}, gT); t.textContent = 'MPLS-ЯДРО';
+}
+function drawLinks(sc){
+  if (G3) return;
+  gL.innerHTML = '';
+  const line = (a, b, color, w, dash) => { const [x1, y1] = POS[a], [x2, y2] = POS[b];
+    svgEl('line', {x1, y1, x2, y2, stroke:'rgba(0,0,0,.35)', 'stroke-width':w + 3, 'stroke-linecap':'round'}, gL);
+    svgEl('line', {x1, y1, x2, y2, stroke:color, 'stroke-width':w, 'stroke-linecap':'round', 'stroke-dasharray':dash || ''}, gL); };
+  line('A', 'PE1', '#F2A541', 5); line('PE2', 'B', '#F2A541', 5);
+  line('PE1', 'P1', '#EEF2F7', 5); line('P1', 'P2', '#EEF2F7', 5); line('P2', 'PE2', '#EEF2F7', 5);
+  if (sc.key === 'l2v') { line('PE1', 'RR', '#B48CFF', 2.5, '7 6'); line('PE2', 'RR', '#B48CFF', 2.5, '7 6'); }
+  else { const p = svgEl('path', {d:'M300 260 Q600 120 900 260', fill:'none', stroke:'#B48CFF', 'stroke-width':2.5, 'stroke-dasharray':'7 6'}, gL);
+    const t = svgEl('text', {x:600, y:178, 'text-anchor':'middle', fill:'#2A1A4A', 'font-family':'JetBrains Mono, monospace', 'font-size':12, 'font-weight':600}, gL); t.textContent = 'tLDP-сессия между loopback'; }
+}
+function drawDevs(sc){
+  if (G3) return;
+  gD.innerHTML = '';
+  Object.keys(sc.dev).forEach(id => {
+    const d = sc.dev[id], [x, y] = POS[id];
+    const g = svgEl('g', {class:'dev', 'data-dev':id, tabindex:0, role:'button', 'aria-label':d.name}, gD);
+    svgEl('circle', {cx:x, cy:y, r:34, fill:'none', stroke:'#F2A541', 'stroke-width':3, opacity:0, class:'ring'}, g);
+    svgEl('ellipse', {cx:x, cy:y + 22, rx:30, ry:8, fill:'rgba(0,0,0,.3)'}, g);
+    const col = {cl:['#F5F7FA','#1A2638'], pe:['#2F6FE0','#F7F9FC'], p:['#3A4A62','#E6ECF3'], rr:['#B48CFF','#160F26']}[d.kind];
+    svgEl('rect', {x:x - 26, y:y - 18, width:52, height:36, rx:8, fill:col[0], stroke:'rgba(0,0,0,.35)', 'stroke-width':1.5, class:'dev-body'}, g);
+    const tt = svgEl('text', {x, y:y + 5, 'text-anchor':'middle', fill:col[1], 'font-family':'JetBrains Mono, monospace', 'font-size':14, 'font-weight':700}, g);
+    tt.textContent = {cl:'PC', pe:'PE', p:'P', rr:'RR'}[d.kind];
+    const lw = Math.max(d.name.length, d.sub.length) * 7.3 + 26, ly = y - 76;
+    svgEl('rect', {x:x - lw / 2, y:ly, width:lw, height:42, rx:7, fill:'rgba(14,22,34,.92)', stroke:'#26354A'}, g);
+    svgEl('circle', {cx:x - lw / 2 + 12, cy:ly + 14, r:3.5, fill:{cl:'#F5F7FA', pe:'#6FA8FF', p:'#93A2B5', rr:'#B48CFF'}[d.kind]}, g);
+    const n = svgEl('text', {x:x - lw / 2 + 22, y:ly + 18, fill:'#E6ECF3', 'font-family':'IBM Plex Sans, sans-serif', 'font-size':13.5, 'font-weight':600}, g); n.textContent = d.name;
+    const s = svgEl('text', {x:x - lw / 2 + 12, y:ly + 34, fill:'#93A2B5', 'font-family':'JetBrains Mono, monospace', 'font-size':11}, g); s.textContent = d.sub;
+    g.addEventListener('click', () => openDev(id));
+    g.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDev(id); } });
+  });
+}
+function ring(id, on){ if (G3) return G3.ring(id, on); const r = gD.querySelector('[data-dev="' + id + '"] .ring'); if (!r) return; r.setAttribute('opacity', on ? 1 : 0); }
+function pulse(id){ if (G3) return G3.pulse(id); const r = gD.querySelector('[data-dev="' + id + '"] .ring'); if (!r || !HAS_ANIME || reduce) return; anime({targets:r, opacity:[1,0], r:[26,46], duration:700, easing:'easeOutQuad'}); }
+
+/* packet */
+let pkt = null;
+function placePkt(step, at){
+  if (G3) { pkt = true; G3.place(step, at); return; }
+  gP.innerHTML = '';
+  const g = svgEl('g', {}, gP);
+  const w = step.label.length * 8.5 + 22;
+  svgEl('rect', {x:-w / 2, y:-13, width:w, height:26, rx:7, fill:step.color, stroke:'rgba(0,0,0,.45)', 'stroke-width':1.5}, g);
+  const t = svgEl('text', {x:0, y:4.5, 'text-anchor':'middle', fill:'#101828', 'font-family':'JetBrains Mono, monospace', 'font-size':12, 'font-weight':700}, g); t.textContent = step.label;
+  pkt = g; setPkt(at[0], at[1]);
+}
+function setPkt(x, y){ if (G3) return G3.set(x, y); if (pkt) pkt.setAttribute('transform', 'translate(' + x + ',' + (y - 2) + ')'); }
+function pathOf(step){ return (step.path || [step.from, step.to]).map(id => POS[id]); }
+function animatePkt(step, ms){
+  const pts = pathOf(step);
+  placePkt(step, pts[0]);
+  if (!HAS_ANIME || reduce || ms < 5) { setPkt(...pts[pts.length - 1]); return Promise.resolve(); }
+  const o = {i:0};
+  const seg = pts.length - 1;
+  return anime({targets:o, i:seg, duration:ms, easing:'easeInOutSine', update:() => {
+    const k = Math.min(Math.floor(o.i), seg - 1), f = o.i - k, a = pts[k], b = pts[k + 1];
+    setPkt(a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f);
+  }}).finished;
+}
+
+/* relation arc */
+function showRel(rel){
+  gR.innerHTML = ''; ['A','PE1','P1','P2','PE2','B','RR'].forEach(id => ring(id, false));
+  S.rel = rel ? rel.id : null;
+  if (G3) { G3.rel(rel); if (rel) { ring(rel.a[0], true); ring(rel.b[0], true); } return; }
+  if (!rel) return;
+  const a = POS[rel.a[0]], b = POS[rel.b[0]];
+  const mx = (a[0] + b[0]) / 2, my = Math.min(a[1], b[1]) - 150;
+  const p = svgEl('path', {d:'M' + a[0] + ' ' + (a[1] - 20) + ' Q' + mx + ' ' + my + ' ' + b[0] + ' ' + (b[1] - 20), fill:'none', stroke:'#B48CFF', 'stroke-width':3.5, 'stroke-dasharray':'9 7', 'stroke-linecap':'round'}, gR);
+  const tw = rel.t.length * 7.6 + 24, ty = (a[1] + b[1]) / 4 + my / 2 - 20;
+  svgEl('rect', {x:mx - tw / 2, y:ty - 16, width:tw, height:28, rx:7, fill:'#B48CFF'}, gR);
+  const t = svgEl('text', {x:mx, y:ty + 3, 'text-anchor':'middle', fill:'#160F26', 'font-family':'IBM Plex Sans, sans-serif', 'font-size':13, 'font-weight':600}, gR); t.textContent = rel.t;
+  ring(rel.a[0], true); ring(rel.b[0], true);
+  if (HAS_ANIME && !reduce) anime({targets:p, strokeDashoffset:[0, -64], duration:1400, easing:'linear', loop:true});
+}
+
+/* ================= 3D map (three.js) ================= */
+let G3 = null;
+function distSeg(x, y, p, q){ const dx = q[0] - p[0], dy = q[1] - p[1], t = Math.max(0, Math.min(1, ((x - p[0]) * dx + (y - p[1]) * dy) / (dx * dx + dy * dy))); return Math.hypot(x - p[0] - t * dx, y - p[1] - t * dy); }
+function init3D(){
+  if (typeof THREE === 'undefined') return null;
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({antialias:true}); if (!renderer.getContext()) return null; } catch (e) { return null; }
+  const map = $('#map');
+  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  const cv = renderer.domElement; cv.className = 'gl'; cv.setAttribute('role', 'img'); cv.setAttribute('aria-label', 'Объёмная схема L2-канала: клиенты, PE и P-маршрутизаторы');
+  map.insertBefore(cv, map.firstChild);
+  $('#svg').style.display = 'none';
+  const lbls = el('div', 'lbls'); map.insertBefore(lbls, cv.nextSibling);
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x5bc4e6);
+  scene.fog = new THREE.Fog(0x5bc4e6, 48, 95);
+  const cam = new THREE.PerspectiveCamera(30, 2, 0.1, 300);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x2a5566, 0.8));
+  const sun = new THREE.DirectionalLight(0xffffff, 0.75);
+  sun.position.set(-12, 26, 14); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0008;
+  Object.assign(sun.shadow.camera, {left:-20, right:20, top:14, bottom:-14, near:1, far:80}); sun.shadow.camera.updateProjectionMatrix();
+  scene.add(sun);
+  const world = new THREE.Group(); scene.add(world);
+  const K = 45, R = 22 / K;
+  const to3 = (x, y) => [(x - 600) / K, (y - 300) / K];
+  const HZ = {A:0.9, B:0.9, core:0.7, water:0.1};
+  const hAt = (x, y) => HZ[zoneOf(x, y, S.sc)];
+  const devs = {}, labels = [], trash = [];
+  let pktMesh = null, pktLbl = null, relObj = null, relLbl = null, relIds = [];
+  const mat = (c, o) => { const m = new THREE.MeshStandardMaterial(Object.assign({color:c, roughness:0.85, metalness:0.05, flatShading:true}, o || {})); trash.push(m); return m; };
+  const geo = g => { trash.push(g); return g; };
+  function clear(){
+    if (HAS_ANIME) trash.forEach(t => anime.remove(t));
+    world.clear(); trash.splice(0).forEach(t => t.dispose());
+    lbls.innerHTML = ''; labels.length = 0; for (const k in devs) delete devs[k];
+    pktMesh = null; relObj = null; relLbl = null; relIds = [];
+  }
+  const pt = id => { const [a, b] = to3(POS[id][0], POS[id][1]); return new THREE.Vector3(a, devs[id].top - 0.12, b); };
+  const tube = (curve, r, color, op) => { const m = new THREE.Mesh(geo(new THREE.TubeGeometry(curve, 48, r, 8, false)), mat(color, {emissive:color, emissiveIntensity:0.25, transparent:op < 1, opacity:op, flatShading:false})); m.castShadow = op === 1; world.add(m); return m; };
+  const addLabel = (e, v, extra) => { lbls.appendChild(e); labels.push(Object.assign({el:e, v}, extra || {})); };
+
+  function build(sc){
+    clear();
+    const w = Math.sqrt(3) * 22, h = 1.5 * 22, water = [], land = [];
+    let seed = 11; const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+    for (let r = -4; r < 560 / h + 4; r++) for (let c = -4; c < 1200 / w + 4; c++) {
+      const x = c * w + (r % 2 ? w / 2 : 0), y = r * h, z = zoneOf(x, y, sc);
+      (z === 'water' ? water : land).push([x, y, z, rnd()]);
+    }
+    const pal = {A:[0xf5c842, 0xf2be2e, 0xf7d25e], B:[0x8bd46a, 0x7fcb5e, 0x97db78], core:[0x2e3646, 0x363f51, 0x28303f], water:[0x63c9ea, 0x5ac2e4, 0x6fd0ee]};
+    const m4 = new THREE.Matrix4(), col = new THREE.Color(), q = new THREE.Quaternion(), s3 = new THREE.Vector3(), p3 = new THREE.Vector3();
+    const wm = new THREE.InstancedMesh(geo(new THREE.CylinderGeometry(R * 0.95, R * 0.95, 0.2, 6)), mat(0xffffff, {roughness:0.55}), water.length);
+    water.forEach(([x, y, , r0], i) => { const [a, b] = to3(x, y); m4.compose(p3.set(a, 0, b), q, s3.set(1, 1, 1)); wm.setMatrixAt(i, m4); wm.setColorAt(i, col.setHex(pal.water[Math.floor(r0 * 3)])); });
+    wm.receiveShadow = true; world.add(wm);
+    const lm = new THREE.InstancedMesh(geo(new THREE.CylinderGeometry(R * 0.97, R * 0.97, 1, 6)), mat(0xffffff), land.length);
+    land.forEach(([x, y, z, r0], i) => { const [a, b] = to3(x, y); const hh = HZ[z] + (z === 'core' ? 0 : (r0 - 0.5) * 0.12); m4.compose(p3.set(a, hh / 2, b), q, s3.set(1, hh, 1)); lm.setMatrixAt(i, m4); lm.setColorAt(i, col.setHex(pal[z][Math.floor(r0 * 3)])); });
+    lm.castShadow = true; lm.receiveShadow = true; world.add(lm);
+    const near = (x, y) => Object.keys(sc.dev).some(id => Math.hypot(POS[id][0] - x, POS[id][1] - y) < 75) || distSeg(x, y, POS.A, POS.PE1) < 34 || distSeg(x, y, POS.PE2, POS.B) < 34 || (y > 420);
+    const trees = land.filter(([x, y, z, r0]) => z !== 'core' && r0 > 0.74 && !near(x, y));
+    const tm = new THREE.InstancedMesh(geo(new THREE.ConeGeometry(0.2, 0.62, 6)), mat(0x2f8f4e), trees.length);
+    trees.forEach(([x, y, z, r0], i) => { const [a, b] = to3(x, y); const sy = 0.8 + r0 * 0.5; m4.compose(p3.set(a + (r0 - 0.87) * 0.5, HZ[z] + 0.31 * sy + 0.04, b), q, s3.set(1, sy, 1)); tm.setMatrixAt(i, m4); });
+    tm.castShadow = true; world.add(tm);
+
+    Object.keys(sc.dev).forEach(id => {
+      const d = sc.dev[id], [a, b] = to3(POS[id][0], POS[id][1]), base = hAt(POS[id][0], POS[id][1]);
+      const g = new THREE.Group(); g.position.set(a, base, b); g.userData.id = id;
+      const add = (gm, m, y) => { const me = new THREE.Mesh(geo(gm), m); me.position.y = y; me.castShadow = true; me.userData.id = id; g.add(me); return me; };
+      if (d.kind === 'cl') {
+        add(new THREE.BoxGeometry(0.95, 0.1, 0.62), mat(0xf5f7fa), 0.05);
+        add(new THREE.BoxGeometry(0.1, 0.3, 0.1), mat(0xc9d3e0), 0.25);
+        const s = add(new THREE.BoxGeometry(0.86, 0.54, 0.07), mat(0x1a2638), 0.64); s.rotation.x = -0.14;
+        const f = add(new THREE.PlaneGeometry(0.76, 0.44), mat(0x6fa8ff, {emissive:0x2f6fe0, emissiveIntensity:0.55}), 0.64); f.position.z = 0.045; f.rotation.x = -0.14;
+      } else if (d.kind === 'pe') {
+        add(new THREE.CylinderGeometry(0.56, 0.6, 0.38, 28), mat(0x2f6fe0, {flatShading:false}), 0.19);
+        add(new THREE.CylinderGeometry(0.42, 0.42, 0.04, 28), mat(0x9cc4ff), 0.4);
+      } else if (d.kind === 'p') {
+        add(new THREE.CylinderGeometry(0.46, 0.5, 0.32, 24), mat(0x4a5b75, {flatShading:false}), 0.16);
+        add(new THREE.CylinderGeometry(0.33, 0.33, 0.04, 24), mat(0xb8c4d4), 0.34);
+      } else {
+        add(new THREE.CylinderGeometry(0.4, 0.46, 0.7, 24), mat(0xb48cff, {flatShading:false}), 0.35);
+        add(new THREE.CylinderGeometry(0.3, 0.3, 0.04, 24), mat(0xe2d4ff), 0.72);
+      }
+      const ring = new THREE.Mesh(geo(new THREE.RingGeometry(0.78, 0.94, 40)), mat(0xf2a541, {transparent:true, opacity:0, emissive:0xf2a541, emissiveIntensity:0.7, side:THREE.DoubleSide, depthWrite:false}));
+      ring.rotation.x = -Math.PI / 2; ring.position.y = 0.04; g.add(ring);
+      world.add(g);
+      const top = d.kind === 'cl' ? 0.95 : d.kind === 'rr' ? 0.78 : 0.44;
+      devs[id] = {g, ring, top:base + top};
+      const L = el('div', 'lbl'); L.dataset.dev = id; const bb = el('b'); const dot = el('i'); dot.style.background = {cl:'#F5F7FA', pe:'#6FA8FF', p:'#93A2B5', rr:'#B48CFF'}[d.kind];
+      bb.append(dot, document.createTextNode(d.name)); L.append(bb, el('span', null, d.sub));
+      L.addEventListener('click', () => openDev(id));
+      addLabel(L, new THREE.Vector3(a, base + top + 0.5, b));
+    });
+
+    const link = (x, y, color) => { const p = pt(x), q2 = pt(y), mid = p.clone().lerp(q2, 0.5); mid.y += 0.3; tube(new THREE.CatmullRomCurve3([p, mid, q2]), 0.07, color, 1); };
+    link('A', 'PE1', 0xf2a541); link('PE2', 'B', 0xf2a541);
+    link('PE1', 'P1', 0xeef2f7); link('P1', 'P2', 0xeef2f7); link('P2', 'PE2', 0xeef2f7);
+    if (sc.key === 'l2v') ['PE1', 'PE2'].forEach(id => tube(new THREE.LineCurve3(pt(id), pt('RR')), 0.035, 0xb48cff, 0.85));
+    else { const p = pt('PE1'), q2 = pt('PE2'), c = p.clone().lerp(q2, 0.5); c.y += 5; const cu = new THREE.QuadraticBezierCurve3(p, c, q2); tube(cu, 0.035, 0xb48cff, 0.75);
+      addLabel(el('div', 'zl tl', 'tLDP-сессия между loopback'), cu.getPoint(0.5).add(new THREE.Vector3(0, 0.35, 0))); }
+    const zl = (x, y, t, dark) => { const [a, b] = to3(x, y); addLabel(el('div', 'zl' + (dark ? ' dark' : ''), t), new THREE.Vector3(a, 1, b)); };
+    zl(200, 440, 'ПЛОЩАДКА A · VLAN ' + sc.vlan); zl(1000, 440, 'ПЛОЩАДКА B · VLAN ' + sc.vlan); zl(600, 392, 'MPLS-ЯДРО', true);
+
+    pktMesh = new THREE.Mesh(geo(new THREE.BoxGeometry(0.62, 0.3, 0.42)), mat(0xf2a541, {emissive:0xf2a541, emissiveIntensity:0.45}));
+    pktMesh.castShadow = true; pktMesh.visible = false; world.add(pktMesh);
+    pktLbl = el('div', 'plbl'); pktLbl.hidden = true; addLabel(pktLbl, new THREE.Vector3(), {pkt:true});
+  }
+  function place(step, at){ if (!pktMesh) return; pktMesh.material.color.set(step.color); pktMesh.material.emissive.set(step.color); pktMesh.visible = true;
+    pktLbl.hidden = false; pktLbl.textContent = step.label; pktLbl.style.background = step.color; set(at[0], at[1]); }
+  function set(x, y){ if (!pktMesh) return; const [a, b] = to3(x, y); pktMesh.position.set(a, Math.max(hAt(x, y), 0.7) + 0.95, b); }
+  function ringOn(id, on){ const d = devs[id]; if (d) { d.ring.scale.set(1, 1, 1); d.ring.material.opacity = on ? 0.95 : 0; } }
+  function pulse(id){
+    const d = devs[id]; if (!d || !HAS_ANIME || reduce) return;
+    const o = {s:1, op:1}, r = d.ring;
+    anime({targets:o, s:2.1, op:0, duration:700, easing:'easeOutQuad', update:() => { r.scale.set(o.s, o.s, o.s); r.material.opacity = o.op; }, complete:() => ringOn(id, relIds.includes(id))});
+  }
+  function rel(rl){
+    if (relObj) { if (HAS_ANIME) anime.remove(relObj.material); world.remove(relObj); relObj = null; }
+    if (relLbl) { relLbl.remove(); const k = labels.findIndex(L => L.el === relLbl); if (k >= 0) labels.splice(k, 1); relLbl = null; }
+    relIds = rl ? [rl.a[0], rl.b[0]] : [];
+    if (!rl) return;
+    const p = pt(rl.a[0]), q2 = pt(rl.b[0]); p.y += 0.3; q2.y += 0.3;
+    const c = p.clone().lerp(q2, 0.5); c.y = Math.max(p.y, q2.y) + 3.6 + p.distanceTo(q2) * 0.12;
+    const cu = new THREE.QuadraticBezierCurve3(p, c, q2);
+    relObj = tube(cu, 0.07, 0xb48cff, 1);
+    if (HAS_ANIME && !reduce) anime({targets:relObj.material, emissiveIntensity:[0.2, 0.95], duration:650, direction:'alternate', loop:true, easing:'easeInOutSine'});
+    relLbl = el('div', 'rlbl', rl.t); addLabel(relLbl, cu.getPoint(0.5).add(new THREE.Vector3(0, 0.3, 0)));
+  }
+
+  let W = 0, H = 0, yaw = -0.18, yawT = -0.18;
+  function frame(){
+    if (dead) return;
+    try { draw(); } catch (e) { console.error(e); fallback2D(); return; }
+    requestAnimationFrame(frame);
+  }
+  function draw(){
+    const w = map.clientWidth, h = map.clientHeight;
+    if (w && h && (w !== W || h !== H)) { W = w; H = h; renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); lbls.classList.toggle('compact', w < 720); }
+    yaw += (yawT - yaw) * (reduce ? 1 : 0.12);
+    const vf = cam.fov * Math.PI / 180, hf = 2 * Math.atan(Math.tan(vf / 2) * cam.aspect);
+    const d = Math.max(13.6 / Math.tan(hf / 2), 6.8 / Math.tan(vf / 2));
+    const elv = 0.78;
+    cam.position.set(Math.sin(yaw) * d * Math.cos(elv), d * Math.sin(elv), Math.cos(yaw) * d * Math.cos(elv) + 0.6);
+    cam.lookAt(0, 0.4, 0.2);
+    renderer.render(scene, cam);
+    const v = new THREE.Vector3();
+    labels.forEach(L => {
+      if (L.pkt) { if (!pktMesh || !pktMesh.visible) return; L.v.copy(pktMesh.position); L.v.y += 0.3; }
+      v.copy(L.v).project(cam);
+      L.el.style.transform = 'translate(' + ((v.x + 1) / 2 * W).toFixed(1) + 'px,' + ((1 - v.y) / 2 * H).toFixed(1) + 'px) translate(-50%,-100%)';
+      L.el.style.visibility = v.z < 1 ? '' : 'hidden';
+    });
+  }
+  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+  function pick(e){
+    const r = cv.getBoundingClientRect(); ndc.set((e.clientX - r.left) / r.width * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1); ray.setFromCamera(ndc, cam);
+    const hits = ray.intersectObjects(Object.values(devs).map(x => x.g), true);
+    return hits.length ? hits[0].object.userData.id : null;
+  }
+  let down = null, moved = 0;
+  cv.addEventListener('pointerdown', e => { down = {x:e.clientX, yaw:yawT}; moved = 0; try { cv.setPointerCapture(e.pointerId); } catch (_) {} });
+  cv.addEventListener('pointermove', e => {
+    if (down) { const dx = e.clientX - down.x; moved = Math.max(moved, Math.abs(dx)); yawT = Math.max(-0.9, Math.min(0.9, down.yaw - dx * 0.006)); cv.style.cursor = 'grabbing'; return; }
+    cv.style.cursor = pick(e) ? 'pointer' : 'grab';
+  });
+  const up = e => { if (down && moved < 5) { const id = pick(e); if (id) openDev(id); } down = null; cv.style.cursor = 'grab'; };
+  cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', () => { down = null; });
+  cv.addEventListener('dblclick', () => { yawT = -0.18; });
+  requestAnimationFrame(frame);
+  let dead = false;
+  function kill(){ dead = true; cv.remove(); lbls.remove(); $('#svg').style.display = ''; }
+  return {build, place, set, ring:ringOn, pulse, rel, kill, get dead(){ return dead; }};
+}
+
+/* ================= Tour: how to read the screen ================= */
+const TOUR = [
+  {sel:'.seg', title:'Выбор канала', text:'l2circuit — канал CH-0001 между Juniper и Huawei, сигнализация LDP. l2vpn — экземпляр L2VPN_DEMO по типовому шаблону, сигнализация BGP через route reflector.'},
+  {sel:'#sigBtn', title:'Сигнализация', text:'Показывает, как PE договариваются о канале ещё до трафика: LDP Label Mapping или BGP через RR. Если объясняете с нуля, начните с неё.'},
+  {sel:'.ctl-ping', title:'Ping', text:'Отправляет кадры от клиента к клиенту: ARP, если MAC ещё не известен, затем Echo Request и Echo Reply. Галочками можно убрать ARP или ответ, «Откуда» меняет направление.'},
+  {sel:'#map', title:'Карта', text:'Жёлтая и зелёная площадки — клиенты, тёмное ядро — MPLS. Кадр движется по шагам. Перетащите карту, чтобы повернуть её, двойной щелчок возвращает вид. Нажмите на устройство — откроется его конфиг.'},
+  {sel:'#stepCard', title:'Карточка шага', text:'Номер прогона и шага, уровень (L2, MPLS, LDP или BGP) и что происходит на этом участке простыми словами.'},
+  {sel:'.play', title:'Плеер', text:'Шаг назад, пуск и пауза, шаг вперёд. Точки — все шаги прогона, по ним можно перейти. Справа скорость. С клавиатуры: ← → и пробел.'},
+  {sel:'.bottom .box:nth-child(1)', title:'Захват трафика', text:'Каждый кадр прогона, как в Wireshark: участок, адреса, протокол, длина, метки. Нажмите на строку, чтобы перейти к шагу. Фильтр ищет по MAC, IP, меткам и устройствам.'},
+  {sel:'.bottom .box:nth-child(2)', title:'Слои кадра', text:'Что внутри кадра на выбранном участке. В ядре сверху заголовок ядра, транспортная и VC-метки, control word, а под ними исходный кадр клиента без изменений. Слои раскрываются.'},
+  {sel:'.bottom .box:nth-child(3)', title:'Байты кадра', text:'Те же слои в байтах, раскрашенные по цветам. Наведите на слой в соседнем окне — его байты подсветятся здесь.'},
+  {sel:'.side', title:'Правая панель', text:'Устройства: конфиги с разбором каждой строки по словам. Связи: какие параметры должны совпасть с обеих сторон, связь рисуется дугой на карте. Таблицы: метки, LFIB и MAC-таблица, строка текущего шага подсвечена.'},
+  {sel:'.legend', title:'Обозначения', text:'Оранжевый — стык с клиентом, белый — MPLS-ядро, фиолетовый — сигнализация и связи. Всё условное (адреса клиентов, номера меток, имена P) подписано в карточках устройств.'}
+];
+let tIdx = -1, tFocus = null;
+function tourOpen(){ stop(); tFocus = document.activeElement; $('#tour').hidden = false; tourGo(0); $('#tourNext').focus(); }
+function tourClose(){ $('#tour').hidden = true; tIdx = -1; if (tFocus && tFocus.focus) tFocus.focus(); }
+function tourGo(i){
+  tIdx = Math.max(0, Math.min(TOUR.length - 1, i));
+  const t = TOUR[tIdx];
+  let target = document.querySelector(t.sel);
+  if (!target || !target.getClientRects().length) target = $('#map');
+  if (target.scrollIntoView) target.scrollIntoView({block:'nearest'});
+  const r = target.getBoundingClientRect(), pad = 6, hole = $('#tourHole');
+  hole.style.left = (r.left - pad) + 'px'; hole.style.top = (r.top - pad) + 'px'; hole.style.width = (r.width + pad * 2) + 'px'; hole.style.height = (r.height + pad * 2) + 'px';
+  $('#tourN').textContent = 'ШАГ ' + (tIdx + 1) + ' ИЗ ' + TOUR.length;
+  $('#tourTitle').textContent = t.title; $('#tourText').textContent = t.text;
+  $('#tourPrev').disabled = tIdx === 0;
+  $('#tourNext').textContent = tIdx === TOUR.length - 1 ? 'Готово' : 'Далее';
+  const card = $('#tourCard'), cw = card.offsetWidth, ch = card.offsetHeight, vw = window.innerWidth, vh = window.innerHeight;
+  let top;
+  if (r.bottom + pad + 14 + ch < vh) top = r.bottom + pad + 14;
+  else if (r.top - pad - 14 - ch > 0) top = r.top - pad - 14 - ch;
+  else top = Math.max(16, Math.min(vh - ch - 16, r.top + 16));
+  card.style.left = Math.max(16, Math.min(vw - cw - 16, r.left + r.width / 2 - cw / 2)) + 'px';
+  card.style.top = top + 'px';
+}
+$('#tourBtn').addEventListener('click', tourOpen);
+$('#tourPrev').addEventListener('click', () => tourGo(tIdx - 1));
+$('#tourNext').addEventListener('click', () => { if (tIdx >= TOUR.length - 1) tourClose(); else tourGo(tIdx + 1); });
+$('#tourClose').addEventListener('click', tourClose);
+window.addEventListener('resize', () => { if (tIdx >= 0) tourGo(tIdx); });
+
+/* ================= Runs ================= */
+function buildPing(){
+  const sc = S.sc, src = $('#from').value, dst = src === 'A' ? 'B' : 'A';
+  let steps = [];
+  if ($('#optArp').checked && !S.arpCached) { steps = steps.concat(dataHops(sc, 'arpq', src), dataHops(sc, 'arpr', dst)); }
+  steps = steps.concat(dataHops(sc, 'echoq', src));
+  if ($('#optReply').checked) steps = steps.concat(dataHops(sc, 'echor', dst));
+  setRun(steps, 'ping');
+}
+function buildSig(){ setRun(sigSteps(S.sc), 'sig'); }
+function setRun(steps, kind){
+  stop();
+  S.runNo++; S.kind = kind;
+  let t = 0; steps.forEach(s => { t += s.dt; s.time = t; s.len = s.ly[0].bytes ? s.ly.reduce((n, l) => n + l.bytes.length, 0) : null; });
+  S.steps = steps; S.idx = 0;
+  renderDots(); renderCap(); showStep(0, false);
+}
+
+/* ================= Playback ================= */
+function showStep(i, animate){
+  const st = S.steps[i]; if (!st) return Promise.resolve();
+  S.idx = i;
+  $('#stepNo').textContent = 'ПРОГОН #' + S.runNo + ' · ШАГ ' + (i + 1) + ' / ' + S.steps.length;
+  const tg = $('#stepTag'); tg.textContent = st.tag; tg.className = 'tag' + (st.layer === 'MPLS' ? ' mpls' : st.layer === 'CTL' ? ' ctl' : '');
+  $('#stepTitle').textContent = st.title; $('#stepText').textContent = st.text;
+  if (HAS_ANIME && !reduce && animate) anime({targets:'#stepCard', opacity:[.4,1], duration:300, easing:'easeOutQuad'});
+  $('#dots').querySelectorAll('button').forEach((b, k) => b.className = k < i ? 'done' : k === i ? 'cur' : '');
+  const cur = $('#dots').children[i]; if (cur && cur.scrollIntoView) cur.scrollIntoView({block:'nearest', inline:'center'});
+  document.querySelectorAll('#capBody tr').forEach(tr => { const k = +tr.dataset.i; tr.classList.toggle('cur', k === i); tr.classList.toggle('future', k > i); });
+  const row = document.querySelector('#capBody tr.cur'); if (row) row.scrollIntoView({block:'nearest'});
+  renderLayers(st); renderHex(st);
+  if (S.tab === 'tbl') renderPane();
+  const ms = animate ? 1150 / S.speed * (st.path && st.path.length > 2 ? 1.6 : 1) : 0;
+  return animatePkt(st, ms).then(() => { if (animate) pulse(st.to); });
+}
+async function play(){
+  if (S.playing) { stop(); return; }
+  S.playing = true; setPlayIcon(); const run = ++S.run;
+  if (S.idx >= S.steps.length - 1) S.idx = -1;
+  while (S.playing && run === S.run && S.idx < S.steps.length - 1) {
+    await showStep(S.idx + 1, true);
+    if (!S.playing || run !== S.run) break;
+    await new Promise(r => setTimeout(r, 380 / S.speed));
+  }
+  if (run === S.run) { S.playing = false; setPlayIcon(); if (S.kind === 'ping' && S.idx === S.steps.length - 1) S.arpCached = true; }
+}
+function stop(){ S.playing = false; S.run++; if (HAS_ANIME) anime.running.slice().forEach(a => { if (!a.loop) a.pause(); }); setPlayIcon(); }
+function setPlayIcon(){ $('#playIc').innerHTML = S.playing ? '<path d="M3 2h3v10H3zM8 2h3v10H8z" fill="#E6ECF3"/>' : '<path d="M4 2l8 5-8 5z" fill="#E6ECF3"/>'; $('#playBtn').setAttribute('aria-label', S.playing ? 'Пауза' : 'Воспроизвести'); }
+function step(d){ stop(); const n = Math.max(0, Math.min(S.steps.length - 1, S.idx + d)); showStep(n, d > 0); }
+function renderDots(){ const c = $('#dots'); c.innerHTML = ''; S.steps.forEach((s, i) => { const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', 'Шаг ' + (i + 1)); b.addEventListener('click', () => { stop(); showStep(i, false); }); c.appendChild(b); }); }
+
+/* ================= Capture / layers / hex ================= */
+function renderCap(){
+  const tb = $('#capBody'), f = $('#filter').value.trim().toLowerCase(); tb.innerHTML = ''; let n = 0;
+  S.steps.forEach((s, i) => {
+    const seg = S.sc.dev[s.from].name.replace(/ ·.*/, '') + ' → ' + S.sc.dev[s.to].name.replace(/ ·.*/, '');
+    const cells = [i + 1, s.time.toLocaleString('ru-RU'), seg, s.src, s.dst, s.proto, s.len == null ? '—' : s.len, s.info];
+    if (f && !cells.join(' ').toLowerCase().includes(f)) return;
+    n++;
+    const tr = document.createElement('tr'); tr.dataset.i = i;
+    cells.forEach((c, k) => { const td = document.createElement('td'); if (k === 0) { const d = el('span', 'pdot'); d.style.background = s.color; td.appendChild(d); } td.appendChild(document.createTextNode(c)); tr.appendChild(td); });
+    tr.addEventListener('click', () => { stop(); showStep(i, false); });
+    tb.appendChild(tr);
+  });
+  $('#capCnt').textContent = n + ' в прогоне';
+  document.querySelectorAll('#capBody tr').forEach(tr => { const k = +tr.dataset.i; tr.classList.toggle('cur', k === S.idx); tr.classList.toggle('future', k > S.idx); });
+}
+function renderLayers(st){
+  const seg = S.sc.dev[st.from].name + ' → ' + S.sc.dev[st.to].name;
+  $('#lyTitle').textContent = 'Кадр на участке ' + seg;
+  const box = $('#layers'); box.innerHTML = '';
+  const sum = el('p', 'ls', st.layer === 'MPLS' ? 'Внутри ядра: заголовок ядра, метки, control word и исходный кадр клиента без изменений.' : st.layer === 'CTL' ? 'Служебное сообщение сигнализации: поля сообщения.' : 'Кадр клиента в том виде, в каком он идёт по стыку (AC).');
+  box.appendChild(sum);
+  st.ly.forEach((l, k) => {
+    const d = el('details', 'ly'); if (k < 3 || st.layer === 'CTL') d.open = true;
+    const s = document.createElement('summary'); const left = el('span'); const i = el('i'); i.style.background = l.color; left.append(i, document.createTextNode(l.name));
+    s.append(left, el('span', 'lsz', l.bytes ? l.bytes.length + ' Б' : ''));
+    d.appendChild(s);
+    const t = el('table', 'fl'); l.fields.forEach(f => { const tr = document.createElement('tr'); f.forEach(v => tr.appendChild(el('td', null, v))); t.appendChild(tr); });
+    d.appendChild(t);
+    d.addEventListener('mouseenter', () => litHex(k, true)); d.addEventListener('mouseleave', () => litHex(k, false));
+    box.appendChild(d);
+  });
+}
+function renderHex(st){
+  const box = $('#hex'); box.innerHTML = '';
+  if (!st.ly[0].bytes) { box.appendChild(el('p', 'hint', 'У служебных сообщений показываем поля, без байтов.')); $('#hexCnt').textContent = ''; return; }
+  const all = []; st.ly.forEach((l, k) => l.bytes.forEach(b => all.push([b, k, l.color])));
+  $('#hexCnt').textContent = all.length + ' байт';
+  for (let o = 0; o < all.length; o += 16) {
+    const r = el('div', 'hrow'); r.appendChild(el('span', 'off', hx(o, 4)));
+    const hb = el('span'), asc = el('span');
+    all.slice(o, o + 16).forEach(([b, k, c], j) => { const sp = el('span', 'b', hx(b)); sp.style.color = c; sp.dataset.l = k; hb.appendChild(sp); hb.appendChild(document.createTextNode(j === 7 ? '  ' : ' '));
+      const ch = b >= 32 && b < 127 ? String.fromCharCode(b) : '·'; const a = el('span', 'b', ch); a.style.color = c; a.dataset.l = k; asc.appendChild(a); });
+    r.append(hb, asc); box.appendChild(r);
+  }
+  const lg = el('div', 'hleg'); const seen = {};
+  st.ly.forEach(l => { const short = l.name.split(' · ')[0]; if (seen[short]) return; seen[short] = 1; const s = el('span'); const i = el('i'); i.style.background = l.color; s.append(i, document.createTextNode(short)); lg.appendChild(s); });
+  box.appendChild(lg);
+}
+function litHex(k, on){ document.querySelectorAll('#hex span.b[data-l="' + k + '"]').forEach(s => s.classList.toggle('lit', on)); }
+
+/* ================= Side panel ================= */
+function setTab(t){ S.tab = t; document.querySelectorAll('.tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === t ? 'true' : 'false')); renderPane(); }
+function openDev(id){ S.dev = id; S.line = null; setTab('dev'); }
+function relsFor(dev, key){ return S.sc.rel.filter(r => (r.a[0] === dev && r.a[1] === key) || (r.b[0] === dev && r.b[1] === key)); }
+function renderPane(){
+  const p = $('#pane'); p.innerHTML = ''; const sc = S.sc;
+  if (S.tab === 'dev') {
+    if (!S.dev) {
+      p.appendChild(el('p', 'hint', 'Нажмите на устройство на карте или в списке: откроется его конфигурация. Строки разбираются по словам, а строки со значком «связь» показывают, с чем они должны совпасть на другой стороне.'));
+      const l = el('div', 'dlist');
+      Object.keys(sc.dev).forEach(id => { const d = sc.dev[id]; const b = el('button', 'ditem'); b.type = 'button';
+        b.append(el('span', 'badge b-' + d.kind, {cl:'PC', pe:'PE', p:'P', rr:'RR'}[d.kind]), el('span', 'nm', d.name), el('span', 'sub', d.sub));
+        b.addEventListener('click', () => openDev(id)); l.appendChild(b); });
+      p.appendChild(l); return;
+    }
+    const d = sc.dev[S.dev];
+    const back = el('button', 'back', '← Все устройства'); back.type = 'button'; back.addEventListener('click', () => { S.dev = null; showRel(null); renderPane(); }); p.appendChild(back);
+    const h = el('div', 'dhead'); h.append(el('span', 'badge b-' + d.kind, {cl:'PC', pe:'PE', p:'P', rr:'RR'}[d.kind]));
+    const ht = el('div'); ht.append(el('h3', null, d.name), el('p', 'sub', d.vendor)); h.appendChild(ht); p.appendChild(h);
+    if (d.note) p.appendChild(el('p', 'note', d.note));
+    p.appendChild(el('p', 'sec', 'КОНФИГУРАЦИЯ'));
+    const code = el('div', 'code');
+    (sc.cfg[S.dev] || []).forEach(([key, txt]) => {
+      const ln = el('div', 'ln' + (txt.startsWith('#') ? ' cm' : '') + (S.line === key ? ' hl' : '')); ln.appendChild(el('span', null, txt));
+      const rs = relsFor(S.dev, key); if (rs.length) ln.appendChild(el('span', 'rel', '⇄ связь'));
+      ln.addEventListener('click', () => { S.line = key; const r = relsFor(S.dev, key); showRel(r[0] || null); renderPane(); });
+      code.appendChild(ln);
+    });
+    p.appendChild(code);
+    if (S.line && LX[S.line]) {
+      const x = LX[S.line], xp = el('div', 'xp');
+      xp.appendChild(el('p', 'xp-s', x.s));
+      const parts = el('div', 'xp-parts'); x.p.forEach(([a, b]) => { const t = el('div', 'xpt'); t.append(el('b', null, a), el('span', null, b)); parts.appendChild(t); }); xp.appendChild(parts);
+      const rs = relsFor(S.dev, S.line);
+      if (rs.length) { const xr = el('div', 'xrel'); rs.forEach(r => { const other = r.a[0] === S.dev ? r.b : r.a;
+        const b = el('button', 'relbtn'); b.type = 'button'; b.append(el('b', null, '⇄ ' + r.t + ' · ' + sc.dev[other[0]].name), el('code', null, other[2] + '  ✓ совпадает'), el('span', 'hint', r.why));
+        b.addEventListener('click', () => { S.dev = other[0]; S.line = other[1]; showRel(r); renderPane(); }); xr.appendChild(b); }); xp.appendChild(xr); }
+      p.appendChild(xp);
+      if (HAS_ANIME && !reduce) anime({targets:xp, opacity:[0,1], translateY:[6,0], duration:260, easing:'easeOutQuad'});
+    } else p.appendChild(el('p', 'hint', 'Нажмите на строку конфигурации, чтобы разобрать её по словам.'));
+  } else if (S.tab === 'rel') {
+    p.appendChild(el('p', 'hint', 'Что должно совпасть между устройствами. Нажмите на связь — она появится на карте.'));
+    sc.rel.forEach(r => {
+      const c = el('button', 'rcard' + (S.rel === r.id ? ' on' : '')); c.type = 'button';
+      const rt = el('div', 'rt'); rt.append(el('span', null, r.t), el('span', 'ok', '✓ совпадает')); c.appendChild(rt);
+      const pr = el('div', 'rpair'); [r.a, r.b].forEach(s => { const d = el('div'); d.append(el('small', null, sc.dev[s[0]].name), el('code', null, s[2])); pr.appendChild(d); }); c.appendChild(pr);
+      c.appendChild(el('p', null, r.why));
+      c.addEventListener('click', () => { showRel(r); renderPane(); });
+      p.appendChild(c);
+    });
+  } else {
+    p.appendChild(el('p', 'hint', 'Таблицы после сигнализации. Строка, которую использует текущий шаг, подсвечена. Номера меток условные.' + (sc.key === 'l2c' ? ' У Huawei VSI есть ещё MAC-таблица: Juniper в l2circuit MAC не изучает, а VSI изучает.' : ' В l2vpn обе стороны — VPWS: MAC-адреса не изучаются.')));
+    const st = S.steps[S.idx], hit = st && st.tbl;
+    tables(sc).forEach(t => {
+      p.appendChild(el('p', 'sec', t.title.toUpperCase()));
+      const tb = el('table', 'kv'); const hr = document.createElement('tr'); t.cols.forEach(c => hr.appendChild(el('th', null, c))); tb.appendChild(hr);
+      t.rows.forEach(r => { const tr = document.createElement('tr'); if (hit && hit.some(h => h.dev === t.dev && String(h.key) === String(r.key))) tr.className = 'hit'; r.c.forEach((v, k) => tr.appendChild(el(k === 0 && t.cols[0] === 'Что' ? 'th' : 'td', null, v))); tb.appendChild(tr); });
+      p.appendChild(tb);
+    });
+  }
+}
+
+/* ================= Wiring ================= */
+function setScenario(k){
+  stop(); S.sc = SC[k]; S.dev = null; S.line = null; S.arpCached = false;
+  document.querySelectorAll('[data-sc]').forEach(b => b.setAttribute('aria-pressed', b.dataset.sc === k ? 'true' : 'false'));
+  $('#from').options[0].textContent = 'Клиент A · 10.10.10.1'; $('#from').options[1].textContent = 'Клиент B · 10.10.10.2';
+  drawTiles(S.sc); drawLinks(S.sc); drawDevs(S.sc); showRel(null);
+  buildPing(); renderPane();
+}
+document.querySelectorAll('[data-sc]').forEach(b => b.addEventListener('click', () => setScenario(b.dataset.sc)));
+$('#pingBtn').addEventListener('click', () => { buildPing(); play(); });
+$('#sigBtn').addEventListener('click', () => { buildSig(); play(); });
+$('#clrBtn').addEventListener('click', () => { S.arpCached = false; buildPing(); });
+['#optArp', '#optReply', '#from'].forEach(s => $(s).addEventListener('change', buildPing));
+$('#playBtn').addEventListener('click', play);
+$('#prevBtn').addEventListener('click', () => step(-1));
+$('#nextBtn').addEventListener('click', () => step(1));
+document.querySelectorAll('[data-sp]').forEach(b => b.addEventListener('click', () => { S.speed = +b.dataset.sp; document.querySelectorAll('[data-sp]').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false')); }));
+document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+$('#filter').addEventListener('input', renderCap);
+document.addEventListener('keydown', e => {
+  if (!$('#tour').hidden) { if (e.key === 'Escape') tourClose(); else if (e.key === 'ArrowRight') { e.preventDefault(); $('#tourNext').click(); } else if (e.key === 'ArrowLeft') { e.preventDefault(); tourGo(tIdx - 1); } return; }
+  const t = (e.target.tagName || '').toLowerCase(); if (t === 'input' || t === 'select') return;
+  if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
+  else if (e.key === ' ' && t !== 'button') { e.preventDefault(); play(); }
+});
+G3 = init3D();
+setScenario('l2c');
+if (HAS_ANIME && !reduce) anime({targets:'#tourBtn', boxShadow:['0 0 0 0 rgba(242,165,65,.7)', '0 0 0 10px rgba(242,165,65,0)'], duration:1400, delay:900, loop:3, easing:'easeOutQuad'});
+})();
+</script>
+
+
+</body></html>

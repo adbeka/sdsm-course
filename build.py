@@ -512,7 +512,32 @@ def page_shell(title, body, depth="../"):
 </html>'''
 
 
-def render_module(m, modules):
+def lab_card_html(lab, depth=""):
+    tags = "".join(f'<span class="lab-card-tag">{t}</span>' for t in lab.get("tags", []))
+    return (f'<a class="lab-card" href="{depth}{lab["url"]}">'
+            f'<div class="lab-card-badge">ИНТЕРАКТИВНАЯ ЛАБА</div>'
+            f'<div class="lab-card-title">{lab["title"]}</div>'
+            f'<div class="lab-card-desc">{lab["desc"]}</div>'
+            f'<div class="lab-card-foot"><div class="lab-card-tags">{tags}</div>'
+            f'<span class="lab-card-cta">Открыть лабу →</span></div></a>')
+
+
+def interactive_section(m, labs):
+    items = [lab for lab in labs if m["id"] in lab.get("modules", [])]
+    if not items:
+        return ""
+    cards = "".join(lab_card_html(lab, depth="../") for lab in items)
+    return f'''<section id="interactive">
+    <div class="section-head">
+      <div class="section-num">— ИНТЕРАКТИВ</div>
+      <div class="section-title">Посмотреть вживую</div>
+      <p class="section-desc">Пошаговая симуляция по теме модуля: кадры, метки и конфиги на каждом участке.</p>
+    </div>
+    {cards}
+  </section>'''
+
+
+def render_module(m, modules, labs=()):
     media = m.get("media") or {}
     has_media = bool(media.get("video_url") or media.get("images"))
     has_cli = bool(m.get("cli_example"))
@@ -545,6 +570,7 @@ def render_module(m, modules):
   {process_section(m)}
   {cli_section(m)}
   {lab_section(m)}
+  {interactive_section(m, labs)}
   {glossary_section(m)}
   {quiz_section(m)}
   {related_section(m, {x["id"]: x for x in modules})}
@@ -559,7 +585,7 @@ def render_module(m, modules):
     return page_shell(f'БЗПД · {m["tab_label"]}', body, depth="../")
 
 
-def render_home(modules):
+def render_home(modules, labs=()):
     groups = {}
     for m in modules:
         groups.setdefault(m["group"], []).append(m)
@@ -616,6 +642,7 @@ def render_home(modules):
     </div>
     <div class="wiki-callout-cta">Открыть вики →</div>
   </a>
+  {"".join(lab_card_html(lab) for lab in labs)}
   <a class="wiki-callout tools-callout" href="tools.html">
     <div class="wiki-callout-icon">🧰</div>
     <div class="wiki-callout-body">
@@ -673,7 +700,7 @@ def render_glossary_page(modules):
 TOOLKIT_FILE = ROOT / "data" / "toolkit.json"
 
 TOOLS_TOC = [
-    ("calc-subnet", "Подсети"), ("calc-summary", "Суммаризация"), ("calc-mtu", "MTU / MSS"),
+    ("labs", "Интерактивные лабы"), ("calc-subnet", "Подсети"), ("calc-summary", "Суммаризация"), ("calc-mtu", "MTU / MSS"),
     ("calc-speed", "Скорость и BDP"), ("calc-mac", "MAC / EUI-64"), ("ref-masks", "Маски"),
     ("refs", "Справочники"), ("commands", "IOS ↔ Linux"), ("checklist", "Чек-лист"),
     ("templates", "Шаблоны"), ("habits", "Привычки"),
@@ -775,6 +802,11 @@ def render_tools_page(modules, tk):
     <h1>Инструменты <span>инженера</span></h1>
     <p class="hero-sub">То, что нужно под рукой на смене: калькуляторы, справочные таблицы, шпаргалка команд, чек-лист траблшутинга и готовые шаблоны документов.</p>
     <div class="tools-toc">{toc}</div>
+  </section>
+
+  <section id="labs">
+    {section_head("00 — ИНТЕРАКТИВ", "Интерактивные лаборатории", "Симуляции, в которых видно каждый кадр, метку и строку конфига. Открываются на весь экран.")}
+    {"".join(lab_card_html(lab) for lab in tk["labs"])}
   </section>
 
   <section id="calc-subnet">
@@ -922,6 +954,8 @@ def tools_search_entries(tk):
                 for t, a in extra]
     entries += [{"type": "tool", "title": c["task"], "module": label + " · команды",
                  "snippet": c["ios"] + " " + c["linux"], "url": "tools.html#commands"} for c in tk["commands"]]
+    entries += [{"type": "tool", "title": lab["title"], "module": label + " · лабы",
+                 "snippet": lab["desc"][:140], "url": lab["url"]} for lab in tk["labs"]]
     entries += [{"type": "tool", "title": t["label"], "module": label + " · шаблоны",
                  "snippet": t["note"], "url": f'tools.html#tpl-{t["id"]}'} for t in tk["templates"]]
     return entries
@@ -935,16 +969,17 @@ def main():
 
     shutil.copy(ROOT / "assets" / "style.css", DIST / "assets" / "style.css")
     shutil.copy(ROOT / "assets" / "app.js", DIST / "assets" / "app.js")
+    shutil.copytree(ROOT / "labs", DIST / "labs")
 
     modules = load_modules()
-
-    (DIST / "index.html").write_text(render_home(modules), encoding="utf-8")
-    (DIST / "glossary.html").write_text(render_glossary_page(modules), encoding="utf-8")
     toolkit = json.loads(TOOLKIT_FILE.read_text(encoding="utf-8"))
+
+    (DIST / "index.html").write_text(render_home(modules, toolkit["labs"]), encoding="utf-8")
+    (DIST / "glossary.html").write_text(render_glossary_page(modules), encoding="utf-8")
     (DIST / "tools.html").write_text(render_tools_page(modules, toolkit), encoding="utf-8")
     for m in modules:
         out = DIST / "modules" / f'{m["id"]}.html'
-        out.write_text(render_module(m, modules), encoding="utf-8")
+        out.write_text(render_module(m, modules, toolkit["labs"]), encoding="utf-8")
 
     search_index = build_search_index(modules) + tools_search_entries(toolkit)
     (DIST / "assets" / "search-index.json").write_text(
