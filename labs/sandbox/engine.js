@@ -171,8 +171,8 @@
 
 
     /* ---------- STP (упрощённый RSTP/PVST для одного VLAN) ---------- */
-    stpOn(sw, v) { return !this.dev[sw].stpOff.includes(v); }
-    bid(sw, v) { const D = this.dev[sw]; return [(D.prio[v] || 32768) + v, D.mac]; }
+    stpOn(sw, v) { const D = this.dev[sw]; return !D.stpAllOff && !D.stpOff.includes(v); }
+    bid(sw, v) { const D = this.dev[sw]; return [(D.prio[v] || D.prioAll || 32768) + v, D.mac]; }
     cmpBid(a, b) { return a[0] - b[0] || (a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0); }
     stp(v) {
       const n = this, sws = Object.keys(n.dev).filter(id => n.dev[id].type === 'sw');
@@ -284,6 +284,10 @@
     ospfIf(r, ifn) {
       const R = this.dev[r], f = R.ifaces[ifn];
       if (!R.ospf || f.ip === null) return null;
+      if (R.ospf.ifs) { // Junos: OSPF включается на интерфейсе по имени
+        const e = R.ospf.ifs.find(x => x.ifn === ifn);
+        return e ? { area: e.area, passive: R.ospf.passive.includes(ifn) } : null;
+      }
       const nw = R.ospf.networks.find(n => wcMatch(f.ip, n.net, n.wc));
       if (!nw) return null;
       return { area: nw.area, passive: R.ospf.passive.includes(ifn) };
@@ -542,15 +546,22 @@
   const MODE_PROMPT = { exec: '#', config: '(config)#', if: '(config-if)#', router: '(config-router)#', acl: '(config-ext-nacl)#', vlan: '(config-vlan)#', dhcp: '(dhcp-config)#' };
   function carriesV(f, v) { return f.mode === 'access' ? f.vlan === v : (f.allowed === null || f.allowed.includes(v)); }
 
+  // Диалекты CLI (Huawei VRP, Juniper Junos) регистрируются из dialects.js
+  const DIALECTS = {};
+
   class Session {
     constructor(net, devId, hooks) {
       this.net = net; this.id = devId; this.mode = 'exec'; this.ifn = null; this.acl = null; this.vlan = null;
       this.hooks = hooks || {};
+      this.dialect = net.dialect && DIALECTS[net.dialect] && this.dev.type !== 'pc' ? net.dialect : 'ios';
+      this.dx = this.dialect === 'ios' ? null : DIALECTS[this.dialect];
+      if (this.dx) { this.mode = this.dx.startMode; if (this.dx.init) this.dx.init(this); }
     }
     get dev() { return this.net.dev[this.id]; }
     prompt() {
       const D = this.dev;
       if (D.type === 'pc') return D.name + '>';
+      if (this.dx) return this.dx.prompt(this);
       return D.name + MODE_PROMPT[this.mode];
     }
     say(l) { this.out.push(l); }
@@ -562,18 +573,22 @@
       if (tokens[0] === '?' || tokens[tokens.length - 1] === '?') { this.help(tokens.slice(0, -1)); return this.out; }
       const before = this.snapshot();
       const res = this.dispatch(tokens);
-      if (res === 'invalid') this.say('% Invalid input detected — команда не распознана. Введите ? для списка команд.');
-      else if (res === 'incomplete') this.say('% Incomplete command.');
-      else if (res === 'ambiguous') this.say(`% Ambiguous command: "${line.trim()}"`);
+      const E = (this.dx && this.dx.errors) || {
+        invalid: '% Invalid input detected — команда не распознана. Введите ? для списка команд.',
+        incomplete: '% Incomplete command.', ambiguous: `% Ambiguous command: "${line.trim()}"` };
+      if (res === 'invalid' || res === 'incomplete' || res === 'ambiguous') this.say(E[res]);
       this.afterChange(before);
       return this.out;
     }
-    grammar(mode) { return GRAMMAR.filter(g => g.modes.includes(mode) && g.types.includes(this.dev.type)); }
+    grammar(mode) {
+      const src = this.dx && this.dev.type !== 'pc' ? this.dx.grammar : GRAMMAR;
+      return src.filter(g => g.modes.includes(mode) && g.types.includes(this.dev.type));
+    }
     match(tokens, mode) {
       const found = [];
       let incomplete = false;
       for (const g of this.grammar(mode)) {
-        const r = matchPattern(tokens, g.pat, this.dev);
+        const r = matchPattern(tokens, g.pat, this.dev, this.dialect);
         if (r === 'incomplete') incomplete = true;
         else if (r) found.push({ g, args: r.args, score: r.score });
       }
@@ -584,6 +599,15 @@
     }
     dispatch(tokens) {
       const mode = this.dev.type === 'pc' ? 'pc' : this.mode;
+      if (this.dx && mode !== 'pc') {
+        let m = this.match(tokens, mode);
+        if (!m) for (const fm of (this.dx.fallback ? this.dx.fallback(mode) : [])) {
+          const m2 = this.match(tokens, fm);
+          if (m2 && typeof m2 === 'object') { if (!this.dx.keepMode) this.mode = fm; m = m2; break; }
+        }
+        if (m && typeof m === 'object') { m.g.run(this, m.args); return 'ok'; }
+        return m || 'invalid';
+      }
       if (mode !== 'exec' && mode !== 'pc' && tokens[0].toLowerCase() === 'do' && tokens.length > 1) {
         const m = this.match(tokens.slice(1), 'exec');
         if (m && typeof m === 'object') { m.g.run(this, m.args); return 'ok'; }
@@ -604,7 +628,7 @@
       const cands = new Set();
       for (const g of this.grammar(mode)) {
         if (g.pat.length <= tokens.length) continue;
-        const head = matchPattern(tokens, g.pat.slice(0, tokens.length), this.dev);
+        const head = matchPattern(tokens, g.pat.slice(0, tokens.length), this.dev, this.dialect);
         if (!head || head === 'incomplete') continue;
         const p = g.pat[tokens.length];
         if (p[0] === '(') p.slice(1, -1).split('|').forEach(o => { if (o.startsWith(last)) cands.add(o); });
@@ -618,7 +642,7 @@
       const mode = this.dev.type === 'pc' ? 'pc' : this.mode;
       const rows = [];
       for (const g of this.grammar(mode)) {
-        if (tokens.length && !matchPattern(tokens, g.pat.slice(0, tokens.length), this.dev)) continue;
+        if (tokens.length && !matchPattern(tokens, g.pat.slice(0, tokens.length), this.dev, this.dialect)) continue;
         rows.push('  ' + pad(g.pat.join(' '), 46) + (g.help || ''));
       }
       this.say(rows.length ? rows.join('\n') : '% Нет подходящих команд.');
@@ -634,9 +658,7 @@
         if (before.links[k] === after.links[k]) return;
         for (const [d, i] of [l.a, l.b]) {
           if (d !== this.id || this.dev.type === 'pc') continue;
-          const st = after.links[k] ? 'up' : (this.dev.ifaces[i].shut ? 'administratively down' : 'down');
-          this.logEv(`%LINK-3-UPDOWN: Interface ${fullIf(i)}, changed state to ${st}`);
-          this.logEv(`%LINEPROTO-5-UPDOWN: Line protocol on Interface ${fullIf(i)}, changed state to ${after.links[k] ? 'up' : 'down'}`);
+          this.event('link', this.id, { ifn: i, up: after.links[k], admin: this.dev.ifaces[i].shut });
         }
       });
       for (const id of Object.keys(after.nbr)) {
@@ -644,19 +666,28 @@
         const key = x => x.nbr + x.ifn;
         for (const x of a) {
           const old = b.find(y => key(y) === key(x));
-          if (!old || old.state !== x.state) {
-            const msg = `%OSPF-5-ADJCHG: Process ${n.dev[id].ospf.pid}, Nbr ${n2ip(x.rid)} on ${fullIf(x.ifn)} from ${old ? old.state : 'LOADING'} to ${x.state}${x.state === 'FULL' ? ', Loading Done' : ''}`;
-            n.dev[id].log.push(msg);
-            if (id === this.id) this.say(msg);
-          }
+          if (!old || old.state !== x.state) this.event('ospf', id, { nbr: x, from: old ? old.state : 'LOADING', to: x.state });
         }
-        for (const y of b) if (!a.find(x => key(x) === key(y))) {
-          const msg = `%OSPF-5-ADJCHG: Process ${n.dev[id].ospf.pid}, Nbr ${n2ip(y.rid)} on ${fullIf(y.ifn)} from ${y.state} to DOWN, Neighbor Down`;
-          n.dev[id].log.push(msg);
-          if (id === this.id) this.say(msg);
-        }
+        for (const y of b) if (!a.find(x => key(x) === key(y))) this.event('ospf', id, { nbr: y, from: y.state, to: 'DOWN' });
       }
       if (this.hooks.changed) this.hooks.changed();
+    }
+    // событие (линк, OSPF) в журнал устройства; в консоль — если устройство текущее и диалект так делает
+    event(kind, devId, d) {
+      const n = this.net, D = n.dev[devId];
+      let lines, print = true;
+      if (this.dx && this.dx.event) ({ lines, print } = this.dx.event(this, kind, D, d));
+      else if (kind === 'link') {
+        const st = d.up ? 'up' : (d.admin ? 'administratively down' : 'down');
+        lines = [`%LINK-3-UPDOWN: Interface ${fullIf(d.ifn)}, changed state to ${st}`,
+          `%LINEPROTO-5-UPDOWN: Line protocol on Interface ${fullIf(d.ifn)}, changed state to ${d.up ? 'up' : 'down'}`];
+      } else {
+        const x = d.nbr;
+        lines = [d.to === 'DOWN'
+          ? `%OSPF-5-ADJCHG: Process ${D.ospf.pid}, Nbr ${n2ip(x.rid)} on ${fullIf(x.ifn)} from ${d.from} to DOWN, Neighbor Down`
+          : `%OSPF-5-ADJCHG: Process ${D.ospf.pid}, Nbr ${n2ip(x.rid)} on ${fullIf(x.ifn)} from ${d.from} to ${d.to}${d.to === 'FULL' ? ', Loading Done' : ''}`];
+      }
+      for (const l of lines) { D.log.push(l); if (print && devId === this.id) this.say(l); }
     }
   }
 
@@ -666,8 +697,12 @@
     '<num>': t => /^\d+$/.test(t),
     '<word>': () => true,
     '<list>': t => /^\d+([,-]\d+)*$/.test(t),
+    '<pfx>': t => { const m = t.split('/'); return m.length === 2 && ip2n(m[0]) !== null && /^\d{1,2}$/.test(m[1]) && +m[1] <= 32; },
+    '<ml>': t => mask2pfx(t) >= 0 || (/^\d{1,2}$/.test(t) && +t <= 32),
+    '<area>': t => /^\d+$/.test(t) || ip2n(t) !== null,
   };
-  function matchPattern(tokens, pat, dev) {
+  function matchPattern(tokens, pat, dev, dialect) {
+    const nIf = (dialect && DIALECTS[dialect] && DIALECTS[dialect].normIf) || normIf;
     let i = 0, score = 0;
     const args = [];
     for (let k = 0; k < pat.length; k++) {
@@ -676,9 +711,9 @@
       if (i >= tokens.length) return 'incomplete';
       const t = tokens[i], tl = t.toLowerCase();
       if (p === '<if>') {
-        let v = normIf(dev, t);
+        let v = nIf(dev, t);
         if (v) { args.push(v); i++; continue; }
-        if (i + 1 < tokens.length && (v = normIf(dev, t + tokens[i + 1]))) { args.push(v); i += 2; continue; }
+        if (i + 1 < tokens.length && (v = nIf(dev, t + tokens[i + 1]))) { args.push(v); i += 2; continue; }
         return null;
       }
       if (p[0] === '<') { if (!V[p](t)) return null; args.push(t); i++; continue; }
@@ -1190,7 +1225,13 @@
     L.push(Object.assign({ seq }, ace));
   }
 
-  const NetSim = { Net, Session, PC, SW, RT, ip2n, n2ip, mask2pfx, fullIf };
+  // подпись интерфейса для схемы в выбранном диалекте
+  function ifLabel(dev, name, dialect) {
+    const dx = DIALECTS[dialect];
+    return dx && dx.ifShort && dev.type !== 'pc' ? dx.ifShort(dev, name) : name;
+  }
+  const NetSim = { Net, Session, PC, SW, RT, ip2n, n2ip, mask2pfx, fullIf, ifLabel, DIALECTS,
+    _: { ip2n, n2ip, pfx2mask, mask2pfx, netOf, sameNet, wcMatch, parseList, fmtList, pad, carriesV, fullIf, normIf, G, GRAMMAR } };
   if (typeof module !== 'undefined' && module.exports) module.exports = NetSim;
   else root.NetSim = NetSim;
 })(typeof window !== 'undefined' ? window : globalThis);

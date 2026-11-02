@@ -4,16 +4,17 @@
       "id": "sandbox",
       "title": "Сетевая песочница: найди поломку и почини",
       "url": "labs/sandbox.html",
-      "desc": "14 сломанных сетей и свободный стенд. Заходите в консоль ПК, коммутаторов и роутеров, вводите настоящие команды Cisco IOS (show, ping, traceroute, configure), смотрите, где теряется пакет, и чините: VLAN, транк, err-disabled, петля STP и шторм, DHCP и relay, шлюз, обратный маршрут, маска, OSPF, ACL, NAT/PAT и статический NAT. Подсказки в три шага и разбор «что запомнить» после каждой победы.",
+      "desc": "14 сломанных сетей и свободный стенд. Заходите в консоль ПК, коммутаторов и роутеров, вводите настоящие команды Cisco IOS, Huawei VRP или Juniper Junos (переключатель синтаксиса: display/undo/system-view, set/commit/show | compare), смотрите, где теряется пакет, и чините: VLAN, транк, err-disabled, петля STP и шторм, DHCP и relay, шлюз, обратный маршрут, маска, OSPF, ACL, NAT/PAT и статический NAT. Подсказки в три шага и разбор «что запомнить» после каждой победы.",
       "tags": [
         "CLI",
+        "Cisco",
+        "Huawei",
+        "Juniper",
         "траблшутинг",
         "VLAN",
         "STP",
-        "DHCP",
-        "NAT",
         "OSPF",
-        "ACL"
+        "NAT"
       ],
       "modules": [
         "vlan",
@@ -498,152 +499,226 @@
     {
       "task": "Сводка по интерфейсам и IP",
       "ios": "show ip interface brief",
-      "linux": "ip -br addr"
+      "linux": "ip -br addr",
+      "junos": "show interfaces terse",
+      "vrp": "display ip interface brief"
     },
     {
       "task": "Ошибки, CRC, дропы на порту",
       "ios": "show interfaces Gi0/1",
-      "linux": "ip -s link show eth0"
+      "linux": "ip -s link show eth0",
+      "junos": "show interfaces ge-0/0/1 extensive",
+      "vrp": "display interface GigabitEthernet0/0/1"
     },
     {
       "task": "Скорость / дуплекс / статус портов",
       "ios": "show interfaces status",
-      "linux": "ethtool eth0"
+      "linux": "ethtool eth0",
+      "junos": "show interfaces ge-0/0/1 media",
+      "vrp": "display interface brief"
     },
     {
       "task": "Уровень сигнала оптики",
       "ios": "show interfaces transceiver detail",
-      "linux": "ethtool -m eth0"
+      "linux": "ethtool -m eth0",
+      "junos": "show interfaces diagnostics optics ge-0/0/1",
+      "vrp": "display transceiver interface GigabitEthernet0/0/1 verbose"
     },
     {
       "task": "Порты в err-disabled и причина",
       "ios": "show interfaces status err-disabled",
-      "linux": "—"
+      "linux": "—",
+      "junos": "—",
+      "vrp": "display error-down recovery"
     },
     {
       "task": "Таблица MAC-адресов",
       "ios": "show mac address-table",
-      "linux": "bridge fdb show"
+      "linux": "bridge fdb show",
+      "junos": "show ethernet-switching table",
+      "vrp": "display mac-address"
     },
     {
       "task": "Найти, на каком порту MAC",
       "ios": "show mac address-table address aaaa.bbbb.cccc",
-      "linux": "bridge fdb show | grep aa:bb"
+      "linux": "bridge fdb show | grep aa:bb",
+      "junos": "show ethernet-switching table | match 00:1a:2b",
+      "vrp": "display mac-address aaaa-bbbb-cccc"
     },
     {
       "task": "VLAN и порты доступа",
       "ios": "show vlan brief",
-      "linux": "bridge vlan show"
+      "linux": "bridge vlan show",
+      "junos": "show vlans",
+      "vrp": "display vlan"
     },
     {
       "task": "Транки и разрешённые VLAN",
       "ios": "show interfaces trunk",
-      "linux": "bridge vlan show"
+      "linux": "bridge vlan show",
+      "junos": "show ethernet-switching interface",
+      "vrp": "display port vlan"
     },
     {
       "task": "Состояние STP",
       "ios": "show spanning-tree vlan 10",
-      "linux": "bridge link show"
+      "linux": "bridge link show",
+      "junos": "show spanning-tree interface",
+      "vrp": "display stp brief"
     },
     {
       "task": "Состояние LAG / EtherChannel",
       "ios": "show etherchannel summary",
-      "linux": "cat /proc/net/bonding/bond0"
+      "linux": "cat /proc/net/bonding/bond0",
+      "junos": "show lacp interfaces",
+      "vrp": "display eth-trunk"
     },
     {
       "task": "Соседи по CDP / LLDP",
       "ios": "show cdp neighbors detail\nshow lldp neighbors",
-      "linux": "lldpctl"
+      "linux": "lldpctl",
+      "junos": "show lldp neighbors",
+      "vrp": "display lldp neighbor brief"
     },
     {
       "task": "ARP / таблица соседей",
       "ios": "show ip arp",
-      "linux": "ip neigh"
+      "linux": "ip neigh",
+      "junos": "show arp no-resolve",
+      "vrp": "display arp"
     },
     {
       "task": "Таблица маршрутизации",
       "ios": "show ip route",
-      "linux": "ip route"
+      "linux": "ip route",
+      "junos": "show route",
+      "vrp": "display ip routing-table"
     },
     {
       "task": "Каким маршрутом уйдёт пакет",
       "ios": "show ip route 8.8.8.8\nshow ip cef 8.8.8.8",
-      "linux": "ip route get 8.8.8.8"
+      "linux": "ip route get 8.8.8.8",
+      "junos": "show route 8.8.8.8",
+      "vrp": "display ip routing-table 8.8.8.8"
     },
     {
       "task": "Соседи OSPF",
       "ios": "show ip ospf neighbor",
-      "linux": "vtysh -c 'show ip ospf neighbor'"
+      "linux": "vtysh -c 'show ip ospf neighbor'",
+      "junos": "show ospf neighbor",
+      "vrp": "display ospf peer brief"
     },
     {
       "task": "Сессии BGP",
       "ios": "show ip bgp summary",
-      "linux": "vtysh -c 'show bgp summary'"
+      "linux": "vtysh -c 'show bgp summary'",
+      "junos": "show bgp summary",
+      "vrp": "display bgp peer"
     },
     {
       "task": "Проверка MTU без фрагментации",
       "ios": "ping 10.0.0.1 size 1500 df-bit",
-      "linux": "ping -M do -s 1472 10.0.0.1"
+      "linux": "ping -M do -s 1472 10.0.0.1",
+      "junos": "ping 10.0.0.1 size 1472 do-not-fragment",
+      "vrp": "ping -f -s 1472 10.0.0.1"
     },
     {
       "task": "Путь до узла",
       "ios": "traceroute 10.0.0.1",
-      "linux": "mtr -n 10.0.0.1"
+      "linux": "mtr -n 10.0.0.1",
+      "junos": "traceroute 10.0.0.1",
+      "vrp": "tracert 10.0.0.1"
     },
     {
       "task": "Проверить TCP-порт",
       "ios": "telnet 10.0.0.1 443",
-      "linux": "nc -zv 10.0.0.1 443"
+      "linux": "nc -zv 10.0.0.1 443",
+      "junos": "telnet 10.0.0.1 port 443",
+      "vrp": "telnet 10.0.0.1 443"
     },
     {
       "task": "Захват трафика",
       "ios": "monitor capture CAP interface Gi0/1 both\nmonitor capture CAP match any\nmonitor capture CAP start",
-      "linux": "tcpdump -i eth0 -nn host 10.0.0.1"
+      "linux": "tcpdump -i eth0 -nn host 10.0.0.1",
+      "junos": "monitor traffic interface ge-0/0/1",
+      "vrp": "—"
     },
     {
       "task": "Логи",
       "ios": "show logging | include %LINK|%LINEPROTO",
-      "linux": "journalctl -k -f"
+      "linux": "journalctl -k -f",
+      "junos": "show log messages",
+      "vrp": "display logbuffer"
     },
     {
       "task": "Загрузка CPU по процессам",
       "ios": "show processes cpu sorted",
-      "linux": "top"
+      "linux": "top",
+      "junos": "show chassis routing-engine",
+      "vrp": "display cpu-usage"
     },
     {
       "task": "Вывод debug в SSH-сессию",
       "ios": "terminal monitor",
-      "linux": "—"
+      "linux": "—",
+      "junos": "monitor start messages",
+      "vrp": "terminal monitor\nterminal debugging"
     },
     {
       "task": "Нужная часть конфига",
       "ios": "show running-config | section router ospf",
-      "linux": "—"
+      "linux": "—",
+      "junos": "show configuration protocols ospf",
+      "vrp": "display current-configuration configuration ospf"
     },
     {
       "task": "Модель, прошивка, аптайм",
       "ios": "show version",
-      "linux": "uname -a; uptime"
+      "linux": "uname -a; uptime",
+      "junos": "show version",
+      "vrp": "display version"
     },
     {
       "task": "Серийные номера модулей",
       "ios": "show inventory",
-      "linux": "dmidecode -t system"
+      "linux": "dmidecode -t system",
+      "junos": "show chassis hardware",
+      "vrp": "display device"
     },
     {
       "task": "Страховка перед рискованной правкой",
       "ios": "reload in 10\n! ...изменения...\nreload cancel",
-      "linux": "—"
+      "linux": "—",
+      "junos": "commit confirmed 10\n# ...проверка...\ncommit",
+      "vrp": "—"
     },
     {
       "task": "Сохранить конфиг",
       "ios": "copy running-config startup-config",
-      "linux": "—"
+      "linux": "—",
+      "junos": "commit",
+      "vrp": "save"
     },
     {
       "task": "Синхронизация времени",
       "ios": "show ntp associations",
-      "linux": "chronyc sources"
+      "linux": "chronyc sources",
+      "junos": "show ntp associations",
+      "vrp": "display ntp-service sessions"
+    },
+    {
+      "task": "Что изменится в конфиге до применения",
+      "ios": "—",
+      "junos": "show | compare",
+      "vrp": "—",
+      "linux": "—"
+    },
+    {
+      "task": "Откатить последние изменения",
+      "ios": "configure replace flash:backup.cfg",
+      "junos": "rollback 1\ncommit",
+      "vrp": "—",
+      "linux": "—"
     }
   ],
   "checklist": [
@@ -702,6 +777,94 @@
       "label": "Базовая безопасная конфигурация Cisco IOS",
       "note": "Стартовая точка для нового устройства. Имена, адреса и ключи замените на свои; пароли никогда не храните в шаблоне.",
       "code": "hostname SW-ACCESS-01\nip domain name corp.local\nno ip domain-lookup\nservice password-encryption\nservice timestamps log datetime msec localtime\n!\nenable algorithm-type scrypt secret <ENABLE_SECRET>\nusername admin privilege 15 algorithm-type scrypt secret <ADMIN_SECRET>\n!\ncrypto key generate rsa modulus 2048\nip ssh version 2\nip ssh time-out 60\nip ssh authentication-retries 3\nlogin block-for 120 attempts 5 within 60\n!\nno ip http server\nno ip http secure-server\nno cdp run            ! или точечно: no cdp enable на клиентских портах\n!\nip access-list standard MGMT-ONLY\n permit 10.0.100.0 0.0.0.255\n deny   any log\n!\nline con 0\n exec-timeout 10 0\n logging synchronous\n login local\nline vty 0 15\n exec-timeout 10 0\n transport input ssh\n access-class MGMT-ONLY in\n login local\n!\nntp server 10.0.100.10\nclock timezone ALMT 5 0\nlogging host 10.0.100.20\nlogging trap informational\n!\nbanner login ^\nДоступ только для авторизованного персонала. Действия журналируются.\n^\n!\nspanning-tree mode rapid-pvst\nspanning-tree portfast bpduguard default"
+    }
+  ],
+  "config_translate": [
+    {
+      "task": "IP-адрес на интерфейсе",
+      "ios": "interface Gi0/0\n ip address 10.0.1.1 255.255.255.0",
+      "junos": "set interfaces ge-0/0/0 unit 0 family inet address 10.0.1.1/24",
+      "vrp": "interface GigabitEthernet0/0/0\n ip address 10.0.1.1 24"
+    },
+    {
+      "task": "Выключить / включить интерфейс",
+      "ios": "shutdown\nno shutdown",
+      "junos": "set interfaces ge-0/0/0 disable\ndelete interfaces ge-0/0/0 disable",
+      "vrp": "shutdown\nundo shutdown"
+    },
+    {
+      "task": "Порт доступа в VLAN 10",
+      "ios": "interface Fa0/1\n switchport mode access\n switchport access vlan 10",
+      "junos": "set interfaces ge-0/0/1 unit 0 family ethernet-switching interface-mode access vlan members 10",
+      "vrp": "interface GigabitEthernet0/0/1\n port link-type access\n port default vlan 10"
+    },
+    {
+      "task": "Добавить VLAN 10 на транк",
+      "ios": "switchport trunk allowed vlan add 10",
+      "junos": "set interfaces ge-0/0/24 unit 0 family ethernet-switching vlan members 10",
+      "vrp": "port trunk allow-pass vlan 10"
+    },
+    {
+      "task": "Статический маршрут",
+      "ios": "ip route 10.0.2.0 255.255.255.0 10.0.12.2",
+      "junos": "set routing-options static route 10.0.2.0/24 next-hop 10.0.12.2",
+      "vrp": "ip route-static 10.0.2.0 24 10.0.12.2"
+    },
+    {
+      "task": "OSPF на линке, area 0",
+      "ios": "router ospf 1\n network 10.0.12.0 0.0.0.3 area 0",
+      "junos": "set protocols ospf area 0.0.0.0 interface ge-0/0/1.0",
+      "vrp": "ospf 1\n area 0\n  network 10.0.12.0 0.0.0.3"
+    },
+    {
+      "task": "IP MTU на интерфейсе",
+      "ios": "ip mtu 1400",
+      "junos": "set interfaces ge-0/0/1 unit 0 family inet mtu 1400",
+      "vrp": "mtu 1400"
+    },
+    {
+      "task": "DHCP relay",
+      "ios": "interface Gi0/0\n ip helper-address 10.0.1.5",
+      "junos": "set forwarding-options dhcp-relay server-group SRV 10.0.1.5\nset forwarding-options dhcp-relay group LAN active-server-group SRV\nset forwarding-options dhcp-relay group LAN interface ge-0/0/0.0",
+      "vrp": "dhcp enable\ninterface GigabitEthernet0/0/0\n dhcp select relay\n dhcp relay server-ip 10.0.1.5"
+    },
+    {
+      "task": "Описание порта",
+      "ios": "description to-R2",
+      "junos": "set interfaces ge-0/0/1 description to-R2",
+      "vrp": "description to-R2"
+    },
+    {
+      "task": "Применить и сохранить",
+      "ios": "copy running-config startup-config",
+      "junos": "commit   (сохраняется сразу)",
+      "vrp": "save"
+    }
+  ],
+  "vendor_notes": [
+    {
+      "title": "Как применяются изменения",
+      "body_html": "<b>Cisco</b> и <b>Huawei</b> применяют команду сразу, а сохраняют отдельно (<code>copy run start</code> / <code>save</code>). <b>Juniper</b> копит правки в кандидате: ничего не работает до <code>commit</code>, зато есть <code>show | compare</code>, <code>commit confirmed</code> и <code>rollback</code>."
+    },
+    {
+      "title": "Просмотр и отмена",
+      "body_html": "<code>show</code> у Cisco и Juniper, <code>display</code> у Huawei. Отмена команды: <code>no …</code> (Cisco), <code>undo …</code> (Huawei), <code>delete …</code> (Juniper, в режиме конфигурации)."
+    },
+    {
+      "title": "Режимы",
+      "body_html": "Cisco: <code>enable</code> → <code>configure terminal</code>. Huawei: <code>&lt;R1&gt;</code> user view → <code>system-view</code> <code>[R1]</code>, выход <code>quit</code> / <code>return</code>. Juniper: <code>user@R1&gt;</code> → <code>configure</code> <code>user@R1#</code>, operational-команды из конфигурации — через <code>run</code>."
+    },
+    {
+      "title": "Имена интерфейсов",
+      "body_html": "Cisco <code>Gi0/1</code>, Huawei <code>GigabitEthernet0/0/1</code> (кратко <code>GE0/0/1</code>, 10G — <code>XGE</code>), Juniper <code>ge-0/0/1</code> плюс логический unit: адреса и протоколы висят на <code>ge-0/0/1.0</code>."
+    },
+    {
+      "title": "Предпочтение маршрутов",
+      "body_html": "Чем меньше, тем лучше. Cisco AD: connected 0, static 1, OSPF 110. Huawei preference: direct 0, OSPF 10, static 60. Juniper: direct 0, static 5, OSPF internal 10. При миграции static и OSPF могут поменяться местами!"
+    },
+    {
+      "title": "Неочевидные умолчания",
+      "body_html": "Транк Huawei по умолчанию пропускает только VLAN 1. Huawei по умолчанию работает в MSTP (один инстанс на все VLAN), Cisco — в PVST+. Huawei не сверяет MTU в OSPF DD (<code>ospf mtu-enable</code>), а Cisco и Juniper сверяют. У Juniper физический MTU 1514 (с L2-заголовком), IP MTU — 1500."
     }
   ]
 }

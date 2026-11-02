@@ -609,3 +609,18 @@ select.tool-input{cursor:pointer;}
 .lab-card-tags{display:flex; gap:6px; flex-wrap:wrap; flex:1;}
 .lab-card-tag{font-family:var(--mono); font-size:11px; color:#6FA8FF; background:rgba(111,168,255,.12); border-radius:5px; padding:2px 8px;}
 .lab-card-cta{font-family:var(--mono); font-size:12.5px; font-weight:600; color:#F2A541; white-space:nowrap;}
+
+/* ---------- 3-vendor cheat sheet ---------- */
+.cmd-tools{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px;}
+.cmd-tools .cmd-filter{margin-bottom:0;}
+.col-toggles{display:flex;gap:6px;flex-wrap:wrap;}
+.col-toggle{font-family:var(--mono);font-size:12px;color:var(--text-dim);background:var(--panel);border:1px solid var(--panel-border);border-radius:20px;padding:5px 11px;cursor:pointer;display:flex;align-items:center;gap:6px;}
+.col-toggle:has(input:checked){border-color:var(--teal-border);color:var(--teal);background:var(--teal-dim);}
+.col-toggle input{accent-color:var(--teal);margin:0;}
+.cmd-table [data-col].col-hidden{display:none;}
+.cmd-table .cmd-code{white-space:pre-wrap;overflow-wrap:anywhere;}
+.translate-table td{width:29%;}
+.translate-table td.cmd-task{width:13%;min-width:120px;}
+.translate-table .cmd-code{font-size:12px;}
+.vendor-notes{margin-top:22px;}
+.ref-note a{color:var(--teal);}

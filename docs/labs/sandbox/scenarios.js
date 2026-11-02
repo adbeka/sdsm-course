@@ -389,6 +389,110 @@
     },
   ];
 
+
+  /* ---------- диалекты: Huawei VRP и Juniper Junos ----------
+     Для каждого сценария — подсказки и решение в синтаксисе вендора; lesson/note дополняют общий вывод.
+     Сценарии без записи для диалекта доступны только на Cisco IOS. */
+  const JNOTE = 'В Junos правки попадают в <i>кандидат</i> и вступают в силу только после <code>commit</code>. <code>show | compare</code> показывает, что изменится, а <code>commit confirmed 5</code> страхует от потери доступа.';
+  const DX = {
+    vlan: { vrp: {
+      hints: ['Адреса из одной подсети — ПК общаются напрямую через ARP, а ARP не выходит за пределы VLAN.',
+        'На SW1: display port vlan (колонка PVID) или display vlan — в каком VLAN каждый порт.',
+        'GE0/0/2 в VLAN 20. system-view → interface GigabitEthernet0/0/2 → port default vlan 10.'],
+      solution: [{ dev: 'SW1', cmds: ['system-view', 'interface GigabitEthernet0/0/2', 'port default vlan 10', 'return'] }],
+      note: 'В VRP VLAN порта доступа задаётся как <code>port default vlan</code> (PVID), а проверяется через <code>display port vlan</code>.' } },
+    trunk: { vrp: {
+      hints: ['VLAN 20 между этажами работает — транк поднят. Вопрос в том, какие VLAN он пропускает.',
+        'На обоих коммутаторах: display port vlan — колонка Trunk VLAN List (или display vlan: TG — tagged).',
+        'На SW1 транк XGE0/0/1 пропускает только 1 и 20. В VRP port trunk allow-pass vlan ДОБАВЛЯЕТ VLAN к списку: interface XGigabitEthernet0/0/1 → port trunk allow-pass vlan 10.'],
+      solution: [{ dev: 'SW1', cmds: ['system-view', 'interface XGigabitEthernet0/0/1', 'port trunk allow-pass vlan 10', 'return'] }],
+      lesson: '<b>Транк пропускает только разрешённые VLAN, с обеих сторон.</b> В VRP <code>port trunk allow-pass vlan</code> <i>добавляет</i> VLAN к списку (в IOS без <code>add</code> список заменяется), а по умолчанию транк Huawei пропускает только VLAN 1 — новый VLAN нужно разрешить явно. Проверка: <code>display port vlan</code>, <code>display vlan</code>.' } },
+    errdisable: { vrp: {
+      hints: ['Кабель на месте, VLAN правильный — но линк красный. Посмотрите статус портов на SW1.',
+        'display interface brief — GE0/0/2 down; display interface GigabitEthernet0/0/2 — ERROR DOWN(bpdu-protection); display logbuffer — причина.',
+        'Причина устранена. interface GigabitEthernet0/0/2 → shutdown → undo shutdown.'],
+      solution: [{ dev: 'SW1', cmds: ['system-view', 'interface GigabitEthernet0/0/2', 'shutdown', 'undo shutdown', 'return'] }],
+      note: 'В VRP это состояние называется <b>Error-Down</b> (<code>stp bpdu-protection</code> + <code>stp edged-port enable</code>). Автовосстановление: <code>error-down auto-recovery cause bpdu-protection interval 30</code>.' } },
+    stploop: { vrp: {
+      story: 'Утром в офисе не работает ничего, лампочки на коммутаторах мигают синхронно. Ночью подрядчик проложил резервный кабель SW2–SW3 «для надёжности». А месяц назад кто-то выполнил на всех коммутаторах stp disable, «чтобы порты быстрее поднимались». Резервный кабель должен остаться.',
+      hints: ['Легло всё и сразу. Зайдите на любой коммутатор: display cpu-usage и display logbuffer.',
+        'CPU 99% и «MAC move detected» — шторм: SW1–SW2–SW3 образуют кольцо. Кто должен его разрывать? display stp.',
+        'На всех трёх: system-view → stp enable. Корнем станет SW1 (stp priority 4096 уже настроен), а один порт на линке SW2–SW3 станет ALTE / DISCARDING.'],
+      solution: ['SW1', 'SW2', 'SW3'].map(dev => ({ dev, cmds: ['system-view', 'stp enable', 'return'] })),
+      note: 'Huawei по умолчанию работает в <b>MSTP</b>: один экземпляр (инстанс 0) на все VLAN, поэтому <code>stp enable</code> и <code>stp priority</code> действуют сразу на всю сеть, а не на один VLAN, как PVST у Cisco.' } },
+    dhcpgw: { vrp: {
+      hints: ['Адрес получен — DHCP работает. Посмотрите, какие ещё параметры пришли на PC1: ipconfig.',
+        'Шлюз 10.0.10.254, а у R1 в этой сети 10.0.10.1. На R1: display ip pool name USERS.',
+        'В VRP gateway-list — это список, клиент получает первый шлюз. ip pool USERS → undo gateway-list 10.0.10.254 → gateway-list 10.0.10.1, затем на ПК ipconfig /renew.'],
+      solution: [{ dev: 'R1', cmds: ['system-view', 'ip pool USERS', 'undo gateway-list 10.0.10.254', 'gateway-list 10.0.10.1', 'return'] },
+        { dev: 'PC1', cmds: ['ipconfig /renew'] }, { dev: 'PC2', cmds: ['ipconfig /renew'] }],
+      note: 'В VRP <code>gateway-list</code> <i>добавляет</i> шлюз в список (до 8), а клиент получает первый. Поэтому неверный шлюз сначала удаляют через <code>undo gateway-list</code>. Глобальный пул работает на интерфейсе с <code>dhcp select global</code>.' } },
+    dhcprelay: { vrp: {
+      hints: ['169.254.x.x — ПК не дождался ответа от DHCP. DHCP Discover — широковещательный, за пределы подсети не выходит.',
+        'Сервер в другой подсети — нужен relay на интерфейсе R1 в сторону ПК. Посмотрите display current-configuration.',
+        'interface GigabitEthernet0/0/0 → dhcp select relay → dhcp relay server-ip 10.0.1.5 (не забудьте dhcp enable), затем PC1: ipconfig /renew.'],
+      solution: [{ dev: 'R1', cmds: ['system-view', 'dhcp enable', 'interface GigabitEthernet0/0/0', 'dhcp select relay', 'dhcp relay server-ip 10.0.1.5', 'return'] },
+        { dev: 'PC1', cmds: ['ipconfig /renew'] }],
+      note: 'Аналог <code>ip helper-address</code> в VRP — пара команд <code>dhcp select relay</code> + <code>dhcp relay server-ip</code> на интерфейсе, плюс глобальный <code>dhcp enable</code>.' } },
+    gateway: {
+      vrp: { hints: ['Чтобы отправить пакет в чужую подсеть, хост ищет через ARP MAC своего шлюза. Проверьте шлюз PC1: ipconfig.',
+        'Сравните его с адресом R1 в этой сети: на R1 — display ip interface brief.',
+        'На PC1 шлюз 10.0.1.254, а R1 — 10.0.1.1: ipconfig 10.0.1.10 255.255.255.0 10.0.1.1'],
+        solution: [{ dev: 'PC1', cmds: ['ipconfig 10.0.1.10 255.255.255.0 10.0.1.1'] }] },
+      junos: { hints: ['Чтобы отправить пакет в чужую подсеть, хост ищет через ARP MAC своего шлюза. Проверьте шлюз PC1: ipconfig.',
+        'Сравните его с адресом R1 в этой сети: на R1 — show interfaces terse.',
+        'На PC1 шлюз 10.0.1.254, а R1 — 10.0.1.1: ipconfig 10.0.1.10 255.255.255.0 10.0.1.1'],
+        solution: [{ dev: 'PC1', cmds: ['ipconfig 10.0.1.10 255.255.255.0 10.0.1.1'] }] } },
+    returnpath: {
+      vrp: { hints: ['Ping — это запрос туда и ответ обратно. Посмотрите анимацию: где теряется пакет?',
+        'tracert с PC1 и display ip routing-table на R2: знает ли R2 сеть 10.0.1.0/24?',
+        'На R2: system-view → ip route-static 10.0.1.0 24 10.0.12.1'],
+        solution: [{ dev: 'R2', cmds: ['system-view', 'ip route-static 10.0.1.0 24 10.0.12.1', 'return'] }],
+        note: 'В VRP статический маршрут — <code>ip route-static</code>, маску можно задать длиной (<code>24</code>). Приоритет static в Huawei — 60, OSPF — 10 (в Cisco наоборот: static 1, OSPF 110).' },
+      junos: { hints: ['Ping — это запрос туда и ответ обратно. Посмотрите анимацию: где теряется пакет?',
+        'tracert с PC1 и show route на R2: знает ли R2 сеть 10.0.1.0/24?',
+        'На R2: configure → set routing-options static route 10.0.1.0/24 next-hop 10.0.12.1 → commit. Без commit ничего не применится!'],
+        solution: [{ dev: 'R2', cmds: ['configure', 'set routing-options static route 10.0.1.0/24 next-hop 10.0.12.1', 'commit', 'exit'] }],
+        note: JNOTE } },
+    mask: {
+      vrp: { hints: ['Линк зелёный, адрес шлюза совпадает с R1 — L1 и L2 в порядке. Что R1 думает о сети серверов?',
+        'display ip routing-table на R1: какая сеть подключена к GE0/0/1? Попадает ли в неё 10.0.2.10?',
+        'На GE0/0/1 маска /30. interface GigabitEthernet0/0/1 → ip address 10.0.2.1 24'],
+        solution: [{ dev: 'R1', cmds: ['system-view', 'interface GigabitEthernet0/0/1', 'ip address 10.0.2.1 24', 'return'] }] },
+      junos: { hints: ['Линк зелёный, адрес шлюза совпадает с R1 — L1 и L2 в порядке. Что R1 думает о сети серверов?',
+        'show route и show interfaces terse на R1: какая сеть на ge-0/0/1?',
+        'configure → delete interfaces ge-0/0/1 unit 0 family inet address 10.0.2.1/30 → set interfaces ge-0/0/1 unit 0 family inet address 10.0.2.1/24 → show | compare → commit'],
+        solution: [{ dev: 'R1', cmds: ['configure', 'delete interfaces ge-0/0/1 unit 0 family inet address 10.0.2.1/30', 'set interfaces ge-0/0/1 unit 0 family inet address 10.0.2.1/24', 'commit', 'exit'] }],
+        note: JNOTE + ' Учтите: в Junos <code>set ... address</code> <i>добавляет</i> ещё один адрес, а не заменяет старый — неверный нужно удалить через <code>delete</code>.' } },
+    ospfarea: {
+      vrp: { hints: ['Чтобы стать соседями OSPF, должны совпасть подсеть, area, таймеры, аутентификация. Проверьте: display ospf peer brief.',
+        'Сравните display ospf interface на R1 и R2 — заголовки Area.',
+        'На R2 линк в area 0.0.0.1. ospf 1 → area 1 → undo network 10.0.12.0 0.0.0.3 → quit → area 0 → network 10.0.12.0 0.0.0.3'],
+        solution: [{ dev: 'R2', cmds: ['system-view', 'ospf 1', 'area 1', 'undo network 10.0.12.0 0.0.0.3', 'quit', 'area 0', 'network 10.0.12.0 0.0.0.3', 'return'] }],
+        note: 'В VRP <code>network</code> задаётся внутри вида области (<code>ospf 1</code> → <code>area 0</code>), поэтому область видна прямо в конфиге — <code>display current-configuration configuration ospf</code>.' },
+      junos: { hints: ['Чтобы стать соседями OSPF, должны совпасть подсеть, area, таймеры, аутентификация. Проверьте: show ospf neighbor.',
+        'Сравните show ospf interface на R1 и R2 — колонка Area.',
+        'На R2: configure → delete protocols ospf area 0.0.0.1 interface ge-0/0/1.0 → set protocols ospf area 0.0.0.0 interface ge-0/0/1.0 → commit'],
+        solution: [{ dev: 'R2', cmds: ['configure', 'delete protocols ospf area 0.0.0.1 interface ge-0/0/1.0', 'set protocols ospf area 0.0.0.0 interface ge-0/0/1.0', 'commit', 'exit'] }],
+        note: 'В Junos OSPF включается на интерфейсе по имени (<code>protocols ospf area … interface ge-0/0/1.0</code>), без network/wildcard. Если оставить интерфейс в двух областях, <code>commit</code> не пройдёт. ' + JNOTE } },
+    ospfmtu: {
+      junos: { hints: ['Соседи есть, но в каком состоянии? show ospf neighbor — рабочее только Full.',
+        'ExStart/Exchange — не проходит обмен DBD, а в нём передаётся MTU. Сравните show interfaces ge-0/0/1 на обоих: строка Protocol inet, MTU.',
+        'На R2 IP MTU 1400. configure → delete interfaces ge-0/0/1 unit 0 family inet mtu → commit'],
+        solution: [{ dev: 'R2', cmds: ['configure', 'delete interfaces ge-0/0/1 unit 0 family inet mtu', 'commit', 'exit'] }],
+        note: 'Junos сравнивает MTU в DBD так же, как Cisco, — это частая проблема на стыке Juniper ↔ Cisco: у Junos физический MTU 1514 (с L2-заголовком), а IP MTU 1500. Huawei по умолчанию MTU в DBD не проверяет (<code>ospf mtu-enable</code>). ' + JNOTE } },
+    free: {
+      vrp: { story: 'Здесь всё работает: три роутера Huawei в OSPF-треугольнике и два ПК. Выключите линк R1–R2 (на R1: system-view → interface GigabitEthernet0/0/1 → shutdown) и посмотрите, как OSPF перестроит маршрут через R3 — display ip routing-table, tracert с PC1.',
+        hints: ['Начните с display ip routing-table и display ospf peer brief на R1 — запомните «здоровое» состояние.',
+          'Выключите GE0/0/1 на R1 и снова посмотрите таблицу: маршрут в 10.0.2.0/24 пойдёт через R3.',
+          'На R3 на одном интерфейсе ospf timer hello 5 — сосед пропадёт. Верните: undo ospf timer hello.'], solution: [] },
+      junos: { story: 'Здесь всё работает: три роутера Juniper в OSPF-треугольнике и два ПК. Выключите линк R1–R2 (на R1: configure → set interfaces ge-0/0/1 disable → commit) и посмотрите, как OSPF перестроит маршрут через R3 — show route, tracert с PC1. Попробуйте изменить что-нибудь без commit и сравните show | compare.',
+        hints: ['Начните с show route и show ospf neighbor на R1 — запомните «здоровое» состояние.',
+          'configure → set interfaces ge-0/0/1 disable → show | compare → commit. Потом show route: маршрут пойдёт через R3.',
+          'Верните: delete interfaces ge-0/0/1 disable → commit. Или rollback 1, если бы он был (в симуляторе — rollback отменяет несохранённые правки).'], solution: [] } },
+  };
+  SCENARIOS.forEach(sc => Object.assign(sc, DX[sc.id] || {}));
+
   if (typeof module !== 'undefined' && module.exports) module.exports = SCENARIOS;
   else root.SANDBOX_SCENARIOS = SCENARIOS;
 })(typeof window !== 'undefined' ? window : globalThis);

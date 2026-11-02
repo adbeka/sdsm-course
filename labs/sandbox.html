@@ -30,6 +30,12 @@ code{font-family:var(--mono);color:var(--signal);font-size:.92em}
 .brand b{display:block;font-size:18px}
 .brand small{color:var(--muted);font-size:12px}
 .spacer{flex:1}
+.seg{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:3px;gap:2px}
+.seg button{background:none;border:none;padding:6px 11px;border-radius:6px;color:var(--muted);cursor:pointer;white-space:nowrap;font-size:13px}
+.seg button[aria-pressed="true"]{background:var(--raise);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.sc.na{opacity:.45}
+.sc.na:hover{opacity:.8}
+.only{font-family:var(--mono);font-size:10px;color:var(--drop);border:1px solid var(--line);border-radius:4px;padding:0 5px}
 .pill{font-family:var(--mono);font-size:12px;color:var(--ok);background:rgba(79,208,142,.12);border:1px solid rgba(79,208,142,.35);border-radius:20px;padding:4px 12px}
 .btn{background:var(--signal);color:#1A1206;border:none;border-radius:7px;padding:8px 14px;font-weight:600;cursor:pointer;white-space:nowrap}
 .btn.ghost{background:var(--raise);color:var(--ink);border:1px solid var(--line);font-weight:500}
@@ -116,6 +122,11 @@ code{font-family:var(--mono);color:var(--signal);font-size:.92em}
 <header class="top">
   <a class="back" href="../index.html" title="На главную учебного портала">← БЗПД</a>
   <div class="brand"><span class="logo"></span><div><b>Сетевая песочница</b><small>найди поломку и почини сеть через CLI</small></div></div>
+  <div class="seg" id="dialect" role="group" aria-label="Синтаксис CLI">
+    <button type="button" data-d="ios" aria-pressed="true">Cisco IOS</button>
+    <button type="button" data-d="vrp" aria-pressed="false">Huawei VRP</button>
+    <button type="button" data-d="junos" aria-pressed="false">Juniper Junos</button>
+  </div>
   <span class="spacer"></span>
   <span class="pill" id="progress">Решено 0/0</span>
   <button type="button" class="btn ghost" id="resetBtn">↺ Сбросить сценарий</button>
@@ -165,6 +176,7 @@ code{font-family:var(--mono);color:var(--signal);font-size:.92em}
 </div>
 
 <script src="sandbox/engine.js"></script>
+<script src="sandbox/dialects.js"></script>
 <script src="sandbox/scenarios.js"></script>
 <script src="sandbox/ui.js"></script>
 </body>
